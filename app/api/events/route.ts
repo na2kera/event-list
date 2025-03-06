@@ -20,3 +20,23 @@ export async function POST(request: Request) {
     );
   }
 }
+
+export async function GET() {
+  try {
+    const events = await prisma.event.findMany({
+      include: {
+        organization: true,
+      },
+      orderBy: {
+        startDateTime: "asc",
+      },
+    });
+    return NextResponse.json(events);
+  } catch (error) {
+    console.error("Error fetching events:", error);
+    return NextResponse.json(
+      { error: "Error fetching events" },
+      { status: 500 }
+    );
+  }
+}

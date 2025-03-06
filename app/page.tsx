@@ -1,7 +1,10 @@
 "use client";
 
-import { useSession, signOut } from "next-auth/react";
+import { useSession } from "next-auth/react";
 import Link from "next/link";
+import { Navbar } from "./components/layout/Navbar";
+import { Container } from "./components/layout/Container";
+import { EventList } from "./components/events/EventList";
 
 export default function Home() {
   const { data: session } = useSession();
@@ -9,30 +12,10 @@ export default function Home() {
   if (session) {
     return (
       <div className="min-h-screen bg-gray-50">
-        <nav className="bg-white shadow-sm">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex justify-between h-16">
-              <div className="flex items-center">
-                <h1 className="text-xl font-bold">Event List</h1>
-              </div>
-              <div className="flex items-center">
-                <span className="mr-4">{session.user?.name}</span>
-                <button
-                  onClick={() => signOut()}
-                  className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600"
-                >
-                  サインアウト
-                </button>
-              </div>
-            </div>
-          </div>
-        </nav>
-        <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-          <div className="px-4 py-6 sm:px-0">
-            <h2 className="text-2xl font-bold mb-4">ようこそ！</h2>
-            <p>イベントリストアプリケーションへようこそ。</p>
-          </div>
-        </main>
+        <Navbar />
+        <Container>
+          <EventList />
+        </Container>
       </div>
     );
   }
