@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { Organization, Event } from "../types";
 
@@ -8,9 +8,25 @@ export default function RegisterPage() {
   const [activeTab, setActiveTab] = useState<"organization" | "event">(
     "organization"
   );
+  const [organizations, setOrganizations] = useState<Organization[]>([]);
 
   const organizationForm = useForm<Organization>();
   const eventForm = useForm<Event>();
+
+  useEffect(() => {
+    const fetchOrganizations = async () => {
+      try {
+        const response = await fetch("/api/organizations");
+        if (!response.ok) throw new Error("Failed to fetch organizations");
+        const data = await response.json();
+        setOrganizations(data);
+      } catch (error) {
+        console.error("Error fetching organizations:", error);
+      }
+    };
+
+    fetchOrganizations();
+  }, []);
 
   const onOrganizationSubmit = async (data: Organization) => {
     try {
@@ -166,7 +182,11 @@ export default function RegisterPage() {
               className="w-full p-2 border rounded"
             >
               <option value="">選択してください</option>
-              {/* 団体一覧を表示（APIから取得） */}
+              {organizations.map((org) => (
+                <option key={org.id} value={org.id}>
+                  {org.name}
+                </option>
+              ))}
             </select>
           </div>
           <button

@@ -19,7 +19,9 @@ export async function POST(request: Request) {
 
 export async function GET() {
   try {
-    const organizations = await prisma.organization.findMany();
+    const organizations = await prisma.organization.findMany({
+      orderBy: { name: "asc" },
+    });
     return NextResponse.json(organizations);
   } catch (error) {
     console.error("Error fetching organizations:", error);
