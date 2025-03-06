@@ -6,10 +6,15 @@ import { EventList } from "./components/events/EventList";
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100">
       <Navbar />
       <Container>
-        <EventList />
+        <div className="py-4">
+          <h1 className="text-3xl font-bold text-gray-800 mb-6 text-center">
+            イベント一覧
+          </h1>
+          <EventList />
+        </div>
       </Container>
     </div>
   );
