@@ -1,11 +1,9 @@
 "use client";
 
 import { signIn } from "next-auth/react";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 export default function SignIn() {
-  const router = useRouter();
   const [error, setError] = useState<string | null>(null);
 
   const handleSignIn = async () => {
