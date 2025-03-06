@@ -1,27 +1,19 @@
-"use client";
-
-import { useSession } from "next-auth/react";
 import { Navbar } from "@/app/components/layout/Navbar";
 import { Container } from "@/app/components/layout/Container";
-import { EventDetail } from "@/app/components/events/EventDetail";
-import { redirect } from "next/navigation";
+import { EventDetailClient } from "@/app/components/events/EventDetailClient";
 
-export default function EventPage({ params }: { params: { id: string } }) {
-  const { data: session, status } = useSession();
+interface PageProps {
+  params: Promise<{ id: string }>;
+}
 
-  if (status === "loading") {
-    return null;
-  }
-
-  if (!session) {
-    redirect("/");
-  }
+export default async function EventPage({ params }: PageProps) {
+  const { id } = await params;
 
   return (
     <div className="min-h-screen bg-gray-50">
       <Navbar />
       <Container>
-        <EventDetail eventId={params.id} />
+        <EventDetailClient eventId={id} />
       </Container>
     </div>
   );
