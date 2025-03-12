@@ -76,8 +76,20 @@ model Event {
   detailUrl      String?
   organizationId String
   organization   Organization @relation(fields: [organizationId], references: [id])
+  skills         EventSkill[]
   createdAt      DateTime     @default(now())
   updatedAt      DateTime     @updatedAt
 
   @@index([organizationId])
+}
+
+model EventSkill {
+  id        String   @id @default(cuid())
+  name      String
+  eventId   String
+  event     Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([eventId])
 }
