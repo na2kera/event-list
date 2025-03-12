@@ -6,9 +6,16 @@ export async function POST(request: Request) {
     const body = await request.json();
     const event = await prisma.event.create({
       data: {
-        ...body,
-        startDateTime: new Date(body.startDateTime),
-        endDateTime: body.endDateTime ? new Date(body.endDateTime) : null,
+        title: body.title,
+        description: body.description,
+        eventDate: new Date(body.eventDate),
+        startTime: body.startTime,
+        endTime: body.endTime,
+        venue: body.venue,
+        address: body.address,
+        location: body.location,
+        detailUrl: body.detailUrl,
+        organizationId: body.organizationId,
       },
     });
     return NextResponse.json(event);
@@ -28,7 +35,7 @@ export async function GET() {
         organization: true,
       },
       orderBy: {
-        startDateTime: "asc",
+        eventDate: "asc",
       },
     });
     return NextResponse.json(events);

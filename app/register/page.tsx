@@ -145,26 +145,51 @@ export default function RegisterPage() {
             />
           </div>
           <div>
-            <label className="block mb-2">開始日時 *</label>
+            <label className="block mb-2">開催日 *</label>
             <input
-              type="datetime-local"
-              {...eventForm.register("startDateTime", { required: true })}
+              type="date"
+              {...eventForm.register("eventDate", { required: true })}
               className="w-full p-2 border rounded"
             />
           </div>
           <div>
-            <label className="block mb-2">終了日時</label>
+            <label className="block mb-2">開始時間 *</label>
             <input
-              type="datetime-local"
-              {...eventForm.register("endDateTime")}
+              type="time"
+              {...eventForm.register("startTime", { required: true })}
               className="w-full p-2 border rounded"
             />
           </div>
           <div>
-            <label className="block mb-2">場所</label>
+            <label className="block mb-2">終了時間</label>
+            <input
+              type="time"
+              {...eventForm.register("endTime")}
+              className="w-full p-2 border rounded"
+            />
+          </div>
+          <div>
+            <label className="block mb-2">開催場所 *</label>
+            <input
+              {...eventForm.register("venue", { required: true })}
+              className="w-full p-2 border rounded"
+              placeholder="建物や施設名"
+            />
+          </div>
+          <div>
+            <label className="block mb-2">住所</label>
+            <input
+              {...eventForm.register("address")}
+              className="w-full p-2 border rounded"
+              placeholder="〒000-0000 都道府県市区町村..."
+            />
+          </div>
+          <div>
+            <label className="block mb-2">会場の詳細情報</label>
             <input
               {...eventForm.register("location")}
               className="w-full p-2 border rounded"
+              placeholder="〇階 会議室A など"
             />
           </div>
           <div>

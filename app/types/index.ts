@@ -10,8 +10,11 @@ export type Event = {
   id: string;
   title: string;
   description?: string;
-  startDateTime: Date;
-  endDateTime?: Date;
+  eventDate: Date;
+  startTime: string;
+  endTime?: string;
+  venue: string;
+  address?: string;
   location?: string;
   detailUrl?: string;
   organizationId: string;

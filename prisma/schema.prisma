@@ -67,8 +67,11 @@ model Event {
   id             String       @id @default(cuid())
   title          String
   description    String?
-  startDateTime  DateTime
-  endDateTime    DateTime?
+  eventDate      DateTime
+  startTime      String
+  endTime        String?
+  venue          String
+  address        String?
   location       String?
   detailUrl      String?
   organizationId String
