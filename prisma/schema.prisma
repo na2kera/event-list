@@ -64,7 +64,7 @@ model Organization {
 }
 
 model Event {
-  id             String         @id @default(cuid())
+  id             String          @id @default(cuid())
   title          String
   description    String?
   eventDate      DateTime
@@ -75,11 +75,12 @@ model Event {
   location       String?
   detailUrl      String?
   organizationId String
-  organization   Organization   @relation(fields: [organizationId], references: [id])
+  organization   Organization    @relation(fields: [organizationId], references: [id])
   skills         EventSkill[]
   speakers       EventSpeaker[]
-  createdAt      DateTime       @default(now())
-  updatedAt      DateTime       @updatedAt
+  categories     EventCategory[]
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
 
   @@index([organizationId])
 }
@@ -117,4 +118,25 @@ model EventSpeaker {
 
   @@index([eventId])
   @@index([speakerId])
+}
+
+model Category {
+  id        String          @id @default(cuid())
+  name      String         @unique
+  events    EventCategory[]
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+}
+
+model EventCategory {
+  id         String   @id @default(cuid())
+  eventId    String
+  categoryId String
+  event      Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([eventId])
+  @@index([categoryId])
 }
