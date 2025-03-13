@@ -64,17 +64,79 @@ model Organization {
 }
 
 model Event {
-  id             String       @id @default(cuid())
+  id             String          @id @default(cuid())
   title          String
   description    String?
-  startDateTime  DateTime
-  endDateTime    DateTime?
+  eventDate      DateTime
+  startTime      String
+  endTime        String?
+  venue          String
+  address        String?
   location       String?
   detailUrl      String?
   organizationId String
-  organization   Organization @relation(fields: [organizationId], references: [id])
-  createdAt      DateTime     @default(now())
-  updatedAt      DateTime     @updatedAt
+  organization   Organization    @relation(fields: [organizationId], references: [id])
+  skills         EventSkill[]
+  speakers       EventSpeaker[]
+  categories     EventCategory[]
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
 
   @@index([organizationId])
+}
+
+model EventSkill {
+  id        String   @id @default(cuid())
+  name      String
+  eventId   String
+  event     Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([eventId])
+}
+
+model Speaker {
+  id          String         @id @default(cuid())
+  name        String
+  occupation  String // 職業
+  affiliation String // 所属
+  bio         String // 自己紹介
+  events      EventSpeaker[]
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+}
+
+model EventSpeaker {
+  id        String   @id @default(cuid())
+  eventId   String
+  speakerId String
+  event     Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  speaker   Speaker  @relation(fields: [speakerId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([eventId])
+  @@index([speakerId])
+}
+
+model Category {
+  id        String          @id @default(cuid())
+  name      String         @unique
+  events    EventCategory[]
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+}
+
+model EventCategory {
+  id         String   @id @default(cuid())
+  eventId    String
+  categoryId String
+  event      Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([eventId])
+  @@index([categoryId])
 }

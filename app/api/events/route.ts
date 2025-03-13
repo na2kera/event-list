@@ -6,9 +6,44 @@ export async function POST(request: Request) {
     const body = await request.json();
     const event = await prisma.event.create({
       data: {
-        ...body,
-        startDateTime: new Date(body.startDateTime),
-        endDateTime: body.endDateTime ? new Date(body.endDateTime) : null,
+        title: body.title,
+        description: body.description,
+        eventDate: new Date(body.eventDate),
+        startTime: body.startTime,
+        endTime: body.endTime,
+        venue: body.venue,
+        address: body.address,
+        location: body.location,
+        detailUrl: body.detailUrl,
+        organizationId: body.organizationId,
+        skills: {
+          create: body.skills.map((skill: { name: string }) => ({
+            name: skill.name,
+          })),
+        },
+        speakers: {
+          create: body.speakers.map((speaker: { speakerId: string }) => ({
+            speakerId: speaker.speakerId,
+          })),
+        },
+        categories: {
+          create: body.categories.map((category: { categoryId: string }) => ({
+            categoryId: category.categoryId,
+          })),
+        },
+      },
+      include: {
+        skills: true,
+        speakers: {
+          include: {
+            speaker: true,
+          },
+        },
+        categories: {
+          include: {
+            category: true,
+          },
+        },
       },
     });
     return NextResponse.json(event);
@@ -26,9 +61,20 @@ export async function GET() {
     const events = await prisma.event.findMany({
       include: {
         organization: true,
+        skills: true,
+        speakers: {
+          include: {
+            speaker: true,
+          },
+        },
+        categories: {
+          include: {
+            category: true,
+          },
+        },
       },
       orderBy: {
-        startDateTime: "asc",
+        eventDate: "asc",
       },
     });
     return NextResponse.json(events);
