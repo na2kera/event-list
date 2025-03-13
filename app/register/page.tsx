@@ -90,6 +90,26 @@ export default function RegisterPage() {
     );
   };
 
+  const handleSpeakerSelect = (speakerId: string) => {
+    if (!selectedSpeakers.includes(speakerId)) {
+      setSelectedSpeakers([...selectedSpeakers, speakerId]);
+    }
+  };
+
+  const handleRemoveSpeaker = (speakerId: string) => {
+    setSelectedSpeakers(selectedSpeakers.filter((id) => id !== speakerId));
+  };
+
+  const handleCategorySelect = (categoryId: string) => {
+    if (!selectedCategories.includes(categoryId)) {
+      setSelectedCategories([...selectedCategories, categoryId]);
+    }
+  };
+
+  const handleRemoveCategory = (categoryId: string) => {
+    setSelectedCategories(selectedCategories.filter((id) => id !== categoryId));
+  };
+
   const onEventSubmit = async (data: Event) => {
     try {
       const eventData = {
@@ -310,40 +330,76 @@ export default function RegisterPage() {
           <div>
             <label className="block mb-2">登壇者 *</label>
             <select
-              multiple
-              value={selectedSpeakers}
-              onChange={(e) =>
-                setSelectedSpeakers(
-                  Array.from(e.target.selectedOptions, (option) => option.value)
-                )
-              }
-              className="w-full p-2 border rounded"
+              onChange={(e) => handleSpeakerSelect(e.target.value)}
+              value=""
+              className="w-full p-2 border rounded mb-2"
             >
-              {speakers.map((speaker) => (
-                <option key={speaker.id} value={speaker.id}>
-                  {speaker.name} ({speaker.affiliation})
-                </option>
-              ))}
+              <option value="">登壇者を選択してください</option>
+              {speakers
+                .filter((speaker) => !selectedSpeakers.includes(speaker.id))
+                .map((speaker) => (
+                  <option key={speaker.id} value={speaker.id}>
+                    {speaker.name} ({speaker.affiliation})
+                  </option>
+                ))}
             </select>
+            <div className="flex flex-wrap gap-2">
+              {selectedSpeakers.map((speakerId) => {
+                const speaker = speakers.find((s) => s.id === speakerId);
+                return speaker ? (
+                  <span
+                    key={speaker.id}
+                    className="bg-green-100 text-green-800 px-2 py-1 rounded flex items-center"
+                  >
+                    {speaker.name} ({speaker.affiliation})
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveSpeaker(speaker.id)}
+                      className="ml-2 text-green-600 hover:text-green-800"
+                    >
+                      ×
+                    </button>
+                  </span>
+                ) : null;
+              })}
+            </div>
           </div>
           <div>
             <label className="block mb-2">カテゴリ *</label>
             <select
-              multiple
-              value={selectedCategories}
-              onChange={(e) =>
-                setSelectedCategories(
-                  Array.from(e.target.selectedOptions, (option) => option.value)
-                )
-              }
-              className="w-full p-2 border rounded"
+              onChange={(e) => handleCategorySelect(e.target.value)}
+              value=""
+              className="w-full p-2 border rounded mb-2"
             >
-              {categories.map((category) => (
-                <option key={category.id} value={category.id}>
-                  {category.name}
-                </option>
-              ))}
+              <option value="">カテゴリを選択してください</option>
+              {categories
+                .filter((category) => !selectedCategories.includes(category.id))
+                .map((category) => (
+                  <option key={category.id} value={category.id}>
+                    {category.name}
+                  </option>
+                ))}
             </select>
+            <div className="flex flex-wrap gap-2">
+              {selectedCategories.map((categoryId) => {
+                const category = categories.find((c) => c.id === categoryId);
+                return category ? (
+                  <span
+                    key={category.id}
+                    className="bg-purple-100 text-purple-800 px-2 py-1 rounded flex items-center"
+                  >
+                    {category.name}
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveCategory(category.id)}
+                      className="ml-2 text-purple-600 hover:text-purple-800"
+                    >
+                      ×
+                    </button>
+                  </span>
+                ) : null;
+              })}
+            </div>
           </div>
           <button
             type="submit"
