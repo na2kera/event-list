@@ -16,6 +16,34 @@ export async function POST(request: Request) {
         location: body.location,
         detailUrl: body.detailUrl,
         organizationId: body.organizationId,
+        skills: {
+          create: body.skills.map((skill: { name: string }) => ({
+            name: skill.name,
+          })),
+        },
+        speakers: {
+          create: body.speakers.map((speaker: { speakerId: string }) => ({
+            speakerId: speaker.speakerId,
+          })),
+        },
+        categories: {
+          create: body.categories.map((category: { categoryId: string }) => ({
+            categoryId: category.categoryId,
+          })),
+        },
+      },
+      include: {
+        skills: true,
+        speakers: {
+          include: {
+            speaker: true,
+          },
+        },
+        categories: {
+          include: {
+            category: true,
+          },
+        },
       },
     });
     return NextResponse.json(event);
@@ -33,6 +61,17 @@ export async function GET() {
     const events = await prisma.event.findMany({
       include: {
         organization: true,
+        skills: true,
+        speakers: {
+          include: {
+            speaker: true,
+          },
+        },
+        categories: {
+          include: {
+            category: true,
+          },
+        },
       },
       orderBy: {
         eventDate: "asc",

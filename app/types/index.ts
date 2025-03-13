@@ -18,4 +18,20 @@ export type Event = {
   location?: string;
   detailUrl?: string;
   organizationId: string;
+  skills: { name: string }[];
+  speakers: { speakerId: string }[];
+  categories: { categoryId: string }[];
+};
+
+export type Speaker = {
+  id: string;
+  name: string;
+  occupation: string;
+  affiliation: string;
+  bio: string;
+};
+
+export type Category = {
+  id: string;
+  name: string;
 };

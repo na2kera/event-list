@@ -2,13 +2,19 @@
 
 import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { Organization, Event } from "../types";
+import { Organization, Event, Speaker, Category } from "../types";
 
 export default function RegisterPage() {
   const [activeTab, setActiveTab] = useState<"organization" | "event">(
     "organization"
   );
   const [organizations, setOrganizations] = useState<Organization[]>([]);
+  const [speakers, setSpeakers] = useState<Speaker[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [selectedSkills, setSelectedSkills] = useState<string[]>([]);
+  const [selectedSpeakers, setSelectedSpeakers] = useState<string[]>([]);
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  const [newSkill, setNewSkill] = useState("");
 
   const organizationForm = useForm<Organization>();
   const eventForm = useForm<Event>();
@@ -28,6 +34,33 @@ export default function RegisterPage() {
     fetchOrganizations();
   }, []);
 
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [speakersRes, categoriesRes] = await Promise.all([
+          fetch("/api/speakers"),
+          fetch("/api/categories"),
+        ]);
+
+        if (!speakersRes.ok || !categoriesRes.ok) {
+          throw new Error("Failed to fetch data");
+        }
+
+        const [speakersData, categoriesData] = await Promise.all([
+          speakersRes.json(),
+          categoriesRes.json(),
+        ]);
+
+        setSpeakers(speakersData);
+        setCategories(categoriesData);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
   const onOrganizationSubmit = async (data: Organization) => {
     try {
       const response = await fetch("/api/organizations", {
@@ -44,15 +77,39 @@ export default function RegisterPage() {
     }
   };
 
+  const handleAddSkill = () => {
+    if (newSkill.trim() && !selectedSkills.includes(newSkill.trim())) {
+      setSelectedSkills([...selectedSkills, newSkill.trim()]);
+      setNewSkill("");
+    }
+  };
+
+  const handleRemoveSkill = (skillToRemove: string) => {
+    setSelectedSkills(
+      selectedSkills.filter((skill) => skill !== skillToRemove)
+    );
+  };
+
   const onEventSubmit = async (data: Event) => {
     try {
+      const eventData = {
+        ...data,
+        skills: selectedSkills.map((name) => ({ name })),
+        speakers: selectedSpeakers.map((speakerId) => ({ speakerId })),
+        categories: selectedCategories.map((categoryId) => ({ categoryId })),
+      };
+
       const response = await fetch("/api/events", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
+        body: JSON.stringify(eventData),
       });
+
       if (!response.ok) throw new Error("Failed to create event");
       eventForm.reset();
+      setSelectedSkills([]);
+      setSelectedSpeakers([]);
+      setSelectedCategories([]);
       alert("イベントを登録しました");
     } catch (error) {
       console.error("Error creating event:", error);
@@ -210,6 +267,80 @@ export default function RegisterPage() {
               {organizations.map((org) => (
                 <option key={org.id} value={org.id}>
                   {org.name}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label className="block mb-2">学べること</label>
+            <div className="flex gap-2 mb-2">
+              <input
+                type="text"
+                value={newSkill}
+                onChange={(e) => setNewSkill(e.target.value)}
+                className="flex-1 p-2 border rounded"
+                placeholder="新しいスキルを入力"
+              />
+              <button
+                type="button"
+                onClick={handleAddSkill}
+                className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+              >
+                追加
+              </button>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {selectedSkills.map((skill) => (
+                <span
+                  key={skill}
+                  className="bg-blue-100 text-blue-800 px-2 py-1 rounded flex items-center"
+                >
+                  {skill}
+                  <button
+                    type="button"
+                    onClick={() => handleRemoveSkill(skill)}
+                    className="ml-2 text-blue-600 hover:text-blue-800"
+                  >
+                    ×
+                  </button>
+                </span>
+              ))}
+            </div>
+          </div>
+          <div>
+            <label className="block mb-2">登壇者 *</label>
+            <select
+              multiple
+              value={selectedSpeakers}
+              onChange={(e) =>
+                setSelectedSpeakers(
+                  Array.from(e.target.selectedOptions, (option) => option.value)
+                )
+              }
+              className="w-full p-2 border rounded"
+            >
+              {speakers.map((speaker) => (
+                <option key={speaker.id} value={speaker.id}>
+                  {speaker.name} ({speaker.affiliation})
+                </option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label className="block mb-2">カテゴリ *</label>
+            <select
+              multiple
+              value={selectedCategories}
+              onChange={(e) =>
+                setSelectedCategories(
+                  Array.from(e.target.selectedOptions, (option) => option.value)
+                )
+              }
+              className="w-full p-2 border rounded"
+            >
+              {categories.map((category) => (
+                <option key={category.id} value={category.id}>
+                  {category.name}
                 </option>
               ))}
             </select>
