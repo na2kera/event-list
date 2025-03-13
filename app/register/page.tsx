@@ -5,9 +5,9 @@ import { useForm } from "react-hook-form";
 import { Organization, Event, Speaker, Category } from "../types";
 
 export default function RegisterPage() {
-  const [activeTab, setActiveTab] = useState<"organization" | "event">(
-    "organization"
-  );
+  const [activeTab, setActiveTab] = useState<
+    "organization" | "event" | "speaker" | "category"
+  >("organization");
   const [organizations, setOrganizations] = useState<Organization[]>([]);
   const [speakers, setSpeakers] = useState<Speaker[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
@@ -18,6 +18,8 @@ export default function RegisterPage() {
 
   const organizationForm = useForm<Organization>();
   const eventForm = useForm<Event>();
+  const speakerForm = useForm<Speaker>();
+  const categoryForm = useForm<Category>();
 
   useEffect(() => {
     const fetchOrganizations = async () => {
@@ -137,6 +139,48 @@ export default function RegisterPage() {
     }
   };
 
+  const onSpeakerSubmit = async (data: Speaker) => {
+    try {
+      const response = await fetch("/api/speakers", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+      if (!response.ok) throw new Error("Failed to create speaker");
+      speakerForm.reset();
+      alert("登壇者を登録しました");
+      // 登壇者リストを更新
+      const updatedSpeakers = await fetch("/api/speakers").then((res) =>
+        res.json()
+      );
+      setSpeakers(updatedSpeakers);
+    } catch (error) {
+      console.error("Error creating speaker:", error);
+      alert("エラーが発生しました");
+    }
+  };
+
+  const onCategorySubmit = async (data: Category) => {
+    try {
+      const response = await fetch("/api/categories", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+      if (!response.ok) throw new Error("Failed to create category");
+      categoryForm.reset();
+      alert("カテゴリを登録しました");
+      // カテゴリリストを更新
+      const updatedCategories = await fetch("/api/categories").then((res) =>
+        res.json()
+      );
+      setCategories(updatedCategories);
+    } catch (error) {
+      console.error("Error creating category:", error);
+      alert("エラーが発生しました");
+    }
+  };
+
   return (
     <div className="container mx-auto p-4">
       <div className="mb-4">
@@ -151,12 +195,28 @@ export default function RegisterPage() {
           団体登録
         </button>
         <button
-          className={`px-4 py-2 rounded ${
+          className={`mr-2 px-4 py-2 rounded ${
             activeTab === "event" ? "bg-blue-500 text-white" : "bg-gray-200"
           }`}
           onClick={() => setActiveTab("event")}
         >
           イベント登録
+        </button>
+        <button
+          className={`mr-2 px-4 py-2 rounded ${
+            activeTab === "speaker" ? "bg-blue-500 text-white" : "bg-gray-200"
+          }`}
+          onClick={() => setActiveTab("speaker")}
+        >
+          登壇者登録
+        </button>
+        <button
+          className={`px-4 py-2 rounded ${
+            activeTab === "category" ? "bg-blue-500 text-white" : "bg-gray-200"
+          }`}
+          onClick={() => setActiveTab("category")}
+        >
+          カテゴリ登録
         </button>
       </div>
 
@@ -202,7 +262,7 @@ export default function RegisterPage() {
             登録
           </button>
         </form>
-      ) : (
+      ) : activeTab === "event" ? (
         <form
           onSubmit={eventForm.handleSubmit(onEventSubmit)}
           className="space-y-4"
@@ -400,6 +460,66 @@ export default function RegisterPage() {
                 ) : null;
               })}
             </div>
+          </div>
+          <button
+            type="submit"
+            className="bg-blue-500 text-white px-4 py-2 rounded"
+          >
+            登録
+          </button>
+        </form>
+      ) : activeTab === "speaker" ? (
+        <form
+          onSubmit={speakerForm.handleSubmit(onSpeakerSubmit)}
+          className="space-y-4"
+        >
+          <div>
+            <label className="block mb-2">名前 *</label>
+            <input
+              {...speakerForm.register("name", { required: true })}
+              className="w-full p-2 border rounded"
+            />
+          </div>
+          <div>
+            <label className="block mb-2">職業 *</label>
+            <input
+              {...speakerForm.register("occupation", { required: true })}
+              className="w-full p-2 border rounded"
+            />
+          </div>
+          <div>
+            <label className="block mb-2">所属 *</label>
+            <input
+              {...speakerForm.register("affiliation", { required: true })}
+              className="w-full p-2 border rounded"
+            />
+          </div>
+          <div>
+            <label className="block mb-2">プロフィール *</label>
+            <textarea
+              {...speakerForm.register("bio", { required: true })}
+              className="w-full p-2 border rounded"
+              rows={4}
+            />
+          </div>
+          <button
+            type="submit"
+            className="bg-blue-500 text-white px-4 py-2 rounded"
+          >
+            登録
+          </button>
+        </form>
+      ) : (
+        <form
+          onSubmit={categoryForm.handleSubmit(onCategorySubmit)}
+          className="space-y-4"
+        >
+          <div>
+            <label className="block mb-2">カテゴリ名 *</label>
+            <input
+              {...categoryForm.register("name", { required: true })}
+              className="w-full p-2 border rounded"
+            />
           </div>
           <button
             type="submit"
