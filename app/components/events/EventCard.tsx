@@ -12,16 +12,19 @@ interface EventCardProps {
 }
 
 export function EventCard({ event }: EventCardProps) {
-  // 日付フォーマット関数
-  const formatDate = (dateInput: string | Date) => {
-    const date = typeof dateInput === 'string' ? new Date(dateInput) : dateInput;
+  // 日付と時間を組み合わせてフォーマットする関数
+  const formatDateTime = (date: Date, time: string) => {
+    const [hours, minutes] = time.split(":");
+    const dateTime = new Date(date);
+    dateTime.setHours(parseInt(hours, 10), parseInt(minutes, 10));
+
     return new Intl.DateTimeFormat("ja-JP", {
       year: "numeric",
       month: "short",
       day: "numeric",
       hour: "2-digit",
       minute: "2-digit",
-    }).format(date);
+    }).format(dateTime);
   };
 
   return (
@@ -56,8 +59,10 @@ export function EventCard({ event }: EventCardProps) {
               ></path>
             </svg>
             <span className="text-sm">
-              {formatDate(event.startDateTime)}
-              {event.endDateTime && <> 〜 {formatDate(event.endDateTime)}</>}
+              {formatDateTime(event.eventDate, event.startTime)}
+              {event.endTime && (
+                <> 〜 {formatDateTime(event.eventDate, event.endTime)}</>
+              )}
             </span>
           </div>
 

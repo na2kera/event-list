@@ -15,6 +15,22 @@ export function EventDetail({ eventId }: EventDetailProps) {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  // 日付と時間を組み合わせてフォーマットする関数
+  const formatDateTime = (date: Date, time: string) => {
+    const [hours, minutes] = time.split(":");
+    const dateTime = new Date(date);
+    dateTime.setHours(parseInt(hours, 10), parseInt(minutes, 10));
+
+    return new Intl.DateTimeFormat("ja-JP", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+      weekday: "long",
+      hour: "2-digit",
+      minute: "2-digit",
+    }).format(dateTime);
+  };
+
   useEffect(() => {
     const fetchEvent = async () => {
       try {
@@ -62,17 +78,29 @@ export function EventDetail({ eventId }: EventDetailProps) {
         <div>
           <h2 className="text-xl font-semibold mb-2">日時</h2>
           <p className="text-gray-700">
-            {new Date(event.startDateTime).toLocaleString("ja-JP")}
-            {event.endDateTime && (
+            {formatDateTime(event.eventDate, event.startTime)}
+            {event.endTime && (
               <>
-                <br />〜 {new Date(event.endDateTime).toLocaleString("ja-JP")}
+                <br />〜 {formatDateTime(event.eventDate, event.endTime)}
               </>
             )}
           </p>
         </div>
+        {event.venue && (
+          <div>
+            <h2 className="text-xl font-semibold mb-2">会場</h2>
+            <p className="text-gray-700">{event.venue}</p>
+          </div>
+        )}
+        {event.address && (
+          <div>
+            <h2 className="text-xl font-semibold mb-2">住所</h2>
+            <p className="text-gray-700">{event.address}</p>
+          </div>
+        )}
         {event.location && (
           <div>
-            <h2 className="text-xl font-semibold mb-2">場所</h2>
+            <h2 className="text-xl font-semibold mb-2">会場の詳細情報</h2>
             <p className="text-gray-700">{event.location}</p>
           </div>
         )}
