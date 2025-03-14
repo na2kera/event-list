@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { Event, Speaker, Category } from "@/app/types";
 import { ArrowRight, Calendar, Clock, MapPin, Target } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 
 interface EventDetailProps {
   eventId: string;
@@ -58,9 +59,12 @@ export function EventDetail({ eventId }: EventDetailProps) {
       <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
         {/* ヒーローセクション */}
         <div className="relative h-96">
-          <img
+          <Image
             src={"https://images.unsplash.com/photo-1551650975-87deedd944c3"}
-            className="w-full h-full object-cover"
+            alt="イベントのヘッダー画像"
+            fill
+            className="object-cover"
+            priority
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
           <div className="absolute bottom-0 left-0 right-0 p-8 text-white">
@@ -208,12 +212,14 @@ export function EventDetail({ eventId }: EventDetailProps) {
             <div className="flex items-center space-x-4">
               {event.speakers.map((speaker, index) => (
                 <div key={index} className="flex items-center space-x-2">
-                  <img
+                  <Image
                     src={
                       "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e"
                     }
-                    alt={speaker.speaker.name}
-                    className="w-16 h-16 rounded-full object-cover"
+                    alt={`${speaker.speaker.name}のプロフィール画像`}
+                    width={64}
+                    height={64}
+                    className="rounded-full object-cover"
                   />
                   <div>
                     <h3 className="text-lg font-bold text-gray-900">
