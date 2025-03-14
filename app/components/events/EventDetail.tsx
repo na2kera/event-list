@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Event } from "@/app/types";
+import { Event, Speaker, Category } from "@/app/types";
+import { ArrowRight, Calendar, Clock, MapPin, Target } from "lucide-react";
 import Link from "next/link";
 
 interface EventDetailProps {
@@ -10,26 +11,19 @@ interface EventDetailProps {
 
 export function EventDetail({ eventId }: EventDetailProps) {
   const [event, setEvent] = useState<
-    Event & { organization: { name: string } }
+    Event & {
+      organization: { name: string };
+      speakers: {
+        speaker: Speaker;
+      }[];
+      skills: { name: string }[];
+      categories: {
+        category: Category;
+      }[];
+    }
   >();
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
-  // 日付と時間を組み合わせてフォーマットする関数
-  const formatDateTime = (date: Date, time: string) => {
-    const [hours, minutes] = time.split(":");
-    const dateTime = new Date(date);
-    dateTime.setHours(parseInt(hours, 10), parseInt(minutes, 10));
-
-    return new Intl.DateTimeFormat("ja-JP", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-      weekday: "long",
-      hour: "2-digit",
-      minute: "2-digit",
-    }).format(dateTime);
-  };
 
   useEffect(() => {
     const fetchEvent = async () => {
@@ -60,71 +54,186 @@ export function EventDetail({ eventId }: EventDetailProps) {
   }
 
   return (
-    <div className="bg-white rounded-lg shadow-lg p-8">
-      <div className="mb-8">
-        <Link
-          href="/"
-          className="text-blue-500 hover:text-blue-600 flex items-center"
-        >
-          ← イベント一覧に戻る
-        </Link>
-      </div>
-      <h1 className="text-3xl font-bold mb-4">{event.title}</h1>
-      <div className="space-y-4">
-        <div>
-          <h2 className="text-xl font-semibold mb-2">主催団体</h2>
-          <p className="text-gray-700">{event.organization.name}</p>
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
+        {/* ヒーローセクション */}
+        <div className="relative h-96">
+          <img
+            src={"https://images.unsplash.com/photo-1551650975-87deedd944c3"}
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+          <div className="absolute bottom-0 left-0 right-0 p-8 text-white">
+            <h1 className="text-4xl font-bold mb-4">{event.title}</h1>
+            <div className="flex flex-wrap gap-6">
+              <div className="flex items-center">
+                <Calendar className="h-5 w-5 mr-2" />
+                {new Date(event.eventDate).toLocaleDateString("ja-JP")}
+              </div>
+              <div className="flex items-center">
+                <Clock className="h-5 w-5 mr-2" />
+                {event.startTime}
+              </div>
+              <div className="flex items-center">
+                <MapPin className="h-5 w-5 mr-2" />
+                {event.location}
+              </div>
+            </div>
+          </div>
         </div>
-        <div>
-          <h2 className="text-xl font-semibold mb-2">日時</h2>
-          <p className="text-gray-700">
-            {formatDateTime(event.eventDate, event.startTime)}
-            {event.endTime && (
-              <>
-                <br />〜 {formatDateTime(event.eventDate, event.endTime)}
-              </>
-            )}
-          </p>
+
+        <div className="p-8">
+          {/* イベント概要 */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
+            <div className="lg:col-span-2">
+              <h2 className="text-2xl font-bold text-gray-900 mb-4">
+                イベント概要
+              </h2>
+              <p className="text-gray-600 mb-6">{event.description}</p>
+
+              {/* イベントカテゴリ */}
+              <div className="mb-12">
+                <h2 className="text-2xl font-bold text-gray-900 mb-6">
+                  イベントカテゴリ
+                </h2>
+                <div className="flex flex-wrap gap-3">
+                  {event.categories.map((category, index) => (
+                    <span
+                      key={index}
+                      className="px-4 py-2 bg-indigo-50 text-indigo-700 rounded-full text-sm font-medium"
+                    >
+                      {category.category.name}
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              <h3 className="text-xl font-bold text-gray-900 mb-4">
+                学べること
+              </h3>
+              <ul className="space-y-3">
+                {event.skills.map((skill, index) => (
+                  <li key={index} className="flex items-start">
+                    <Target className="h-5 w-5 text-indigo-600 mr-3 mt-1" />
+                    <span className="text-gray-600">{skill.name}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div className="lg:col-span-1">
+              <div className="bg-gray-50 rounded-xl p-6">
+                <div className="space-y-6">
+                  {/* <div>
+                    <div className="flex items-center justify-between text-sm text-gray-600 mb-2">
+                      <span>参加者数</span>
+                      <span className="font-medium">
+                        {event.participants}/{event.spots}人
+                      </span>
+                    </div>
+                    <div className="w-full bg-gray-200 rounded-full h-2">
+                      <div
+                        className="bg-indigo-600 h-2 rounded-full"
+                        style={{
+                          width: `${(event.participants / event.spots) * 100}%`,
+                        }}
+                      />
+                    </div>
+                  </div> */}
+
+                  {/* <div className="flex items-center justify-between py-3 border-b border-gray-200">
+                    <div className="flex items-center">
+                      <Trophy className="h-5 w-5 text-indigo-600 mr-2" />
+                      <span className="text-gray-600">成長達成率</span>
+                    </div>
+                    <span className="font-medium text-gray-900">
+                      {event.success_rate}
+                    </span>
+                  </div> */}
+                  {/* 
+                  <div className="flex items-center justify-between py-3 border-b border-gray-200">
+                    <div className="flex items-center">
+                      <Star className="h-5 w-5 text-indigo-600 mr-2" />
+                      <span className="text-gray-600">ポートフォリオ化率</span>
+                    </div>
+                    <span className="font-medium text-gray-900">
+                      {event.portfolio_rate}
+                    </span>
+                  </div> */}
+
+                  {event.detailUrl ? (
+                    <Link href={event.detailUrl}>
+                      <button className="w-full bg-indigo-600 text-white py-3 px-6 rounded-lg font-medium hover:bg-indigo-700 transition-colors flex items-center justify-center">
+                        このイベントに参加する
+                        <ArrowRight className="h-5 w-5 ml-2" />
+                      </button>
+                    </Link>
+                  ) : (
+                    <button className="w-full bg-indigo-600 text-white py-3 px-6 rounded-lg font-medium hover:bg-indigo-700 transition-colors flex items-center justify-center">
+                      このイベントに参加する
+                      <ArrowRight className="h-5 w-5 ml-2" />
+                    </button>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* 成果物セクション */}
+          {/* <div className="mb-12">
+            <h2 className="text-2xl font-bold text-gray-900 mb-6">
+              イベント参加で得られる成果物
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {event.outcomes.map((outcome, index) => {
+                const Icon = outcome.icon;
+                return (
+                  <div key={index} className="bg-gray-50 rounded-xl p-6">
+                    <Icon className="h-8 w-8 text-indigo-600 mb-4" />
+                    <h3 className="text-lg font-bold text-gray-900 mb-2">
+                      {outcome.title}
+                    </h3>
+                    <p className="text-gray-600">{outcome.description}</p>
+                  </div>
+                );
+              })}
+            </div>
+          </div> */}
+
+          {/* 講師プロフィール */}
+          <div className="mb-12">
+            <h2 className="text-2xl font-bold text-gray-900 mb-6">
+              講師プロフィール
+            </h2>
+            <div className="flex items-center space-x-4">
+              {event.speakers.map((speaker, index) => (
+                <div key={index} className="flex items-center space-x-2">
+                  <img
+                    src={
+                      "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e"
+                    }
+                    alt={speaker.speaker.name}
+                    className="w-16 h-16 rounded-full object-cover"
+                  />
+                  <div>
+                    <h3 className="text-lg font-bold text-gray-900">
+                      {speaker.speaker.name}
+                    </h3>
+                    <p className="text-gray-600">
+                      {speaker.speaker.occupation}
+                    </p>
+                    <p className="text-gray-600">
+                      {speaker.speaker.affiliation}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* 関連イベント */}
+          {/* <RelatedEvents currentEventId={event.id} category={event.category} /> */}
         </div>
-        {event.venue && (
-          <div>
-            <h2 className="text-xl font-semibold mb-2">会場</h2>
-            <p className="text-gray-700">{event.venue}</p>
-          </div>
-        )}
-        {event.address && (
-          <div>
-            <h2 className="text-xl font-semibold mb-2">住所</h2>
-            <p className="text-gray-700">{event.address}</p>
-          </div>
-        )}
-        {event.location && (
-          <div>
-            <h2 className="text-xl font-semibold mb-2">会場の詳細情報</h2>
-            <p className="text-gray-700">{event.location}</p>
-          </div>
-        )}
-        {event.description && (
-          <div>
-            <h2 className="text-xl font-semibold mb-2">説明</h2>
-            <p className="text-gray-700 whitespace-pre-wrap">
-              {event.description}
-            </p>
-          </div>
-        )}
-        {event.detailUrl && (
-          <div>
-            <h2 className="text-xl font-semibold mb-2">外部リンク</h2>
-            <a
-              href={event.detailUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-blue-500 hover:text-blue-600"
-            >
-              詳細を見る →
-            </a>
-          </div>
-        )}
       </div>
     </div>
   );
