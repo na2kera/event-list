@@ -219,7 +219,11 @@ export function EventDetail({ eventId }: EventDetailProps) {
                     alt={`${speaker.speaker.name}のプロフィール画像`}
                     width={64}
                     height={64}
-                    className="rounded-full object-cover"
+                    className="rounded-full object-cover aspect-square"
+                    style={{
+                      minWidth: "64px",
+                      minHeight: "64px",
+                    }}
                   />
                   <div>
                     <h3 className="text-lg font-bold text-gray-900">
