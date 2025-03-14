@@ -17,10 +17,13 @@ export type Event = {
   address?: string;
   location?: string;
   detailUrl?: string;
+  image?: string;
+  spots?: number;
   organizationId: string;
-  skills: { name: string }[];
-  speakers: { speakerId: string }[];
-  categories: { categoryId: string }[];
+  organization?: Organization;
+  skills: Array<{ name: string }>;
+  speakers: Array<Speaker>;
+  categories: Array<Category>;
 };
 
 export type Speaker = {
@@ -34,4 +37,5 @@ export type Speaker = {
 export type Category = {
   id: string;
   name: string;
+  description?: string;
 };
