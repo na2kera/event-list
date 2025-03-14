@@ -74,6 +74,7 @@ model Event {
   address        String?
   location       String?
   detailUrl      String?
+  image          String?
   organizationId String
   organization   Organization    @relation(fields: [organizationId], references: [id])
   skills         EventSkill[]
