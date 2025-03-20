@@ -13,12 +13,13 @@ export async function generateStaticParams() {
   }));
 }
 
-export default async function SpeakerDetailPage({
-  params,
-}: {
-  params: { id: string };
-}) {
-  const speaker = await getSpeakerDetail(params.id);
+type Props = {
+  params: Promise<{ id: string }>;
+};
+
+export default async function SpeakerDetailPage({ params }: Props) {
+  const { id } = await params;
+  const speaker = await getSpeakerDetail(id);
 
   return (
     <div className="container mx-auto py-8">
@@ -27,7 +28,7 @@ export default async function SpeakerDetailPage({
           {speaker["speaker-image"] && speaker["speaker-image"].url ? (
             <Image
               src={speaker["speaker-image"].url}
-              alt={`登壇者ID: ${speaker["speaker-id"] || 'Unknown'}`}
+              alt={`登壇者ID: ${speaker["speaker-id"] || "Unknown"}`}
               fill
               className="object-contain"
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
@@ -40,7 +41,7 @@ export default async function SpeakerDetailPage({
         </div>
         <div className="p-6">
           <h1 className="text-3xl font-bold mb-4">
-            登壇者ID: {speaker["speaker-id"] || 'Unknown'}
+            登壇者ID: {speaker["speaker-id"] || "Unknown"}
           </h1>
           <div className="mt-8">
             <Link href="/speakers" className="text-blue-600 hover:underline">
