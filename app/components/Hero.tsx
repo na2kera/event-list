@@ -1,17 +1,11 @@
 import React from "react";
-import Button from "@/components/ui/button";
 import {
-  Rocket,
-  Calendar,
   Users,
   MessageSquare,
   TrendingUp,
-  BookOpen,
   Code,
   Briefcase,
-  Lightbulb,
 } from "lucide-react";
-import { EventCard } from "@/components/events/EventCard";
 import { ColumnCard } from "@/components/columns/ColumnCard";
 import { EventList } from "./events/EventList";
 
@@ -149,30 +143,6 @@ const growthGoals = [
     title: "ポートフォリオを作りたい",
     description: "就活に活かせる実績づくり",
     icon: Briefcase,
-  },
-];
-
-const upcomingEvents = [
-  {
-    id: 1,
-    title: "React Nativeアプリ開発実践",
-    date: "2024年4月20日",
-    spots: 5,
-    image: "https://images.unsplash.com/photo-1555774698-0b77e0d5fac6",
-  },
-  {
-    id: 2,
-    title: "AWS認定ソリューションアーキテクト対策",
-    date: "2024年4月25日",
-    spots: 8,
-    image: "https://images.unsplash.com/photo-1451187580459-43490279c0fa",
-  },
-  {
-    id: 3,
-    title: "システム設計実践ワークショップ",
-    date: "2024年5月1日",
-    spots: 3,
-    image: "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40",
   },
 ];
 

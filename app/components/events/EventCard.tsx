@@ -3,7 +3,7 @@
 import { Calendar, Users, MapPin } from "lucide-react";
 import Button from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Event, Organization, Speaker, Category } from "@/types";
+import { Event } from "@/types";
 
 interface EventCardProps {
   event: Event;

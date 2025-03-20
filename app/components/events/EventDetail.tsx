@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Event } from "@/app/types";
+import { Event } from "@/types";
 import Link from "next/link";
 
 interface EventDetailProps {

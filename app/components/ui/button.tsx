@@ -24,15 +24,13 @@ interface CustomButtonProps {
     | "ghost"
     | "link";
   size?: "default" | "sm" | "lg" | "icon";
-  asChild?: boolean;
   children: React.ReactNode;
-  [key: string]: any;
+  [key: string]: string | React.ReactNode;
 }
 
 const CustomButton: React.FC<CustomButtonProps> = ({
   variant = "default",
   size = "default",
-  asChild = false,
   children,
   ...props
 }) => {
