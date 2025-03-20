@@ -30,7 +30,7 @@ export const client = createClient({
   apiKey: process.env.MICROCMS_API_KEY,
 });
 
-// 登壇者一覧を取得する関数
+// 登壇者一覧取得する関数
 export const getSpeakerList = async (queries?: MicroCMSQueries) => {
   const endpoint = process.env.MICROCMS_ENDPOINT || "speakers-images";
   const response = await client.getList<SpeakerContent>({
