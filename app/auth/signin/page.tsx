@@ -6,18 +6,31 @@ import { useState } from "react";
 export default function SignIn() {
   const [error, setError] = useState<string | null>(null);
 
-  const handleSignIn = async () => {
+  const handleGithubSignIn = async () => {
     try {
-      const result = await signIn("github", {
+      await signIn("github", {
         redirect: true,
         callbackUrl: "/",
       });
-
-      // redirect: true の場合、この部分は実行されません
-      console.log("Sign in result:", result);
     } catch (error) {
       console.error("Sign in error:", error);
       setError("サインインに失敗しました。もう一度お試しください。");
+    }
+  };
+
+  const handleTestUserSignIn = async () => {
+    try {
+      await signIn("credentials", {
+        email: "test@gmail.com",
+        password: "test1234",
+        redirect: true,
+        callbackUrl: "/",
+      });
+    } catch (error) {
+      console.error("Test user sign in error:", error);
+      setError(
+        "テストユーザーでのサインインに失敗しました。もう一度お試しください。"
+      );
     }
   };
 
@@ -32,12 +45,18 @@ export default function SignIn() {
             <p className="mt-2 text-center text-sm text-red-600">{error}</p>
           )}
         </div>
-        <div className="mt-8 space-y-6">
+        <div className="mt-8 space-y-4">
           <button
-            onClick={handleSignIn}
+            onClick={handleGithubSignIn}
             className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-gray-800 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
           >
             GitHubでサインイン
+          </button>
+          <button
+            onClick={handleTestUserSignIn}
+            className="group relative w-full flex justify-center py-2 px-4 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+          >
+            テストユーザーでサインイン
           </button>
         </div>
       </div>

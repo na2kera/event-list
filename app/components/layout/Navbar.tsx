@@ -74,9 +74,12 @@ export function Navbar() {
                 >
                   イベント登録
                 </Link>
-                <span className="text-gray-700 font-medium">
+                <Link
+                  href="/my-page"
+                  className="text-gray-700 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium transition-colors"
+                >
                   {session.user?.name}
-                </span>
+                </Link>
                 <button
                   onClick={() => signOut()}
                   className="text-gray-700 hover:text-red-600 px-3 py-2 rounded-md text-sm font-medium transition-colors"

@@ -1,5 +1,6 @@
 import NextAuth from "next-auth";
 import GithubProvider from "next-auth/providers/github";
+import CredentialsProvider from "next-auth/providers/credentials";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { prisma } from "@/app/lib/prisma";
 
@@ -20,6 +21,27 @@ const handler = NextAuth({
     GithubProvider({
       clientId: process.env.GITHUB_ID as string,
       clientSecret: process.env.GITHUB_SECRET as string,
+    }),
+    CredentialsProvider({
+      name: "Test User",
+      credentials: {
+        email: { label: "Email", type: "text" },
+        password: { label: "Password", type: "password" },
+      },
+      async authorize(credentials) {
+        if (
+          credentials?.email === "test@gmail.com" &&
+          credentials?.password === "test1234"
+        ) {
+          return {
+            id: "test-user",
+            name: "Test User",
+            email: "test@gmail.com",
+            image: null,
+          };
+        }
+        return null;
+      },
     }),
   ],
   pages: {
