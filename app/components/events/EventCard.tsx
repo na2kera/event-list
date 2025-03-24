@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Event } from "@/app/types";
+import { Event } from "@/types";
 
 type EventWithOrganization = Event & {
   organization: {

@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getSpeakerList } from "@/app/lib/api/microcms";
+import { getSpeakerList } from "@/lib/api/microcms";
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);

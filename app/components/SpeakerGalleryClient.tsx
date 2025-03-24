@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import type { SpeakerContent } from "@/app/lib/api/microcms";
+import type { SpeakerContent } from "@/lib/api/microcms";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -18,15 +18,15 @@ export default function SpeakerGalleryClient() {
           throw new Error("Failed to fetch speakers");
         }
         const data = await response.json();
-        console.log('API Response:', data);
+        console.log("API Response:", data);
         // APIレスポンスの構造に応じて処理を変更
         if (data.contents) {
           setSpeakers(data.contents);
         } else if (Array.isArray(data)) {
           setSpeakers(data);
         } else {
-          console.error('Unexpected API response structure:', data);
-          setError('Unexpected API response structure');
+          console.error("Unexpected API response structure:", data);
+          setError("Unexpected API response structure");
         }
       } catch (err) {
         setError(
@@ -54,7 +54,7 @@ export default function SpeakerGalleryClient() {
             {speaker["speaker-image"] && speaker["speaker-image"].url ? (
               <Image
                 src={speaker["speaker-image"].url}
-                alt={`登壇者ID: ${speaker["speaker-id"] || 'Unknown'}`}
+                alt={`登壇者ID: ${speaker["speaker-id"] || "Unknown"}`}
                 fill
                 className="object-cover"
                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
@@ -67,7 +67,7 @@ export default function SpeakerGalleryClient() {
           </div>
           <div className="p-4">
             <h2 className="text-xl font-semibold mb-2">
-              登壇者ID: {speaker["speaker-id"] || 'Unknown'}
+              登壇者ID: {speaker["speaker-id"] || "Unknown"}
             </h2>
             <Link
               href={`/speakers/${speaker.id}`}

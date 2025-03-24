@@ -1,4 +1,5 @@
 export type Organization = {
+  logo: string | undefined;
   id: string;
   name: string;
   description?: string;
@@ -43,6 +44,7 @@ export type Event = {
 };
 
 export type Speaker = {
+  avatar: string | undefined;
   id: string;
   name: string;
   occupation: string;
@@ -53,4 +55,5 @@ export type Speaker = {
 export type Category = {
   id: string;
   name: string;
+  description?: string;
 };

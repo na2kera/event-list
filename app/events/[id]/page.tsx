@@ -1,6 +1,6 @@
-import { Navbar } from "@/app/components/layout/Navbar";
-import { Container } from "@/app/components/layout/Container";
-import { EventDetailClient } from "@/app/components/events/EventDetailClient";
+import { Navbar } from "@/components/layout/Navbar";
+import { Container } from "@/components/layout/Container";
+import { EventDetailClient } from "@/components/events/EventDetailClient";
 
 interface PageProps {
   params: Promise<{ id: string }>;

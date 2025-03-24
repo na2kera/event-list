@@ -1,4 +1,4 @@
-import { getSpeakerDetail, getSpeakerList } from "@/app/lib/api/microcms";
+import { getSpeakerDetail, getSpeakerList } from "@/lib/api/microcms";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -8,7 +8,7 @@ export const revalidate = 60; // 60秒ごとに再検証
 export async function generateStaticParams() {
   const { contents } = await getSpeakerList({ fields: ["id"] });
 
-  return contents.map((speaker) => ({
+  return contents.map((speaker: { id: string }) => ({
     id: speaker.id,
   }));
 }

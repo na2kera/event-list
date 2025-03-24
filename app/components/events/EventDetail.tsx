@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Event, Speaker, Category } from "@/app/types";
+import { Event, Speaker, Category } from "@/types";
 import { ArrowRight, Calendar, Clock, MapPin, Target } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";

@@ -1,9 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Event } from "@/app/types";
+import { Event } from "@/types";
 import { EventCard } from "./EventCard";
-import { api } from "@/app/lib/api";
+import { api } from "@/lib/api";
 
 export function EventList() {
   const [events, setEvents] = useState<
@@ -17,6 +17,7 @@ export function EventList() {
       try {
         const data = await api.getEvents();
         setEvents(data);
+        console.log(data);
       } catch (error) {
         setError("イベントの取得に失敗しました");
         console.error("Error fetching events:", error);
@@ -85,8 +86,7 @@ export function EventList() {
 
   return (
     <div>
-      <h2 className="text-2xl font-bold mb-6">イベント一覧</h2>
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {events.map((event) => (
           <EventCard key={event.id} event={event} />
         ))}
