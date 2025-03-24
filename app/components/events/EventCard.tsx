@@ -1,125 +1,138 @@
-"use client";
-
-import { Calendar, Users, MapPin } from "lucide-react";
-import Button from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
+import Link from "next/link";
 import { Event } from "@/types";
 
+type EventWithOrganization = Event & {
+  organization: {
+    name: string;
+  };
+};
+
 interface EventCardProps {
-  event: Event;
+  event: EventWithOrganization;
 }
 
 export function EventCard({ event }: EventCardProps) {
-  const formatDate = (date: string) => {
-    return new Date(date).toLocaleDateString("ja-JP", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    });
-  };
+  // 日付と時間を組み合わせてフォーマットする関数
+  const formatDateTime = (date: Date, time: string) => {
+    const [hours, minutes] = time.split(":");
+    const dateTime = new Date(date);
+    dateTime.setHours(parseInt(hours, 10), parseInt(minutes, 10));
 
-  const formatTime = (time: string) => {
-    return time.replace(/^(\d{2}):(\d{2})$/, "$1時$2分");
+    return new Intl.DateTimeFormat("ja-JP", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    }).format(dateTime);
   };
 
   return (
-    <div className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow flex flex-col h-full">
-      <img
-        src={
-          event.image ||
-          "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40"
-        }
-        alt={event.title}
-        className="w-full h-48 object-cover"
-      />
-      <div className="p-6 flex flex-col flex-grow">
-        {/* カテゴリー */}
-        {event.categories && event.categories.length > 0 && (
-          <div className="flex gap-2 mb-3">
-            {event.categories.map((category) => (
-              <Badge key={category.id} variant="secondary">
-                {category.name}
-              </Badge>
-            ))}
-          </div>
-        )}
-
-        {/* 日時 */}
-        <div className="flex items-center text-sm text-gray-500 mb-2">
-          <Calendar className="h-4 w-4 mr-2" />
-          <span>
-            {formatDate(event.eventDate.toString())}{" "}
-            {formatTime(event.startTime || "")}〜
-            {formatTime(event.endTime || "")}
+    <div className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-all duration-300 border border-gray-100 flex flex-col h-full">
+      <div className="p-5 flex-grow">
+        <div className="flex items-center mb-3">
+          <span className="inline-block bg-indigo-100 text-indigo-800 text-xs px-2 py-1 rounded-full font-medium">
+            {event.organization.name}
           </span>
         </div>
 
-        {/* 会場 */}
-        {event.venue && (
-          <div className="flex items-center text-sm text-gray-500 mb-3">
-            <MapPin className="h-4 w-4 mr-2" />
-            {event.venue}
-          </div>
-        )}
+        <Link href={`/events/${event.id}`}>
+          <h3 className="text-xl font-bold text-gray-800 mb-3 hover:text-indigo-600 transition-colors line-clamp-2">
+            {event.title}
+          </h3>
+        </Link>
 
-        {/* タイトル */}
-        <h3 className="text-xl font-bold text-gray-900 mb-2">{event.title}</h3>
-
-        {/* 説明文 */}
-        {event.description && (
-          <p className="text-gray-600 mb-4 line-clamp-2">{event.description}</p>
-        )}
-
-        {/* 残り枠数表示 */}
-        {event.spots !== undefined && (
-          <div className="flex items-center text-sm text-gray-500 mb-4">
-            <Users className="h-4 w-4 mr-2" />
-            残り{event.spots}枠
-          </div>
-        )}
-
-        {/* 主催者情報 */}
-        {event.organization && (
-          <div className="flex items-center mb-4">
-            {event.organization.logo && (
-              <img
-                src={event.organization.logo}
-                alt={event.organization.name}
-                className="w-6 h-6 rounded-full mr-2"
-              />
-            )}
-            <span className="text-sm text-gray-600">
-              {event.organization.name}
+        <div className="mb-4">
+          <div className="flex items-center text-gray-600 mb-2">
+            <svg
+              className="w-4 h-4 mr-2"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+              ></path>
+            </svg>
+            <span className="text-sm">
+              {formatDateTime(event.eventDate, event.startTime)}
+              {event.endTime && (
+                <> 〜 {formatDateTime(event.eventDate, event.endTime)}</>
+              )}
             </span>
           </div>
-        )}
 
-        {/* 登壇者情報 */}
-        {event.speakers && event.speakers.length > 0 && (
-          <div className="flex items-center gap-2 mb-4">
-            {event.speakers.map((speaker) => (
-              <div key={speaker.id} className="flex items-center">
-                {speaker.avatar && (
-                  <img
-                    src={speaker.avatar}
-                    alt={speaker.name}
-                    className="w-6 h-6 rounded-full mr-1"
-                  />
-                )}
-                <span className="text-sm text-gray-600">{speaker.name}</span>
-              </div>
-            ))}
-          </div>
-        )}
+          {event.location && (
+            <div className="flex items-center text-gray-600 mb-2">
+              <svg
+                className="w-4 h-4 mr-2"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                ></path>
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                ></path>
+              </svg>
+              <span className="text-sm">{event.location}</span>
+            </div>
+          )}
+        </div>
 
-        {/* ボタン */}
-        <div className="mt-auto">
-          <Button
-            variant="default"
-            className="w-full bg-indigo-600 text-white hover:bg-indigo-700"
+        {event.description && (
+          <p className="text-gray-600 mb-4 line-clamp-3 text-sm">
+            {event.description}
+          </p>
+        )}
+      </div>
+
+      <div className="px-5 pb-5 pt-2 border-t border-gray-100">
+        <div className="flex justify-between items-center">
+          <Link
+            href={`/events/${event.id}`}
+            className="text-indigo-600 hover:text-indigo-800 text-sm font-medium transition-colors"
           >
-            詳細を見る
-          </Button>
+            詳細を見る →
+          </Link>
+
+          {event.detailUrl && (
+            <a
+              href={event.detailUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-gray-500 hover:text-gray-700 text-sm flex items-center transition-colors"
+            >
+              <svg
+                className="w-4 h-4 mr-1"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                ></path>
+              </svg>
+              外部リンク
+            </a>
+          )}
         </div>
       </div>
     </div>

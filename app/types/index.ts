@@ -18,13 +18,29 @@ export type Event = {
   address?: string;
   location?: string;
   detailUrl?: string;
-  image?: string;
-  spots?: number;
   organizationId: string;
-  organization?: Organization;
-  skills: Array<{ name: string }>;
-  speakers: Array<Speaker>;
-  categories: Array<Category>;
+  skills: { id: string; name: string }[];
+  speakers: { id: string; speakerId: string; speaker: Speaker }[];
+  categories: { id: string; categoryId: string; category: Category }[];
+  // 拡張フィールド
+  image?: string;
+  participants?: number;
+  spots?: number;
+  success_rate?: string;
+  portfolio_rate?: string;
+  learning_points?: string[];
+  outcomes?: {
+    title: string;
+    icon: React.ComponentType;
+    description: string;
+  }[];
+  instructor?: {
+    name: string;
+    role: string;
+    company: string;
+    image: string;
+  };
+  category?: string;
 };
 
 export type Speaker = {
