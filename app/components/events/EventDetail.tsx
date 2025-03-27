@@ -2,36 +2,51 @@
 
 import { useEffect, useState } from "react";
 import { Event, Speaker, Category } from "@/types";
+import { fetchEventById } from "@/lib/api/backendApi";
 import { ArrowRight, Calendar, Clock, MapPin, Target } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 
 interface EventDetailProps {
   eventId: string;
+  initialEventData?: Event & {
+    organization: { name: string };
+    speakers: {
+      speaker: Speaker;
+    }[];
+    skills: { name: string }[];
+    categories: {
+      category: Category;
+    }[];
+  };
 }
 
-export function EventDetail({ eventId }: EventDetailProps) {
-  const [event, setEvent] = useState<
-    Event & {
-      organization: { name: string };
-      speakers: {
-        speaker: Speaker;
-      }[];
-      skills: { name: string }[];
-      categories: {
-        category: Category;
-      }[];
-    }
-  >();
-  const [isLoading, setIsLoading] = useState(true);
+export function EventDetail({ eventId, initialEventData }: EventDetailProps) {
+  type EventWithRelations = Event & {
+    organization: { name: string };
+    speakers: {
+      speaker: Speaker;
+    }[];
+    skills: { name: string }[];
+    categories: {
+      category: Category;
+    }[];
+  };
+
+  const [event, setEvent] = useState<EventWithRelations | undefined>(initialEventData);
+  const [isLoading, setIsLoading] = useState(!initialEventData);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    // 初期データがあればフェッチをスキップ
+    if (initialEventData) {
+      return;
+    }
+    
     const fetchEvent = async () => {
       try {
-        const response = await fetch(`/api/events/${eventId}`);
-        if (!response.ok) throw new Error("Failed to fetch event");
-        const data = await response.json();
+        // 初期データがない場合のみバックエンドAPIから取得
+        const data = await fetchEventById(eventId);
         setEvent(data);
       } catch (error) {
         setError("イベントの取得に失敗しました");
@@ -42,7 +57,7 @@ export function EventDetail({ eventId }: EventDetailProps) {
     };
 
     fetchEvent();
-  }, [eventId]);
+  }, [eventId, initialEventData]);
 
   if (isLoading) {
     return <div>Loading...</div>;
