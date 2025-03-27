@@ -29,6 +29,38 @@ const handler = NextAuth({
     strategy: "jwt",
   },
   callbacks: {
+    async signIn({ user, account }) {
+      if (account) {
+        try {
+          const response = await fetch(
+            `${process.env.BACKEND_URL}/api/auth/sync`,
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                user: {
+                  name: user.name,
+                  email: user.email,
+                  image: user.image,
+                  providerId: account.providerAccountId,
+                  provider: account.provider,
+                },
+                account,
+              }),
+            }
+          );
+
+          if (!response.ok) {
+            console.error("Failed to sync user with backend");
+          }
+        } catch (error) {
+          console.error("Error syncing user with backend:", error);
+        }
+      }
+      return true;
+    },
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id;
