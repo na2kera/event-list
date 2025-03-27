@@ -9,28 +9,43 @@ import Image from "next/image";
 
 interface EventDetailProps {
   eventId: string;
+  initialEventData?: Event & {
+    organization: { name: string };
+    speakers: {
+      speaker: Speaker;
+    }[];
+    skills: { name: string }[];
+    categories: {
+      category: Category;
+    }[];
+  };
 }
 
-export function EventDetail({ eventId }: EventDetailProps) {
-  const [event, setEvent] = useState<
-    Event & {
-      organization: { name: string };
-      speakers: {
-        speaker: Speaker;
-      }[];
-      skills: { name: string }[];
-      categories: {
-        category: Category;
-      }[];
-    }
-  >();
-  const [isLoading, setIsLoading] = useState(true);
+export function EventDetail({ eventId, initialEventData }: EventDetailProps) {
+  type EventWithRelations = Event & {
+    organization: { name: string };
+    speakers: {
+      speaker: Speaker;
+    }[];
+    skills: { name: string }[];
+    categories: {
+      category: Category;
+    }[];
+  };
+
+  const [event, setEvent] = useState<EventWithRelations | undefined>(initialEventData);
+  const [isLoading, setIsLoading] = useState(!initialEventData);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    // 初期データがあればフェッチをスキップ
+    if (initialEventData) {
+      return;
+    }
+    
     const fetchEvent = async () => {
       try {
-        // バックエンドAPIクライアントを使用してイベント詳細を取得
+        // 初期データがない場合のみバックエンドAPIから取得
         const data = await fetchEventById(eventId);
         setEvent(data);
       } catch (error) {
@@ -42,7 +57,7 @@ export function EventDetail({ eventId }: EventDetailProps) {
     };
 
     fetchEvent();
-  }, [eventId]);
+  }, [eventId, initialEventData]);
 
   if (isLoading) {
     return <div>Loading...</div>;
