@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Event, Speaker, Category } from "@/types";
+import { fetchEventById } from "@/lib/api/backendApi";
 import { ArrowRight, Calendar, Clock, MapPin, Target } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
@@ -29,9 +30,8 @@ export function EventDetail({ eventId }: EventDetailProps) {
   useEffect(() => {
     const fetchEvent = async () => {
       try {
-        const response = await fetch(`/api/events/${eventId}`);
-        if (!response.ok) throw new Error("Failed to fetch event");
-        const data = await response.json();
+        // バックエンドAPIクライアントを使用してイベント詳細を取得
+        const data = await fetchEventById(eventId);
         setEvent(data);
       } catch (error) {
         setError("イベントの取得に失敗しました");
