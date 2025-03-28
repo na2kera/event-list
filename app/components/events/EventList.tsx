@@ -1,62 +1,20 @@
-"use client";
-
-import { useEffect, useState } from "react";
 import { Event } from "@/types";
 import { EventCard } from "./EventCard";
-import { api } from "@/lib/api";
 
-export function EventList() {
-  const [events, setEvents] = useState<
-    (Event & { organization: { name: string } })[]
-  >([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+interface EventListProps {
+  events?: (Event & {
+    organization: { name: string };
+    speakers: {
+      speaker: { id: string; name: string; occupation: string; affiliation: string; bio: string };
+    }[];
+    skills: { id: string; name: string }[];
+    categories: {
+      category: { id: string; name: string };
+    }[];
+  })[];
+}
 
-  useEffect(() => {
-    const fetchEvents = async () => {
-      try {
-        const data = await api.getEvents();
-        setEvents(data);
-        console.log(data);
-      } catch (error) {
-        setError("イベントの取得に失敗しました");
-        console.error("Error fetching events:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchEvents();
-  }, []);
-
-  if (isLoading) {
-    return (
-      <div className="flex justify-center items-center py-12">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-500"></div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md flex items-center justify-center my-6">
-        <svg
-          className="w-5 h-5 mr-2"
-          fill="currentColor"
-          viewBox="0 0 20 20"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            fillRule="evenodd"
-            d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
-            clipRule="evenodd"
-          ></path>
-        </svg>
-        {error}
-      </div>
-    );
-  }
-
+export function EventList({ events = [] }: EventListProps) {
   if (events.length === 0) {
     return (
       <div className="bg-yellow-50 border border-yellow-200 text-yellow-700 px-4 py-8 rounded-md flex flex-col items-center justify-center my-6">
