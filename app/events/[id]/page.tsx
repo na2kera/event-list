@@ -4,7 +4,8 @@ import { EventDetailClient } from "@/components/events/EventDetailClient";
 import { notFound } from "next/navigation";
 
 // バックエンドAPIのベースURL
-const API_BASE_URL = process.env.API_BASE_URL || "http://localhost:3001/api";
+const API_BASE_URL =
+  process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001/api";
 
 export default async function EventPage({
   params,
