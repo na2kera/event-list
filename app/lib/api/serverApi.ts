@@ -4,7 +4,8 @@
  */
 
 // バックエンドAPIのベースURL（サーバーサイドでは環境変数から取得）
-const API_BASE_URL = process.env.API_BASE_URL || "http://localhost:3001/api";
+const API_BASE_URL =
+  process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001/api";
 
 /**
  * イベント検索用のパラメータ型定義
@@ -80,34 +81,44 @@ export async function searchEvents(params: EventSearchParams) {
   try {
     // URLSearchParamsを使用してクエリパラメータを構築
     const searchParams = new URLSearchParams();
-    
+
     // 各パラメータを追加
-    if (params.keyword) searchParams.append('keyword', params.keyword);
-    if (params.startDate) searchParams.append('startDate', params.startDate);
-    if (params.endDate) searchParams.append('endDate', params.endDate);
-    if (params.location) searchParams.append('location', params.location);
-    if (params.organizationId) searchParams.append('organizationId', params.organizationId);
-    
+    if (params.keyword) searchParams.append("keyword", params.keyword);
+    if (params.startDate) searchParams.append("startDate", params.startDate);
+    if (params.endDate) searchParams.append("endDate", params.endDate);
+    if (params.location) searchParams.append("location", params.location);
+    if (params.organizationId)
+      searchParams.append("organizationId", params.organizationId);
+
     // 配列パラメータの処理
     if (params.categories) {
-      const categories = Array.isArray(params.categories) ? params.categories : [params.categories];
-      categories.forEach(category => searchParams.append('categories', category));
+      const categories = Array.isArray(params.categories)
+        ? params.categories
+        : [params.categories];
+      categories.forEach((category) =>
+        searchParams.append("categories", category)
+      );
     }
-    
+
     if (params.skills) {
-      const skills = Array.isArray(params.skills) ? params.skills : [params.skills];
-      skills.forEach(skill => searchParams.append('skills', skill));
+      const skills = Array.isArray(params.skills)
+        ? params.skills
+        : [params.skills];
+      skills.forEach((skill) => searchParams.append("skills", skill));
     }
-    
+
     // APIリクエストを実行
-    const response = await fetch(`${API_BASE_URL}/events/search?${searchParams.toString()}`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      // キャッシュを無効化（常に最新データを取得）
-      cache: "no-store",
-    });
+    const response = await fetch(
+      `${API_BASE_URL}/events/search?${searchParams.toString()}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        // キャッシュを無効化（常に最新データを取得）
+        cache: "no-store",
+      }
+    );
 
     if (!response.ok) {
       throw new Error(`API error: ${response.status}`);
