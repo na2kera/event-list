@@ -33,7 +33,9 @@ export function EventDetail({ eventId, initialEventData }: EventDetailProps) {
     }[];
   };
 
-  const [event, setEvent] = useState<EventWithRelations | undefined>(initialEventData);
+  const [event, setEvent] = useState<EventWithRelations | undefined>(
+    initialEventData
+  );
   const [isLoading, setIsLoading] = useState(!initialEventData);
   const [error, setError] = useState<string | null>(null);
 
@@ -42,7 +44,7 @@ export function EventDetail({ eventId, initialEventData }: EventDetailProps) {
     if (initialEventData) {
       return;
     }
-    
+
     const fetchEvent = async () => {
       try {
         // 初期データがない場合のみバックエンドAPIから取得
@@ -75,7 +77,10 @@ export function EventDetail({ eventId, initialEventData }: EventDetailProps) {
         {/* ヒーローセクション */}
         <div className="relative h-96">
           <Image
-            src={"https://images.unsplash.com/photo-1551650975-87deedd944c3"}
+            src={
+              event.image ||
+              "https://images.unsplash.com/photo-1551650975-87deedd944c3"
+            }
             alt="イベントのヘッダー画像"
             fill
             className="object-cover"
@@ -92,10 +97,21 @@ export function EventDetail({ eventId, initialEventData }: EventDetailProps) {
               <div className="flex items-center">
                 <Clock className="h-5 w-5 mr-2" />
                 {event.startTime}
+                {event.endTime ? ` - ${event.endTime}` : ""}
               </div>
               <div className="flex items-center">
                 <MapPin className="h-5 w-5 mr-2" />
-                {event.location}
+                <div className="flex flex-col">
+                  <span>{event.venue}</span>
+                  {event.address && (
+                    <span className="text-sm">{event.address}</span>
+                  )}
+                  {event.location && (
+                    <span className="text-sm text-gray-300">
+                      ({event.location})
+                    </span>
+                  )}
+                </div>
               </div>
             </div>
           </div>
@@ -116,6 +132,25 @@ export function EventDetail({ eventId, initialEventData }: EventDetailProps) {
                   イベントカテゴリ
                 </h2>
                 <div className="flex flex-wrap gap-3">
+                  <span
+                    className={`px-4 py-2 rounded-full text-sm font-medium ${
+                      event.difficulty === "BEGINNER"
+                        ? "bg-green-50 text-green-700"
+                        : event.difficulty === "INTERMEDIATE"
+                        ? "bg-yellow-50 text-yellow-700"
+                        : event.difficulty === "ADVANCED"
+                        ? "bg-red-50 text-red-700"
+                        : "bg-blue-50 text-blue-700"
+                    }`}
+                  >
+                    {event.difficulty === "BEGINNER"
+                      ? "初心者向け"
+                      : event.difficulty === "INTERMEDIATE"
+                      ? "中級者向け"
+                      : event.difficulty === "ADVANCED"
+                      ? "上級者向け"
+                      : "全ての方向け"}
+                  </span>
                   {event.categories.map((category, index) => (
                     <span
                       key={index}
