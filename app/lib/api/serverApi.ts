@@ -22,10 +22,20 @@ export type EventSearchParams = {
 
 /**
  * イベント一覧を取得する（サーバーサイド用）
+ * @param eventType - フィルタリングするイベントタイプ（オプション）
  */
-export async function getEvents() {
+export async function getEvents(eventType?: string) {
   try {
-    const response = await fetch(`${API_BASE_URL}/events`, {
+    // クエリパラメータを構築
+    const queryParams = new URLSearchParams();
+    if (eventType && eventType !== 'all') {
+      queryParams.append('eventType', eventType);
+    }
+    
+    // クエリパラメータがある場合はURLに追加
+    const url = `${API_BASE_URL}/events${queryParams.toString() ? `?${queryParams.toString()}` : ''}`;
+    
+    const response = await fetch(url, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",

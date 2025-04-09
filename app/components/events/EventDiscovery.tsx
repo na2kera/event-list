@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { Search, Calendar, MapPin } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import { Event } from "@/types";
 
 type EventType = 'all' | 'hackathon' | 'workshop' | 'contest';
@@ -21,10 +22,12 @@ interface EventDiscoveryProps {
       category: { id: string; name: string };
     }[];
   })[];
+  initialType?: string;
 }
 
-export function EventDiscovery({ events }: EventDiscoveryProps) {
-  const [selectedType, setSelectedType] = useState<EventType>('all');
+export function EventDiscovery({ events, initialType = 'all' }: EventDiscoveryProps) {
+  const router = useRouter();
+  const [selectedType, setSelectedType] = useState<EventType>(initialType as EventType);
   const [selectedFormat, setSelectedFormat] = useState<Format>('all');
   const [selectedDifficulty, setSelectedDifficulty] = useState<DifficultyLevel | 'all'>('all');
   const [priceRange, setPriceRange] = useState<number>(10000);
@@ -136,7 +139,17 @@ export function EventDiscovery({ events }: EventDiscoveryProps) {
                       type="radio"
                       name="eventType"
                       checked={selectedType === type.value}
-                      onChange={() => setSelectedType(type.value as EventType)}
+                      onChange={() => {
+                        // イベントタイプが変更されたらページ遷移する
+                        const newType = type.value as EventType;
+                        setSelectedType(newType);
+                        // サーバーコンポーネントでデータを再取得するためにページ遷移
+                        if (newType === 'all') {
+                          router.push('/events');
+                        } else {
+                          router.push(`/events?type=${newType}`);
+                        }
+                      }}
                       className="h-4 w-4 text-indigo-600 focus:ring-indigo-500"
                     />
                     <span className="ml-2 text-gray-700">{type.label}</span>

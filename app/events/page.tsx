@@ -9,10 +9,28 @@ export const metadata = {
   description: "技術イベント・勉強会の一覧ページです。",
 };
 
-export default async function EventsPage() {
+// URLパラメータの型定義
+type SearchParams = {
+  type?: string;
+};
+
+export default async function EventsPage({
+  searchParams,
+}: {
+  searchParams: SearchParams;
+}) {
   try {
+    // URLパラメータからイベントタイプを取得
+    const eventType = searchParams.type || 'all';
+    
+    // イベントタイプに基づいてデータフェッチを行う
+    const japaneseEventType = 
+      eventType === 'hackathon' ? 'ハッカソン' :
+      eventType === 'workshop' ? 'ワークショップ' :
+      eventType === 'contest' ? 'コンテスト' : undefined;
+    
     // サーバーサイドでデータフェッチを行う
-    const eventsData = await getEvents() as (Event & {
+    const eventsData = await getEvents(japaneseEventType) as (Event & {
       organization: { name: string };
       speakers: {
         speaker: { id: string; name: string; occupation: string; affiliation: string; bio: string };
@@ -31,7 +49,10 @@ export default async function EventsPage() {
             <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-500"></div>
           </div>
         }>
-          <EventDiscovery events={eventsData} />
+          <EventDiscovery 
+            events={eventsData} 
+            initialType={eventType}
+          />
         </Suspense>
       </div>
     );
