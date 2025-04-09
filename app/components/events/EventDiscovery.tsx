@@ -93,17 +93,15 @@ export function EventDiscovery({
     const eventType = getEventType(event);
     const eventFormat = getEventFormat(event);
     const eventDifficulty = getEventDifficulty(event);
-
-    // 料金フィルタリングは一時的に無効化（料金プロパティが存在しないため）
+    const eventPrice = event.price || 0;
 
     if (selectedType !== "all" && eventType !== selectedType) return false;
     if (selectedFormat !== "all" && eventFormat !== selectedFormat)
       return false;
     if (selectedDifficulty !== "all" && eventDifficulty !== selectedDifficulty)
       return false;
-    // 無料イベントと価格範囲のフィルタリングは一時的に無効化
-    // if (showOnlyFree && eventPrice > 0) return false;
-    // if (eventPrice > priceRange) return false;
+    if (showOnlyFree && eventPrice > 0) return false;
+    if (eventPrice > priceRange) return false;
     if (
       searchQuery &&
       !event.title.toLowerCase().includes(searchQuery.toLowerCase())
