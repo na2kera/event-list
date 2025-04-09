@@ -1,21 +1,31 @@
 "use client";
 
-import React, { useState } from 'react';
-import { Search, Calendar, MapPin } from 'lucide-react';
-import Link from 'next/link';
-import Image from 'next/image';
-import { useRouter } from 'next/navigation';
+import React, { useState } from "react";
+import { Search, Calendar, MapPin } from "lucide-react";
+import Link from "next/link";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { Event } from "@/types";
 
-type EventType = 'all' | 'hackathon' | 'workshop' | 'contest';
-type DifficultyLevel = 'beginner' | 'intermediate' | 'advanced';
-type Format = 'all' | 'online' | 'offline' | 'hybrid';
+type EventType = "all" | "hackathon" | "workshop" | "contest";
+type DifficultyLevel =
+  | "BEGINNER"
+  | "INTERMEDIATE"
+  | "ADVANCED"
+  | "FOR_EVERYONE";
+type Format = "all" | "online" | "offline" | "hybrid";
 
 interface EventDiscoveryProps {
   events: (Event & {
     organization: { name: string };
     speakers: {
-      speaker: { id: string; name: string; occupation: string; affiliation: string; bio: string };
+      speaker: {
+        id: string;
+        name: string;
+        occupation: string;
+        affiliation: string;
+        bio: string;
+      };
     }[];
     skills: { id: string; name: string }[];
     categories: {
@@ -25,94 +35,105 @@ interface EventDiscoveryProps {
   initialType?: string;
 }
 
-export function EventDiscovery({ events, initialType = 'all' }: EventDiscoveryProps) {
+export function EventDiscovery({
+  events,
+  initialType = "all",
+}: EventDiscoveryProps) {
   const router = useRouter();
-  const [selectedType, setSelectedType] = useState<EventType>(initialType as EventType);
-  const [selectedFormat, setSelectedFormat] = useState<Format>('all');
-  const [selectedDifficulty, setSelectedDifficulty] = useState<DifficultyLevel | 'all'>('all');
+  const [selectedType, setSelectedType] = useState<EventType>(
+    initialType as EventType
+  );
+  const [selectedFormat, setSelectedFormat] = useState<Format>("all");
+  const [selectedDifficulty, setSelectedDifficulty] = useState<
+    DifficultyLevel | "all"
+  >("all");
   const [priceRange, setPriceRange] = useState<number>(10000);
   const [showOnlyFree, setShowOnlyFree] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
 
-  const getEventType = (event: Event): Exclude<EventType, 'all'> => {
+  const getEventType = (event: Event): Exclude<EventType, "all"> => {
     // バックエンドから返されるeventTypeフィールドがある場合はそれを優先
     if (event.eventType) {
       // バックエンドのeventTypeはENUMなので大文字（HACKATHON, WORKSHOP, CONTEST）
       // フロントエンドのEventTypeは小文字（hackathon, workshop, contest）
-      const typeMapping: Record<string, Exclude<EventType, 'all'>> = {
-        'HACKATHON': 'hackathon',
-        'WORKSHOP': 'workshop',
-        'CONTEST': 'contest',
-        'LIGHTNING_TALK': 'workshop' // LT会はワークショップとして扱う
+      const typeMapping: Record<string, Exclude<EventType, "all">> = {
+        HACKATHON: "hackathon",
+        WORKSHOP: "workshop",
+        CONTEST: "contest",
+        LIGHTNING_TALK: "workshop", // LT会はワークショップとして扱う
       };
-      
-      return typeMapping[event.eventType] || 'workshop';
+
+      return typeMapping[event.eventType] || "workshop";
     }
-    
+
     // eventTypeがない場合はカテゴリーからイベントタイプを推測（後方互換性のため）
-    const categoryNames = event.categories.map(c => c.category.name.toLowerCase());
-    
-    if (categoryNames.some(name => name.includes('hackathon'))) return 'hackathon';
-    if (categoryNames.some(name => name.includes('workshop'))) return 'workshop';
-    if (categoryNames.some(name => name.includes('contest'))) return 'contest';
-    
+    const categoryNames = event.categories.map((c) =>
+      c.category.name.toLowerCase()
+    );
+
+    if (categoryNames.some((name) => name.includes("hackathon")))
+      return "hackathon";
+    if (categoryNames.some((name) => name.includes("workshop")))
+      return "workshop";
+    if (categoryNames.some((name) => name.includes("contest")))
+      return "contest";
+
     // デフォルト値
-    return 'workshop';
+    return "workshop";
   };
 
-  const getEventFormat = (event: Event): Exclude<Format, 'all'> => {
+  const getEventFormat = (event: Event): Exclude<Format, "all"> => {
     // 場所からフォーマットを推測
-    const location = event.location?.toLowerCase() || '';
-    
-    if (location.includes('online')) return 'online';
-    if (location.includes('hybrid')) return 'hybrid';
-    
+    const location = event.location?.toLowerCase() || "";
+
+    if (location.includes("online")) return "online";
+    if (location.includes("hybrid")) return "hybrid";
+
     // デフォルト値
-    return 'offline';
+    return "offline";
   };
 
   const getEventDifficulty = (event: Event): DifficultyLevel => {
-    // スキルからレベルを推測
-    const skillNames = event.skills.map(s => s.name.toLowerCase());
-    
-    if (skillNames.some(name => name.includes('advanced') || name.includes('expert'))) return 'advanced';
-    if (skillNames.some(name => name.includes('intermediate'))) return 'intermediate';
-    
-    // デフォルト値
-    return 'beginner';
+    return event.difficulty;
   };
 
-  const filteredEvents = events.filter(event => {
+  const filteredEvents = events.filter((event) => {
     const eventType = getEventType(event);
     const eventFormat = getEventFormat(event);
     const eventDifficulty = getEventDifficulty(event);
-    
+
     // 料金フィルタリングは一時的に無効化（料金プロパティが存在しないため）
-    
-    if (selectedType !== 'all' && eventType !== selectedType) return false;
-    if (selectedFormat !== 'all' && eventFormat !== selectedFormat) return false;
-    if (selectedDifficulty !== 'all' && eventDifficulty !== selectedDifficulty) return false;
+
+    if (selectedType !== "all" && eventType !== selectedType) return false;
+    if (selectedFormat !== "all" && eventFormat !== selectedFormat)
+      return false;
+    if (selectedDifficulty !== "all" && eventDifficulty !== selectedDifficulty)
+      return false;
     // 無料イベントと価格範囲のフィルタリングは一時的に無効化
     // if (showOnlyFree && eventPrice > 0) return false;
     // if (eventPrice > priceRange) return false;
-    if (searchQuery && !event.title.toLowerCase().includes(searchQuery.toLowerCase())) return false;
+    if (
+      searchQuery &&
+      !event.title.toLowerCase().includes(searchQuery.toLowerCase())
+    )
+      return false;
     return true;
   });
 
   // 日付と時間を組み合わせてフォーマットする関数
   const formatDateTime = (date: Date, time: string) => {
-    if (!date || !time) return '';
-    
-    const [hours, minutes] = time.split(':');
+    if (!date || !time) return "";
+
+    const [hours, minutes] = time.split(":");
     const dateTime = new Date(date);
     dateTime.setHours(parseInt(hours, 10), parseInt(minutes, 10));
 
-    return new Intl.DateTimeFormat('ja-JP', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
+    return new Intl.DateTimeFormat("ja-JP", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
     }).format(dateTime);
   };
 
@@ -136,17 +157,19 @@ export function EventDiscovery({ events, initialType = 'all' }: EventDiscoveryPr
         {/* Filters */}
         <div className="bg-white p-6 rounded-xl shadow-sm">
           <h2 className="text-xl font-bold text-gray-900 mb-6">フィルター</h2>
-          
+
           <div className="space-y-6">
             {/* Event Type */}
             <div>
-              <h3 className="text-sm font-medium text-gray-900 mb-3">イベントタイプ</h3>
+              <h3 className="text-sm font-medium text-gray-900 mb-3">
+                イベントタイプ
+              </h3>
               <div className="space-y-2">
                 {[
-                  { value: 'all', label: 'すべて' },
-                  { value: 'hackathon', label: 'ハッカソン' },
-                  { value: 'workshop', label: 'ワークショップ' },
-                  { value: 'contest', label: 'コンテスト' }
+                  { value: "all", label: "すべて" },
+                  { value: "hackathon", label: "ハッカソン" },
+                  { value: "workshop", label: "ワークショップ" },
+                  { value: "contest", label: "コンテスト" },
                 ].map((type) => (
                   <label key={type.value} className="flex items-center">
                     <input
@@ -158,8 +181,8 @@ export function EventDiscovery({ events, initialType = 'all' }: EventDiscoveryPr
                         const newType = type.value as EventType;
                         setSelectedType(newType);
                         // サーバーコンポーネントでデータを再取得するためにページ遷移
-                        if (newType === 'all') {
-                          router.push('/events');
+                        if (newType === "all") {
+                          router.push("/events");
                         } else {
                           router.push(`/events?type=${newType}`);
                         }
@@ -174,7 +197,9 @@ export function EventDiscovery({ events, initialType = 'all' }: EventDiscoveryPr
 
             {/* Format */}
             <div>
-              <h3 className="text-sm font-medium text-gray-900 mb-3">開催形式</h3>
+              <h3 className="text-sm font-medium text-gray-900 mb-3">
+                開催形式
+              </h3>
               <select
                 value={selectedFormat}
                 onChange={(e) => setSelectedFormat(e.target.value as Format)}
@@ -192,19 +217,26 @@ export function EventDiscovery({ events, initialType = 'all' }: EventDiscoveryPr
               <h3 className="text-sm font-medium text-gray-900 mb-3">難易度</h3>
               <select
                 value={selectedDifficulty}
-                onChange={(e) => setSelectedDifficulty(e.target.value as DifficultyLevel | 'all')}
+                onChange={(e) =>
+                  setSelectedDifficulty(
+                    e.target.value as DifficultyLevel | "all"
+                  )
+                }
                 className="w-full rounded-md border-gray-300 focus:border-indigo-500 focus:ring-indigo-500"
               >
                 <option value="all">すべてのレベル</option>
-                <option value="beginner">初級者向け</option>
-                <option value="intermediate">中級者向け</option>
-                <option value="advanced">上級者向け</option>
+                <option value="BEGINNER">初心者向け</option>
+                <option value="INTERMEDIATE">中級者向け</option>
+                <option value="ADVANCED">上級者向け</option>
+                <option value="FOR_EVERYONE">全ての方向け</option>
               </select>
             </div>
 
             {/* Price Range */}
             <div>
-              <h3 className="text-sm font-medium text-gray-900 mb-3">価格帯 (¥)</h3>
+              <h3 className="text-sm font-medium text-gray-900 mb-3">
+                価格帯 (¥)
+              </h3>
               <input
                 type="range"
                 min="0"
@@ -228,7 +260,9 @@ export function EventDiscovery({ events, initialType = 'all' }: EventDiscoveryPr
                 onChange={(e) => setShowOnlyFree(e.target.checked)}
                 className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
               />
-              <label className="ml-2 text-sm text-gray-700">無料イベントのみ表示</label>
+              <label className="ml-2 text-sm text-gray-700">
+                無料イベントのみ表示
+              </label>
             </div>
           </div>
         </div>
@@ -261,11 +295,17 @@ export function EventDiscovery({ events, initialType = 'all' }: EventDiscoveryPr
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {filteredEvents.map((event) => (
-                <div key={event.id} className="bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-lg transition-shadow">
+                <div
+                  key={event.id}
+                  className="bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-lg transition-shadow"
+                >
                   <div className="relative">
                     <div className="w-full h-48 relative">
                       <Image
-                        src={event.image || 'https://images.unsplash.com/photo-1517245386807-bb43f82c33c4'}
+                        src={
+                          event.image ||
+                          "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4"
+                        }
                         alt={event.title}
                         fill
                         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
@@ -273,41 +313,68 @@ export function EventDiscovery({ events, initialType = 'all' }: EventDiscoveryPr
                       />
                     </div>
                     <span className="absolute top-4 right-4 px-3 py-1 bg-white rounded-full text-sm font-medium text-gray-700">
-                      {getEventType(event) === 'hackathon' ? 'ハッカソン' : 
-                       getEventType(event) === 'workshop' ? 'ワークショップ' : 'コンテスト'}
+                      {getEventType(event) === "hackathon"
+                        ? "ハッカソン"
+                        : getEventType(event) === "workshop"
+                        ? "ワークショップ"
+                        : "コンテスト"}
                     </span>
                   </div>
-                  
+
                   <div className="p-6">
-                    <h3 className="text-xl font-bold text-gray-900 mb-2">{event.title}</h3>
-                    
+                    <h3 className="text-xl font-bold text-gray-900 mb-2">
+                      {event.title}
+                    </h3>
+
                     <div className="space-y-2 mb-4">
                       <div className="flex items-center text-gray-600">
                         <Calendar className="h-4 w-4 mr-2" />
                         <span className="text-sm">
-                          {formatDateTime(new Date(event.eventDate), event.startTime)}
+                          {formatDateTime(
+                            new Date(event.eventDate),
+                            event.startTime
+                          )}
                           {event.endTime && (
-                            <> 〜 {formatDateTime(new Date(event.eventDate), event.endTime)}</>
+                            <>
+                              {" "}
+                              〜{" "}
+                              {formatDateTime(
+                                new Date(event.eventDate),
+                                event.endTime
+                              )}
+                            </>
                           )}
                         </span>
                       </div>
                       <div className="flex items-center text-gray-600">
                         <MapPin className="h-4 w-4 mr-2" />
-                        <span className="text-sm">{event.location || 'オンライン'}</span>
+                        <span className="text-sm">
+                          {event.location || "オンライン"}
+                        </span>
                       </div>
                     </div>
 
                     <div className="flex items-center justify-between">
                       <div className="space-x-2">
                         <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800">
-                          {getEventDifficulty(event) === 'beginner' ? '初級者向け' : 
-                           getEventDifficulty(event) === 'intermediate' ? '中級者向け' : '上級者向け'}
+                          {getEventDifficulty(event) === "BEGINNER"
+                            ? "初心者向け"
+                            : getEventDifficulty(event) === "INTERMEDIATE"
+                            ? "中級者向け"
+                            : getEventDifficulty(event) === "ADVANCED"
+                            ? "上級者向け"
+                            : "全ての方向け"}
                         </span>
                         <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
-                          {getEventFormat(event) === 'online' ? 'オンライン' : '対面'}
+                          {getEventFormat(event) === "online"
+                            ? "オンライン"
+                            : "対面"}
                         </span>
                       </div>
-                      <Link href={`/events/${event.id}`} className="text-indigo-600 hover:text-indigo-800 font-medium text-sm">
+                      <Link
+                        href={`/events/${event.id}`}
+                        className="text-indigo-600 hover:text-indigo-800 font-medium text-sm"
+                      >
                         詳細を見る →
                       </Link>
                     </div>
