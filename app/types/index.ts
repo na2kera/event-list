@@ -19,6 +19,7 @@ export type Event = {
   location?: string;
   detailUrl?: string;
   organizationId: string;
+  eventType?: string;
   skills: { id: string; name: string }[];
   speakers: { id: string; speakerId: string; speaker: Speaker }[];
   categories: { id: string; categoryId: string; category: Category }[];

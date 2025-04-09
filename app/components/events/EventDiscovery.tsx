@@ -35,7 +35,21 @@ export function EventDiscovery({ events, initialType = 'all' }: EventDiscoveryPr
   const [searchQuery, setSearchQuery] = useState('');
 
   const getEventType = (event: Event): Exclude<EventType, 'all'> => {
-    // カテゴリーからイベントタイプを推測
+    // バックエンドから返されるeventTypeフィールドがある場合はそれを優先
+    if (event.eventType) {
+      // バックエンドのeventTypeはENUMなので大文字（HACKATHON, WORKSHOP, CONTEST）
+      // フロントエンドのEventTypeは小文字（hackathon, workshop, contest）
+      const typeMapping: Record<string, Exclude<EventType, 'all'>> = {
+        'HACKATHON': 'hackathon',
+        'WORKSHOP': 'workshop',
+        'CONTEST': 'contest',
+        'LIGHTNING_TALK': 'workshop' // LT会はワークショップとして扱う
+      };
+      
+      return typeMapping[event.eventType] || 'workshop';
+    }
+    
+    // eventTypeがない場合はカテゴリーからイベントタイプを推測（後方互換性のため）
     const categoryNames = event.categories.map(c => c.category.name.toLowerCase());
     
     if (categoryNames.some(name => name.includes('hackathon'))) return 'hackathon';
