@@ -17,7 +17,7 @@ type SearchParams = {
 export default async function EventsPage({
   searchParams,
 }: {
-  searchParams: SearchParams;
+  searchParams: Promise<SearchParams>;
 }) {
   try {
     // URLパラメータからイベントタイプを取得
