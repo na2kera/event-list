@@ -67,9 +67,8 @@ export function EventDiscovery({
     }
 
     // eventTypeがない場合はカテゴリーからイベントタイプを推測（後方互換性のため）
-    const categoryNames = event.categories.map((c) =>
-      c.category.name.toLowerCase()
-    );
+    const categoryNames =
+      event.categories?.map((c) => c.category.name.toLowerCase()) || [];
 
     if (categoryNames.some((name) => name.includes("hackathon")))
       return "hackathon";
@@ -361,7 +360,7 @@ export function EventDiscovery({
                         <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
                           {getEventFormat(event) === "ONLINE"
                             ? "オンライン"
-                            : "対面"}
+                            : "オフライン"}
                         </span>
                       </div>
                       <Link
