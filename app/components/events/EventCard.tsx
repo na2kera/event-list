@@ -34,6 +34,25 @@ export function EventCard({ event }: EventCardProps) {
           <span className="inline-block bg-indigo-100 text-indigo-800 text-xs px-2 py-1 rounded-full font-medium">
             {event.organization.name}
           </span>
+          <span
+            className={`ml-2 inline-block text-xs px-2 py-1 rounded-full font-medium ${
+              event.difficulty === "BEGINNER"
+                ? "bg-green-50 text-green-700"
+                : event.difficulty === "INTERMEDIATE"
+                ? "bg-yellow-50 text-yellow-700"
+                : event.difficulty === "ADVANCED"
+                ? "bg-red-50 text-red-700"
+                : "bg-blue-50 text-blue-700"
+            }`}
+          >
+            {event.difficulty === "BEGINNER"
+              ? "初心者向け"
+              : event.difficulty === "INTERMEDIATE"
+              ? "中級者向け"
+              : event.difficulty === "ADVANCED"
+              ? "上級者向け"
+              : "全ての方向け"}
+          </span>
         </div>
 
         <Link href={`/events/${event.id}`}>

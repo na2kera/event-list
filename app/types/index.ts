@@ -7,6 +7,8 @@ export type Organization = {
   email?: string;
 };
 
+export type Difficulty = "BEGINNER" | "INTERMEDIATE" | "ADVANCED";
+
 export type Event = {
   id: string;
   title: string;
@@ -20,6 +22,7 @@ export type Event = {
   detailUrl?: string;
   organizationId: string;
   eventType?: string;
+  difficulty: "BEGINNER" | "INTERMEDIATE" | "ADVANCED" | "FOR_EVERYONE";
   skills: { id: string; name: string }[];
   speakers: { id: string; speakerId: string; speaker: Speaker }[];
   categories: { id: string; categoryId: string; category: Category }[];
