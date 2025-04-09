@@ -9,6 +9,10 @@ export type Organization = {
 
 export type Difficulty = "BEGINNER" | "INTERMEDIATE" | "ADVANCED";
 
+export type EventFormat = "ONLINE" | "OFFLINE" | "HYBRID";
+
+export type EventType = "HACKATHON" | "WORKSHOP" | "CONTEST" | "LIGHTNING_TALK";
+
 export type Event = {
   id: string;
   title: string;
@@ -21,13 +25,17 @@ export type Event = {
   location?: string;
   detailUrl?: string;
   organizationId: string;
-  eventType?: string;
-  difficulty: "BEGINNER" | "INTERMEDIATE" | "ADVANCED" | "FOR_EVERYONE";
-  skills: { id: string; name: string }[];
-  speakers: { id: string; speakerId: string; speaker: Speaker }[];
-  categories: { id: string; categoryId: string; category: Category }[];
-  // 拡張フィールド
+  createdAt: Date;
+  updatedAt: Date;
   image?: string;
+  format: EventFormat;
+  difficulty: Difficulty;
+  price: number;
+  eventType: EventType;
+  organization?: Organization;
+  skills?: { id: string; name: string }[];
+  categories?: { category: Category }[];
+  speakers?: { speaker: Speaker }[];
   participants?: number;
   spots?: number;
   success_rate?: string;

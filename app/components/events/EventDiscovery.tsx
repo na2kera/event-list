@@ -5,7 +5,7 @@ import { Search, Calendar, MapPin } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { Event } from "@/types";
+import { Event, EventFormat } from "@/types";
 
 type EventType = "all" | "hackathon" | "workshop" | "contest";
 type DifficultyLevel =
@@ -13,7 +13,7 @@ type DifficultyLevel =
   | "INTERMEDIATE"
   | "ADVANCED"
   | "FOR_EVERYONE";
-type Format = "all" | "online" | "offline" | "hybrid";
+type Format = "all" | EventFormat;
 
 interface EventDiscoveryProps {
   events: (Event & {
@@ -83,14 +83,7 @@ export function EventDiscovery({
   };
 
   const getEventFormat = (event: Event): Exclude<Format, "all"> => {
-    // 場所からフォーマットを推測
-    const location = event.location?.toLowerCase() || "";
-
-    if (location.includes("online")) return "online";
-    if (location.includes("hybrid")) return "hybrid";
-
-    // デフォルト値
-    return "offline";
+    return event.format || "OFFLINE";
   };
 
   const getEventDifficulty = (event: Event): DifficultyLevel => {
@@ -206,9 +199,9 @@ export function EventDiscovery({
                 className="w-full rounded-md border-gray-300 focus:border-indigo-500 focus:ring-indigo-500"
               >
                 <option value="all">すべての形式</option>
-                <option value="online">オンライン</option>
-                <option value="offline">オフライン</option>
-                <option value="hybrid">ハイブリッド</option>
+                <option value="ONLINE">オンライン</option>
+                <option value="OFFLINE">オフライン</option>
+                <option value="HYBRID">ハイブリッド</option>
               </select>
             </div>
 
@@ -366,7 +359,7 @@ export function EventDiscovery({
                             : "全ての方向け"}
                         </span>
                         <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
-                          {getEventFormat(event) === "online"
+                          {getEventFormat(event) === "ONLINE"
                             ? "オンライン"
                             : "対面"}
                         </span>
