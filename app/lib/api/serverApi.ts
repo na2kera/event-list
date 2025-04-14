@@ -141,3 +141,82 @@ export async function searchEvents(params: EventSearchParams) {
     throw error;
   }
 }
+
+/**
+ * イベント更新用のデータ型
+ */
+export interface EventUpdateData {
+  title?: string;
+  description?: string;
+  eventDate?: string | Date;
+  startTime?: string;
+  endTime?: string;
+  venue?: string;
+  address?: string;
+  location?: string;
+  detailUrl?: string;
+  image?: string;
+  organizationId?: string;
+  format?: string;
+  difficulty?: string;
+  price?: number;
+  eventType?: string;
+  skills?: { name: string }[];
+  categories?: { categoryId: string }[];
+  speakers?: { speakerId: string }[];
+}
+
+/**
+ * イベントを更新する（サーバーサイド用）
+ * @param id イベントID
+ * @param eventData 更新するイベントデータ
+ */
+export async function updateEvent(id: string, eventData: EventUpdateData) {
+  try {
+    const response = await fetch(`${API_BASE_URL}/events/${id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(eventData),
+      // キャッシュを無効化（常に最新データを取得）
+      cache: "no-store",
+    });
+
+    if (!response.ok) {
+      throw new Error(`API error: ${response.status}`);
+    }
+
+    const result = await response.json();
+    return result.success ? result.data : result;
+  } catch (error) {
+    console.error("Error updating event:", error);
+    throw error;
+  }
+}
+
+/**
+ * カテゴリ一覧を取得する（サーバーサイド用）
+ */
+export async function getCategories() {
+  try {
+    const response = await fetch(`${API_BASE_URL}/categories`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      // キャッシュを無効化（常に最新データを取得）
+      cache: "no-store",
+    });
+
+    if (!response.ok) {
+      throw new Error(`API error: ${response.status}`);
+    }
+
+    const result = await response.json();
+    return result.success ? result.data : result;
+  } catch (error) {
+    console.error("Error fetching categories:", error);
+    throw error;
+  }
+}

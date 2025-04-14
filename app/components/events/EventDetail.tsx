@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { Event, Speaker, Category } from "@/types";
 import { fetchEventById } from "@/lib/api/backendApi";
-import { ArrowRight, Calendar, Clock, MapPin, Target } from "lucide-react";
+import { ArrowRight, Calendar, Clock, MapPin, Target, Edit } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 
@@ -214,6 +214,14 @@ export function EventDetail({ eventId, initialEventData }: EventDetailProps) {
                       {event.portfolio_rate}
                     </span>
                   </div> */}
+
+                  {/* イベント編集ボタン */}
+                  <Link href={`/events/${eventId}/edit`}>
+                    <button className="w-full bg-blue-600 text-white py-3 px-6 rounded-lg font-medium hover:bg-blue-700 transition-colors flex items-center justify-center mb-4">
+                      イベントを編集
+                      <Edit className="h-5 w-5 ml-2" />
+                    </button>
+                  </Link>
 
                   {event.detailUrl ? (
                     <Link href={event.detailUrl}>
