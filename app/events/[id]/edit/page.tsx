@@ -1,7 +1,7 @@
 import { Navbar } from "@/components/layout/Navbar";
 import { Container } from "@/components/layout/Container";
 import { notFound } from "next/navigation";
-import { getEventById, getCategories } from "@/lib/api/serverApi";
+import { getEventById, getCategories, getSpeakers } from "@/lib/api/serverApi";
 import { EventEditForm } from "@/components/events/EventEditForm";
 
 export default async function EventEditPage({
@@ -12,10 +12,11 @@ export default async function EventEditPage({
   const { id } = await params;
 
   try {
-    // サーバーサイドでイベントデータとカテゴリ一覧を並行して取得
-    const [eventData, categories] = await Promise.all([
+    // サーバーサイドでイベントデータ、カテゴリ一覧、スピーカー一覧を並行して取得
+    const [eventData, categories, speakers] = await Promise.all([
       getEventById(id),
-      getCategories()
+      getCategories(),
+      getSpeakers()
     ]);
 
     if (!eventData) {
@@ -31,7 +32,8 @@ export default async function EventEditPage({
             <EventEditForm 
               eventId={id} 
               initialEventData={eventData} 
-              categories={categories} 
+              categories={categories}
+              speakers={speakers} 
             />
           </div>
         </Container>

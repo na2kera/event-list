@@ -220,3 +220,29 @@ export async function getCategories() {
     throw error;
   }
 }
+
+/**
+ * スピーカー一覧を取得する（サーバーサイド用）
+ */
+export async function getSpeakers() {
+  try {
+    const response = await fetch(`${API_BASE_URL}/speakers`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      // キャッシュを無効化（常に最新データを取得）
+      cache: "no-store",
+    });
+
+    if (!response.ok) {
+      throw new Error(`API error: ${response.status}`);
+    }
+
+    const result = await response.json();
+    return result.success ? result.data : result;
+  } catch (error) {
+    console.error("Error fetching speakers:", error);
+    throw error;
+  }
+}

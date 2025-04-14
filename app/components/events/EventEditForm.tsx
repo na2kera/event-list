@@ -18,12 +18,14 @@ interface EventEditFormProps {
     }[];
   };
   categories: Category[];
+  speakers: Speaker[];
 }
 
 export function EventEditForm({
   eventId,
   initialEventData,
   categories: availableCategories,
+  speakers: availableSpeakers,
 }: EventEditFormProps) {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -70,7 +72,6 @@ export function EventEditForm({
     })) || []
   );
   const [newSpeakerId, setNewSpeakerId] = useState("");
-  const [newSpeakerName, setNewSpeakerName] = useState("");
 
   // 入力変更ハンドラ
   const handleInputChange = (
@@ -130,15 +131,20 @@ export function EventEditForm({
   const handleAddSpeaker = () => {
     if (
       newSpeakerId &&
-      newSpeakerName &&
       !speakers.some((spk) => spk.speakerId === newSpeakerId)
     ) {
-      setSpeakers([
-        ...speakers,
-        { speakerId: newSpeakerId, name: newSpeakerName },
-      ]);
-      setNewSpeakerId("");
-      setNewSpeakerName("");
+      // 選択されたスピーカーのデータを取得
+      const selectedSpeaker = availableSpeakers.find(
+        (spk) => spk.id === newSpeakerId
+      );
+      
+      if (selectedSpeaker) {
+        setSpeakers([
+          ...speakers,
+          { speakerId: newSpeakerId, name: selectedSpeaker.name },
+        ]);
+        setNewSpeakerId("");
+      }
     }
   };
 
@@ -472,39 +478,31 @@ export function EventEditForm({
         <div className="space-y-4">
           <h2 className="text-xl font-semibold border-b pb-2">スピーカー</h2>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                スピーカーID
-              </label>
-              <input
-                type="text"
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              スピーカーを選択
+            </label>
+            <div className="flex items-center space-x-2">
+              <select
                 value={newSpeakerId}
                 onChange={(e) => setNewSpeakerId(e.target.value)}
-                placeholder="スピーカーIDを入力"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                スピーカー名
-              </label>
-              <div className="flex items-center space-x-2">
-                <input
-                  type="text"
-                  value={newSpeakerName}
-                  onChange={(e) => setNewSpeakerName(e.target.value)}
-                  placeholder="スピーカー名を入力"
-                  className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-                <button
-                  type="button"
-                  onClick={handleAddSpeaker}
-                  className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                >
-                  追加
-                </button>
-              </div>
+                className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                <option value="">スピーカーを選択してください</option>
+                {availableSpeakers.map((speaker) => (
+                  <option key={speaker.id} value={speaker.id}>
+                    {speaker.name} ({speaker.affiliation})
+                  </option>
+                ))}
+              </select>
+              <button
+                type="button"
+                onClick={handleAddSpeaker}
+                disabled={!newSpeakerId}
+                className={`px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 ${!newSpeakerId ? 'opacity-50 cursor-not-allowed' : ''}`}
+              >
+                追加
+              </button>
             </div>
           </div>
 
