@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useSession } from "next-auth/react";
-import { Heart } from "lucide-react";
+import { Bookmark } from "lucide-react";
 import { addBookmark, removeBookmark } from "@/lib/api/bookmarkApi";
 import { cn } from "@/lib/utils";
 
@@ -51,12 +51,12 @@ export function BookmarkButton({
       className={cn(
         "p-2 rounded-full transition-colors",
         isBookmarked
-          ? "text-red-500 hover:bg-red-50"
+          ? "text-blue-500 hover:bg-blue-50"
           : "text-gray-400 hover:bg-gray-50",
         className
       )}
     >
-      <Heart
+      <Bookmark
         className={cn("w-5 h-5", isBookmarked ? "fill-current" : "fill-none")}
       />
     </button>
