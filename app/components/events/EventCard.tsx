@@ -1,19 +1,17 @@
 import Link from "next/link";
 import { Event } from "@/types";
-
-type EventWithOrganization = Event & {
-  organization: {
-    name: string;
-  };
-};
+import { BookmarkButton } from "./BookmarkButton";
 
 interface EventCardProps {
-  event: EventWithOrganization;
+  event: Event;
+  isBookmarked?: boolean;
 }
 
-export function EventCard({ event }: EventCardProps) {
+export function EventCard({ event, isBookmarked = false }: EventCardProps) {
   // 日付と時間を組み合わせてフォーマットする関数
-  const formatDateTime = (date: Date, time: string) => {
+  const formatDateTime = (date: Date, time?: string) => {
+    if (!time) return new Date(date).toLocaleDateString();
+
     const [hours, minutes] = time.split(":");
     const dateTime = new Date(date);
     dateTime.setHours(parseInt(hours, 10), parseInt(minutes, 10));
@@ -29,10 +27,22 @@ export function EventCard({ event }: EventCardProps) {
 
   return (
     <div className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-all duration-300 border border-gray-100 flex flex-col h-full">
+      <div className="relative">
+        {event.image && (
+          <img
+            src={event.image}
+            alt={event.title}
+            className="w-full h-48 object-cover"
+          />
+        )}
+        <div className="absolute top-2 right-2">
+          <BookmarkButton eventId={event.id} isBookmarked={isBookmarked} />
+        </div>
+      </div>
       <div className="p-5 flex-grow">
         <div className="flex items-center mb-3">
           <span className="inline-block bg-indigo-100 text-indigo-800 text-xs px-2 py-1 rounded-full font-medium">
-            {event.organization.name}
+            {event.organization?.name}
           </span>
           <span
             className={`ml-2 inline-block text-xs px-2 py-1 rounded-full font-medium ${
