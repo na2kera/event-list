@@ -5,12 +5,19 @@ interface EventListProps {
   events?: (Event & {
     organization: { name: string };
     speakers: {
-      speaker: { id: string; name: string; occupation: string; affiliation: string; bio: string };
+      speaker: {
+        id: string;
+        name: string;
+        occupation: string;
+        affiliation: string;
+        bio: string;
+      };
     }[];
     skills: { id: string; name: string }[];
     categories: {
       category: { id: string; name: string };
     }[];
+    isBookmarked?: boolean;
   })[];
 }
 
@@ -46,7 +53,11 @@ export function EventList({ events = [] }: EventListProps) {
     <div>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {events.map((event) => (
-          <EventCard key={event.id} event={event} />
+          <EventCard
+            key={event.id}
+            event={event}
+            isBookmarked={event.isBookmarked || false}
+          />
         ))}
       </div>
     </div>

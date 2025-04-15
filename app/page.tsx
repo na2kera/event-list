@@ -1,6 +1,13 @@
 import { Hero } from "./components/Hero";
 import { getEvents } from "@/lib/api/serverApi";
 import { Event } from "@/types";
+import { getServerSession } from "next-auth";
+import { getUserBookmarks } from "@/lib/api/serverApi";
+import { authOptions } from "./lib/auth";
+
+interface Bookmark {
+  eventId: string;
+}
 
 export default async function Home() {
   try {
@@ -22,8 +29,22 @@ export default async function Home() {
       }[];
     })[];
 
+    // ユーザーのブックマーク情報を取得
+    const session = await getServerSession(authOptions);
+    let bookmarkedEventIds: string[] = [];
+
+    if (session?.user?.id) {
+      const bookmarks = await getUserBookmarks(session.user.id);
+      bookmarkedEventIds = bookmarks.map(
+        (bookmark: Bookmark) => bookmark.eventId
+      );
+    }
+
     // 最新の3件のみを表示
-    const recentEvents = eventsData.slice(0, 3);
+    const recentEvents = eventsData.slice(0, 3).map((event) => ({
+      ...event,
+      isBookmarked: bookmarkedEventIds.includes(event.id),
+    }));
 
     return (
       <div className="min-h-screen bg-white">

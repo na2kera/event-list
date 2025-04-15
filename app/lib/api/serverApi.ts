@@ -28,13 +28,15 @@ export async function getEvents(eventType?: string) {
   try {
     // クエリパラメータを構築
     const queryParams = new URLSearchParams();
-    if (eventType && eventType !== 'all') {
-      queryParams.append('eventType', eventType);
+    if (eventType && eventType !== "all") {
+      queryParams.append("eventType", eventType);
     }
-    
+
     // クエリパラメータがある場合はURLに追加
-    const url = `${API_BASE_URL}/events${queryParams.toString() ? `?${queryParams.toString()}` : ''}`;
-    
+    const url = `${API_BASE_URL}/events${
+      queryParams.toString() ? `?${queryParams.toString()}` : ""
+    }`;
+
     const response = await fetch(url, {
       method: "GET",
       headers: {
@@ -243,6 +245,33 @@ export async function getSpeakers() {
     return result.success ? result.data : result;
   } catch (error) {
     console.error("Error fetching speakers:", error);
+    throw error;
+  }
+}
+
+/**
+ * ユーザーのブックマーク一覧を取得する（サーバーサイド用）
+ * @param userId ユーザーID
+ */
+export async function getUserBookmarks(userId: string) {
+  try {
+    const response = await fetch(`${API_BASE_URL}/bookmarks/user/${userId}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      // キャッシュを無効化（常に最新データを取得）
+      cache: "no-store",
+    });
+
+    if (!response.ok) {
+      throw new Error(`API error: ${response.status}`);
+    }
+
+    const result = await response.json();
+    return result.success ? result.data : result;
+  } catch (error) {
+    console.error("Error fetching user bookmarks:", error);
     throw error;
   }
 }
