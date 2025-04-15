@@ -26,7 +26,11 @@ export function EventCard({ event, isBookmarked = false }: EventCardProps) {
   };
 
   return (
-    <div className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-all duration-300 border border-gray-100 flex flex-col h-full">
+    <div
+      className={`bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-all duration-300 border border-gray-100 flex flex-col h-full ${
+        isBookmarked ? "border-indigo-300" : ""
+      }`}
+    >
       <div className="relative">
         {event.image && (
           <img
