@@ -1,12 +1,13 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { signIn, signOut, useSession } from "next-auth/react";
 
 export function Header() {
   const { data: session } = useSession();
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   console.log(session);
 
@@ -47,10 +48,10 @@ export function Header() {
                 >
                   イベント登録
                 </Link>
-                <div className="relative group">
+                <div className="relative">
                   <button
                     className="flex items-center space-x-2 text-gray-700 hover:text-indigo-600"
-                    onClick={() => signOut()}
+                    onClick={() => setIsMenuOpen(!isMenuOpen)}
                   >
                     <div className="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center">
                       {session.user?.image ? (
@@ -70,6 +71,28 @@ export function Header() {
                       )}
                     </div>
                   </button>
+
+                  {/* Dropdown Menu */}
+                  {isMenuOpen && (
+                    <div className="absolute right-0 mt-2 w-26 bg-white rounded-md shadow-lg py-1 z-10">
+                      <Link
+                        href="/mypage"
+                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-600"
+                        onClick={() => setIsMenuOpen(false)}
+                      >
+                        マイページ
+                      </Link>
+                      <button
+                        onClick={() => {
+                          signOut();
+                          setIsMenuOpen(false);
+                        }}
+                        className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-600"
+                      >
+                        ログアウト
+                      </button>
+                    </div>
+                  )}
                 </div>
               </div>
             ) : (
