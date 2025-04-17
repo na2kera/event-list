@@ -2,16 +2,18 @@
 
 import React from "react";
 import Link from "next/link";
-import { User } from "lucide-react";
+import Image from "next/image";
 import { signIn, signOut, useSession } from "next-auth/react";
 
 export function Header() {
   const { data: session } = useSession();
 
+  console.log(session);
+
   return (
     <header className="bg-white shadow-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-start items-center h-16 space-x-8">
+        <div className="flex justify-start items-center h-16 space-x-4">
           {/* Logo */}
           <div className="flex-shrink-0">
             <Link href="/" className="text-2xl font-bold text-indigo-600">
@@ -51,11 +53,22 @@ export function Header() {
                     onClick={() => signOut()}
                   >
                     <div className="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center">
-                      <User className="h-5 w-5 text-indigo-600" />
+                      {session.user?.image ? (
+                        <Image
+                          src={session.user.image}
+                          alt="User Avatar"
+                          width={32}
+                          height={32}
+                          className="rounded-full"
+                        />
+                      ) : (
+                        <div className="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center">
+                          <span className="text-indigo-600 font-medium">
+                            {session.user?.name?.[0] || "U"}
+                          </span>
+                        </div>
+                      )}
                     </div>
-                    <span className="hidden md:inline text-sm font-medium">
-                      {session.user?.name}
-                    </span>
                   </button>
                 </div>
               </div>
