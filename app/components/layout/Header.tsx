@@ -50,7 +50,7 @@ export function Header() {
                 </Link>
                 <div className="relative">
                   <button
-                    className="flex items-center space-x-2 text-gray-700 hover:text-indigo-600"
+                    className="flex items-center space-x-2 text-gray-700 hover:text-indigo-600 cursor-pointer"
                     onClick={() => setIsMenuOpen(!isMenuOpen)}
                   >
                     <div className="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center">
