@@ -1,8 +1,8 @@
-import { Navbar } from "@/components/layout/Navbar";
 import { Container } from "@/components/layout/Container";
 import { notFound } from "next/navigation";
 import { getEventById, getCategories, getSpeakers } from "@/lib/api/serverApi";
 import { EventEditForm } from "@/components/events/EventEditForm";
+import { Header } from "@/components/layout/Header";
 
 export default async function EventEditPage({
   params,
@@ -16,7 +16,7 @@ export default async function EventEditPage({
     const [eventData, categories, speakers] = await Promise.all([
       getEventById(id),
       getCategories(),
-      getSpeakers()
+      getSpeakers(),
     ]);
 
     if (!eventData) {
@@ -25,15 +25,15 @@ export default async function EventEditPage({
 
     return (
       <div className="min-h-screen bg-gray-50">
-        <Navbar />
+        <Header />
         <Container>
           <div className="py-8">
             <h1 className="text-2xl font-bold mb-6">イベント編集</h1>
-            <EventEditForm 
-              eventId={id} 
-              initialEventData={eventData} 
+            <EventEditForm
+              eventId={id}
+              initialEventData={eventData}
               categories={categories}
-              speakers={speakers} 
+              speakers={speakers}
             />
           </div>
         </Container>
