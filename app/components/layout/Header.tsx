@@ -11,7 +11,7 @@ export function Header() {
   return (
     <header className="bg-white shadow-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
+        <div className="flex justify-start items-center h-16 space-x-8">
           {/* Logo */}
           <div className="flex-shrink-0">
             <Link href="/" className="text-2xl font-bold text-indigo-600">
@@ -20,23 +20,23 @@ export function Header() {
           </div>
 
           {/* Navigation Links */}
-          <nav className="hidden md:flex space-x-8">
+          <nav className="hidden md:flex">
             <Link
               href="/events"
               className="text-gray-700 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium transition-colors"
             >
               イベント一覧
             </Link>
-            <Link
+            {/* <Link
               href="/events/search"
               className="text-gray-700 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium transition-colors"
             >
               イベント検索
-            </Link>
+            </Link> */}
           </nav>
 
           {/* Auth Section */}
-          <div className="flex items-center">
+          <div className="flex items-center ml-auto">
             {session ? (
               <div className="flex items-center space-x-4">
                 <Link
