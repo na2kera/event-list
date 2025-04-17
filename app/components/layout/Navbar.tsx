@@ -66,6 +66,18 @@ export function Navbar() {
 
           {/* Desktop menu */}
           <div className="hidden md:flex items-center space-x-4">
+            <Link
+              href="/events"
+              className="text-gray-700 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium transition-colors"
+            >
+              イベント一覧
+            </Link>
+            <Link
+              href="/events/search"
+              className="text-gray-700 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium transition-colors"
+            >
+              イベント検索
+            </Link>
             {session ? (
               <>
                 <Link
@@ -99,6 +111,18 @@ export function Navbar() {
       {/* Mobile menu, show/hide based on menu state */}
       <div className={`${isMenuOpen ? "block" : "hidden"} md:hidden`}>
         <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 shadow-inner bg-gray-50">
+          <Link
+            href="/events"
+            className="block text-gray-700 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium transition-colors text-center"
+          >
+            イベント一覧
+          </Link>
+          <Link
+            href="/events/search"
+            className="block text-gray-700 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium transition-colors text-center"
+          >
+            イベント検索
+          </Link>
           {session ? (
             <>
               <Link

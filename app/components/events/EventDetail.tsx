@@ -2,36 +2,53 @@
 
 import { useEffect, useState } from "react";
 import { Event, Speaker, Category } from "@/types";
-import { ArrowRight, Calendar, Clock, MapPin, Target } from "lucide-react";
+import { fetchEventById } from "@/lib/api/backendApi";
+import { ArrowRight, Calendar, Clock, MapPin, Target, Edit } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 
 interface EventDetailProps {
   eventId: string;
+  initialEventData?: Event & {
+    organization: { name: string };
+    speakers: {
+      speaker: Speaker;
+    }[];
+    skills: { name: string }[];
+    categories: {
+      category: Category;
+    }[];
+  };
 }
 
-export function EventDetail({ eventId }: EventDetailProps) {
-  const [event, setEvent] = useState<
-    Event & {
-      organization: { name: string };
-      speakers: {
-        speaker: Speaker;
-      }[];
-      skills: { name: string }[];
-      categories: {
-        category: Category;
-      }[];
-    }
-  >();
-  const [isLoading, setIsLoading] = useState(true);
+export function EventDetail({ eventId, initialEventData }: EventDetailProps) {
+  type EventWithRelations = Event & {
+    organization: { name: string };
+    speakers: {
+      speaker: Speaker;
+    }[];
+    skills: { name: string }[];
+    categories: {
+      category: Category;
+    }[];
+  };
+
+  const [event, setEvent] = useState<EventWithRelations | undefined>(
+    initialEventData
+  );
+  const [isLoading, setIsLoading] = useState(!initialEventData);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    // 初期データがあればフェッチをスキップ
+    if (initialEventData) {
+      return;
+    }
+
     const fetchEvent = async () => {
       try {
-        const response = await fetch(`/api/events/${eventId}`);
-        if (!response.ok) throw new Error("Failed to fetch event");
-        const data = await response.json();
+        // 初期データがない場合のみバックエンドAPIから取得
+        const data = await fetchEventById(eventId);
         setEvent(data);
       } catch (error) {
         setError("イベントの取得に失敗しました");
@@ -42,7 +59,7 @@ export function EventDetail({ eventId }: EventDetailProps) {
     };
 
     fetchEvent();
-  }, [eventId]);
+  }, [eventId, initialEventData]);
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -60,7 +77,10 @@ export function EventDetail({ eventId }: EventDetailProps) {
         {/* ヒーローセクション */}
         <div className="relative h-96">
           <Image
-            src={"https://images.unsplash.com/photo-1551650975-87deedd944c3"}
+            src={
+              event.image ||
+              "https://images.unsplash.com/photo-1551650975-87deedd944c3"
+            }
             alt="イベントのヘッダー画像"
             fill
             className="object-cover"
@@ -77,10 +97,21 @@ export function EventDetail({ eventId }: EventDetailProps) {
               <div className="flex items-center">
                 <Clock className="h-5 w-5 mr-2" />
                 {event.startTime}
+                {event.endTime ? ` - ${event.endTime}` : ""}
               </div>
               <div className="flex items-center">
                 <MapPin className="h-5 w-5 mr-2" />
-                {event.location}
+                <div className="flex flex-col">
+                  <span>{event.venue}</span>
+                  {event.address && (
+                    <span className="text-sm">{event.address}</span>
+                  )}
+                  {event.location && (
+                    <span className="text-sm text-gray-300">
+                      ({event.location})
+                    </span>
+                  )}
+                </div>
               </div>
             </div>
           </div>
@@ -101,7 +132,26 @@ export function EventDetail({ eventId }: EventDetailProps) {
                   イベントカテゴリ
                 </h2>
                 <div className="flex flex-wrap gap-3">
-                  {event.categories.map((category, index) => (
+                  <span
+                    className={`px-4 py-2 rounded-full text-sm font-medium ${
+                      event.difficulty === "BEGINNER"
+                        ? "bg-green-50 text-green-700"
+                        : event.difficulty === "INTERMEDIATE"
+                        ? "bg-yellow-50 text-yellow-700"
+                        : event.difficulty === "ADVANCED"
+                        ? "bg-red-50 text-red-700"
+                        : "bg-blue-50 text-blue-700"
+                    }`}
+                  >
+                    {event.difficulty === "BEGINNER"
+                      ? "初心者向け"
+                      : event.difficulty === "INTERMEDIATE"
+                      ? "中級者向け"
+                      : event.difficulty === "ADVANCED"
+                      ? "上級者向け"
+                      : "全ての方向け"}
+                  </span>
+                  {event.categories?.map((category, index) => (
                     <span
                       key={index}
                       className="px-4 py-2 bg-indigo-50 text-indigo-700 rounded-full text-sm font-medium"
@@ -116,7 +166,7 @@ export function EventDetail({ eventId }: EventDetailProps) {
                 学べること
               </h3>
               <ul className="space-y-3">
-                {event.skills.map((skill, index) => (
+                {event.skills?.map((skill, index) => (
                   <li key={index} className="flex items-start">
                     <Target className="h-5 w-5 text-indigo-600 mr-3 mt-1" />
                     <span className="text-gray-600">{skill.name}</span>
@@ -165,6 +215,14 @@ export function EventDetail({ eventId }: EventDetailProps) {
                     </span>
                   </div> */}
 
+                  {/* イベント編集ボタン */}
+                  <Link href={`/events/${eventId}/edit`}>
+                    <button className="w-full bg-blue-600 text-white py-3 px-6 rounded-lg font-medium hover:bg-blue-700 transition-colors flex items-center justify-center mb-4">
+                      イベントを編集
+                      <Edit className="h-5 w-5 ml-2" />
+                    </button>
+                  </Link>
+
                   {event.detailUrl ? (
                     <Link href={event.detailUrl}>
                       <button className="w-full bg-indigo-600 text-white py-3 px-6 rounded-lg font-medium hover:bg-indigo-700 transition-colors flex items-center justify-center">
@@ -189,7 +247,7 @@ export function EventDetail({ eventId }: EventDetailProps) {
               イベント参加で得られる成果物
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {event.outcomes.map((outcome, index) => {
+              {event.outcomes?.map((outcome, index) => {
                 const Icon = outcome.icon;
                 return (
                   <div key={index} className="bg-gray-50 rounded-xl p-6">
@@ -210,7 +268,7 @@ export function EventDetail({ eventId }: EventDetailProps) {
               講師プロフィール
             </h2>
             <div className="flex items-center space-x-4">
-              {event.speakers.map((speaker, index) => (
+              {event.speakers?.map((speaker, index) => (
                 <div key={index} className="flex items-center space-x-2">
                   <Image
                     src={

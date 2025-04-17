@@ -8,8 +8,23 @@ import {
 } from "lucide-react";
 import { ColumnCard } from "@/components/columns/ColumnCard";
 import { EventList } from "./events/EventList";
+import { Event } from "@/types";
+import Link from "next/link";
 
-export function Hero() {
+interface HeroProps {
+  recentEvents?: (Event & {
+    organization: { name: string };
+    speakers: {
+      speaker: { id: string; name: string; occupation: string; affiliation: string; bio: string };
+    }[];
+    skills: { id: string; name: string }[];
+    categories: {
+      category: { id: string; name: string };
+    }[];
+  })[];
+}
+
+export function Hero({ recentEvents }: HeroProps) {
   return (
     <>
       {/* メインヒーローセクション */}
@@ -73,11 +88,11 @@ export function Hero() {
           <h2 className="text-2xl font-bold text-gray-900">
             直近の開催イベント
           </h2>
-          <button className="text-indigo-600 hover:text-indigo-800 font-medium">
+          <Link href="/events" className="text-indigo-600 hover:text-indigo-800 font-medium">
             すべてのイベントを見る →
-          </button>
+          </Link>
         </div>
-        <EventList />
+        <EventList events={recentEvents} />
       </div>
 
       {/* エンジニア成長コラム */}
