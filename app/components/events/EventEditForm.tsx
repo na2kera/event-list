@@ -159,16 +159,13 @@ export function EventEditForm({
     setSpeakers(speakers.filter((spk) => spk.speakerId !== speakerIdToRemove));
   };
 
-  // ゴール追加ハンドラ
-  const handleAddGoal = (goalType: GoalType) => {
-    if (!goals.includes(goalType)) {
-      setGoals([...goals, goalType]);
-    }
-  };
-
-  // ゴール削除ハンドラ
-  const handleRemoveGoal = (goalTypeToRemove: GoalType) => {
-    setGoals(goals.filter((goalType) => goalType !== goalTypeToRemove));
+  // ゴール追加/削除ハンドラ
+  const handleToggleGoal = (goalType: GoalType) => {
+    setGoals((prev) =>
+      prev.includes(goalType)
+        ? prev.filter((g) => g !== goalType)
+        : [...prev, goalType]
+    );
   };
 
   // フォーム送信ハンドラ
@@ -552,32 +549,22 @@ export function EventEditForm({
         <div className="space-y-4">
           <h2 className="text-xl font-semibold border-b pb-2">ゴール</h2>
           <div className="flex flex-wrap gap-2">
-            {(
-              [
-                "IMPROVE_SKILLS",
-                "EXPERIENCE_TEAM_DEV",
-                "CREATE_PORTFOLIO",
-              ] as const
-            ).map((goalType) => (
+            {[
+              { type: "IMPROVE_SKILLS", label: "スキル向上" },
+              { type: "EXPERIENCE_TEAM_DEV", label: "チーム開発経験" },
+              { type: "CREATE_PORTFOLIO", label: "ポートフォリオ作成" },
+            ].map(({ type, label }) => (
               <button
-                key={goalType}
+                key={type}
                 type="button"
-                onClick={() => {
-                  if (goals.includes(goalType)) {
-                    handleRemoveGoal(goalType);
-                  } else {
-                    handleAddGoal(goalType);
-                  }
-                }}
+                onClick={() => handleToggleGoal(type as GoalType)}
                 className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
-                  goals.includes(goalType)
-                    ? "bg-indigo-600 text-white"
+                  goals.includes(type as GoalType)
+                    ? "bg-indigo-600 text-white hover:bg-indigo-700"
                     : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                 }`}
               >
-                {goalType === "IMPROVE_SKILLS" && "スキル向上"}
-                {goalType === "EXPERIENCE_TEAM_DEV" && "チーム開発経験"}
-                {goalType === "CREATE_PORTFOLIO" && "ポートフォリオ作成"}
+                {label}
               </button>
             ))}
           </div>
