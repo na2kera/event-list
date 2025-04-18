@@ -13,6 +13,11 @@ export type EventFormat = "ONLINE" | "OFFLINE" | "HYBRID";
 
 export type EventType = "HACKATHON" | "WORKSHOP" | "CONTEST" | "LIGHTNING_TALK";
 
+export type GoalType =
+  | "IMPROVE_SKILLS"
+  | "EXPERIENCE_TEAM_DEV"
+  | "CREATE_PORTFOLIO";
+
 export type Event = {
   id: string;
   title: string;
@@ -36,6 +41,7 @@ export type Event = {
   skills?: { id: string; name: string }[];
   categories?: { category: Category }[];
   speakers?: { speaker: Speaker }[];
+  goals?: { goalType: GoalType }[];
   participants?: number;
   spots?: number;
   success_rate?: string;

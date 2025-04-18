@@ -2,7 +2,7 @@
 
 import { useState, FormEvent } from "react";
 import { useRouter } from "next/navigation";
-import { Event, Speaker, Category } from "@/types";
+import { Event, Speaker, Category, GoalType } from "@/types";
 import { updateEvent } from "@/lib/api/serverApi";
 
 interface EventEditFormProps {
@@ -16,6 +16,7 @@ interface EventEditFormProps {
     categories: {
       category: Category;
     }[];
+    goals?: { goalType: GoalType }[];
   };
   categories: Category[];
   speakers: Speaker[];
@@ -73,6 +74,11 @@ export function EventEditForm({
   );
   const [newSpeakerId, setNewSpeakerId] = useState("");
 
+  // ゴールの状態管理
+  const [goals, setGoals] = useState<GoalType[]>(
+    initialEventData.goals?.map((goal) => goal.goalType) || []
+  );
+
   // 入力変更ハンドラ
   const handleInputChange = (
     e: React.ChangeEvent<
@@ -109,7 +115,7 @@ export function EventEditForm({
       const selectedCategory = availableCategories.find(
         (cat) => cat.id === newCategoryId
       );
-      
+
       if (selectedCategory) {
         setCategories([
           ...categories,
@@ -137,7 +143,7 @@ export function EventEditForm({
       const selectedSpeaker = availableSpeakers.find(
         (spk) => spk.id === newSpeakerId
       );
-      
+
       if (selectedSpeaker) {
         setSpeakers([
           ...speakers,
@@ -151,6 +157,18 @@ export function EventEditForm({
   // スピーカー削除ハンドラ
   const handleRemoveSpeaker = (speakerIdToRemove: string) => {
     setSpeakers(speakers.filter((spk) => spk.speakerId !== speakerIdToRemove));
+  };
+
+  // ゴール追加ハンドラ
+  const handleAddGoal = (goalType: GoalType) => {
+    if (!goals.includes(goalType)) {
+      setGoals([...goals, goalType]);
+    }
+  };
+
+  // ゴール削除ハンドラ
+  const handleRemoveGoal = (goalTypeToRemove: GoalType) => {
+    setGoals(goals.filter((goalType) => goalType !== goalTypeToRemove));
   };
 
   // フォーム送信ハンドラ
@@ -168,6 +186,7 @@ export function EventEditForm({
         skills: skills.map((name) => ({ name })),
         categories: categories.map((cat) => ({ categoryId: cat.categoryId })),
         speakers: speakers.map((spk) => ({ speakerId: spk.speakerId })),
+        goals: goals.map((goalType) => ({ goalType })),
       };
 
       // イベント更新APIを呼び出し
@@ -448,7 +467,9 @@ export function EventEditForm({
                 type="button"
                 onClick={handleAddCategory}
                 disabled={!newCategoryId}
-                className={`px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 ${!newCategoryId ? 'opacity-50 cursor-not-allowed' : ''}`}
+                className={`px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                  !newCategoryId ? "opacity-50 cursor-not-allowed" : ""
+                }`}
               >
                 追加
               </button>
@@ -499,7 +520,9 @@ export function EventEditForm({
                 type="button"
                 onClick={handleAddSpeaker}
                 disabled={!newSpeakerId}
-                className={`px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 ${!newSpeakerId ? 'opacity-50 cursor-not-allowed' : ''}`}
+                className={`px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                  !newSpeakerId ? "opacity-50 cursor-not-allowed" : ""
+                }`}
               >
                 追加
               </button>
@@ -521,6 +544,41 @@ export function EventEditForm({
                   ×
                 </button>
               </div>
+            ))}
+          </div>
+        </div>
+
+        {/* ゴールセクション */}
+        <div className="space-y-4">
+          <h2 className="text-xl font-semibold border-b pb-2">ゴール</h2>
+          <div className="flex flex-wrap gap-2">
+            {(
+              [
+                "IMPROVE_SKILLS",
+                "EXPERIENCE_TEAM_DEV",
+                "CREATE_PORTFOLIO",
+              ] as const
+            ).map((goalType) => (
+              <button
+                key={goalType}
+                type="button"
+                onClick={() => {
+                  if (goals.includes(goalType)) {
+                    handleRemoveGoal(goalType);
+                  } else {
+                    handleAddGoal(goalType);
+                  }
+                }}
+                className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                  goals.includes(goalType)
+                    ? "bg-indigo-600 text-white"
+                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                }`}
+              >
+                {goalType === "IMPROVE_SKILLS" && "スキル向上"}
+                {goalType === "EXPERIENCE_TEAM_DEV" && "チーム開発経験"}
+                {goalType === "CREATE_PORTFOLIO" && "ポートフォリオ作成"}
+              </button>
             ))}
           </div>
         </div>
