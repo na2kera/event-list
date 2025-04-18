@@ -166,6 +166,7 @@ export interface EventUpdateData {
   skills?: { name: string }[];
   categories?: { categoryId: string }[];
   speakers?: { speakerId: string }[];
+  goals?: { goalType: string }[];
 }
 
 /**
