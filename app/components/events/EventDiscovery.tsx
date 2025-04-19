@@ -17,8 +17,8 @@ type Format = "all" | EventFormat;
 
 interface EventDiscoveryProps {
   events: (Event & {
-    organization: { name: string };
-    speakers: {
+    organization?: { name: string };
+    speakers?: {
       speaker: {
         id: string;
         name: string;
@@ -27,8 +27,8 @@ interface EventDiscoveryProps {
         bio: string;
       };
     }[];
-    skills: { id: string; name: string }[];
-    categories: {
+    skills?: { id: string; name: string }[];
+    categories?: {
       category: { id: string; name: string };
     }[];
   })[];

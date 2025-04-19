@@ -1,13 +1,14 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 
 // バックエンドAPIのベースURL
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001/api";
+const API_BASE_URL =
+  process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001/api";
 
-export default function LineCallbackPage() {
+function LineCallbackContent() {
   const [status, setStatus] = useState<"loading" | "success" | "error">(
     "loading"
   );
@@ -85,21 +86,26 @@ export default function LineCallbackPage() {
 
         // バックエンドAPIを呼び出してユーザー情報をデータベースに保存
         try {
-          const saveUserResponse = await fetch(`${API_BASE_URL}/users/line-login`, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              code,
-              state,
-            }),
-          });
+          const saveUserResponse = await fetch(
+            `${API_BASE_URL}/users/line-login`,
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                code,
+                state,
+              }),
+            }
+          );
 
           if (!saveUserResponse.ok) {
             const errorData = await saveUserResponse.json();
             console.error("ユーザー情報保存エラー:", errorData);
-            throw new Error(errorData.message || "ユーザー情報の保存に失敗しました");
+            throw new Error(
+              errorData.message || "ユーザー情報の保存に失敗しました"
+            );
           }
 
           const userData = await saveUserResponse.json();
@@ -207,5 +213,14 @@ export default function LineCallbackPage() {
         )}
       </div>
     </div>
+  );
+}
+
+// メインのページコンポーネント - Suspenseでラップする
+export default function LineCallbackPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <LineCallbackContent />
+    </Suspense>
   );
 }
