@@ -151,7 +151,7 @@ export function EventDetail({ eventId, initialEventData }: EventDetailProps) {
                       ? "上級者向け"
                       : "全ての方向け"}
                   </span>
-                  {event.categories.map((category, index) => (
+                  {event.categories?.map((category, index) => (
                     <span
                       key={index}
                       className="px-4 py-2 bg-indigo-50 text-indigo-700 rounded-full text-sm font-medium"
@@ -166,7 +166,7 @@ export function EventDetail({ eventId, initialEventData }: EventDetailProps) {
                 学べること
               </h3>
               <ul className="space-y-3">
-                {event.skills.map((skill, index) => (
+                {event.skills?.map((skill, index) => (
                   <li key={index} className="flex items-start">
                     <Target className="h-5 w-5 text-indigo-600 mr-3 mt-1" />
                     <span className="text-gray-600">{skill.name}</span>
@@ -247,7 +247,7 @@ export function EventDetail({ eventId, initialEventData }: EventDetailProps) {
               イベント参加で得られる成果物
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {event.outcomes.map((outcome, index) => {
+              {event.outcomes?.map((outcome, index) => {
                 const Icon = outcome.icon;
                 return (
                   <div key={index} className="bg-gray-50 rounded-xl p-6">
@@ -268,7 +268,7 @@ export function EventDetail({ eventId, initialEventData }: EventDetailProps) {
               講師プロフィール
             </h2>
             <div className="flex items-center space-x-4">
-              {event.speakers.map((speaker, index) => (
+              {event.speakers?.map((speaker, index) => (
                 <div key={index} className="flex items-center space-x-2">
                   <Image
                     src={
