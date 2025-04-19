@@ -1,10 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 
-export default function LineCallbackPage() {
+// 実際のコンテンツコンポーネント
+function LineCallbackContent() {
   const [status, setStatus] = useState<"loading" | "success" | "error">(
     "loading"
   );
@@ -173,5 +174,14 @@ export default function LineCallbackPage() {
         )}
       </div>
     </div>
+  );
+}
+
+// メインのページコンポーネント - Suspenseでラップする
+export default function LineCallbackPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <LineCallbackContent />
+    </Suspense>
   );
 }
