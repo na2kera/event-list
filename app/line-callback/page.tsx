@@ -4,7 +4,10 @@ import { useEffect, useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 
-// 実際のコンテンツコンポーネント
+// バックエンドAPIのベースURL
+const API_BASE_URL =
+  process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001/api";
+
 function LineCallbackContent() {
   const [status, setStatus] = useState<"loading" | "success" | "error">(
     "loading"
@@ -44,7 +47,7 @@ function LineCallbackContent() {
         }
 
         // LINEアクセストークンを取得
-        const tokenResponse = await fetch("/api/line/token", {
+        const tokenResponse = await fetch(`${API_BASE_URL}/line/token`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -63,7 +66,7 @@ function LineCallbackContent() {
         console.log("取得したアクセストークン:", access_token);
 
         // LINEプロフィール情報を取得
-        const profileResponse = await fetch("/api/line/profile", {
+        const profileResponse = await fetch(`${API_BASE_URL}/line/profile`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -80,6 +83,42 @@ function LineCallbackContent() {
 
         const profileData = await profileResponse.json();
         setLineProfile(profileData);
+
+        // バックエンドAPIを呼び出してユーザー情報をデータベースに保存
+        try {
+          const saveUserResponse = await fetch(
+            `${API_BASE_URL}/users/line-login`,
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                code,
+                state,
+              }),
+            }
+          );
+
+          if (!saveUserResponse.ok) {
+            const errorData = await saveUserResponse.json();
+            console.error("ユーザー情報保存エラー:", errorData);
+            throw new Error(
+              errorData.message || "ユーザー情報の保存に失敗しました"
+            );
+          }
+
+          const userData = await saveUserResponse.json();
+          console.log("保存されたユーザー情報:", userData);
+
+          // セッション情報をローカルストレージに保存
+          if (userData.sessionToken) {
+            localStorage.setItem("sessionToken", userData.sessionToken);
+          }
+        } catch (error) {
+          console.error("ユーザー情報保存エラー:", error);
+          // エラーがあってもプロフィール表示は続行
+        }
 
         // 成功メッセージを設定
         setStatus("success");
