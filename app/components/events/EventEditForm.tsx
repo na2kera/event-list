@@ -2,7 +2,7 @@
 
 import { useState, FormEvent } from "react";
 import { useRouter } from "next/navigation";
-import { Event, Speaker, Category } from "@/types";
+import { Event, Speaker, Category, GoalType } from "@/types";
 import { updateEvent } from "@/lib/api/serverApi";
 
 interface EventEditFormProps {
@@ -16,6 +16,7 @@ interface EventEditFormProps {
     categories: {
       category: Category;
     }[];
+    goals?: { goalType: GoalType }[];
   };
   categories: Category[];
   speakers: Speaker[];
@@ -73,6 +74,11 @@ export function EventEditForm({
   );
   const [newSpeakerId, setNewSpeakerId] = useState("");
 
+  // ゴールの状態管理
+  const [goals, setGoals] = useState<GoalType[]>(
+    initialEventData.goals?.map((goal) => goal.goalType) || []
+  );
+
   // 入力変更ハンドラ
   const handleInputChange = (
     e: React.ChangeEvent<
@@ -109,7 +115,7 @@ export function EventEditForm({
       const selectedCategory = availableCategories.find(
         (cat) => cat.id === newCategoryId
       );
-      
+
       if (selectedCategory) {
         setCategories([
           ...categories,
@@ -137,7 +143,7 @@ export function EventEditForm({
       const selectedSpeaker = availableSpeakers.find(
         (spk) => spk.id === newSpeakerId
       );
-      
+
       if (selectedSpeaker) {
         setSpeakers([
           ...speakers,
@@ -151,6 +157,15 @@ export function EventEditForm({
   // スピーカー削除ハンドラ
   const handleRemoveSpeaker = (speakerIdToRemove: string) => {
     setSpeakers(speakers.filter((spk) => spk.speakerId !== speakerIdToRemove));
+  };
+
+  // ゴール追加/削除ハンドラ
+  const handleToggleGoal = (goalType: GoalType) => {
+    setGoals((prev) =>
+      prev.includes(goalType)
+        ? prev.filter((g) => g !== goalType)
+        : [...prev, goalType]
+    );
   };
 
   // フォーム送信ハンドラ
@@ -168,6 +183,7 @@ export function EventEditForm({
         skills: skills.map((name) => ({ name })),
         categories: categories.map((cat) => ({ categoryId: cat.categoryId })),
         speakers: speakers.map((spk) => ({ speakerId: spk.speakerId })),
+        goals: goals.map((goalType) => ({ goalType })),
       };
 
       // イベント更新APIを呼び出し
@@ -448,7 +464,9 @@ export function EventEditForm({
                 type="button"
                 onClick={handleAddCategory}
                 disabled={!newCategoryId}
-                className={`px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 ${!newCategoryId ? 'opacity-50 cursor-not-allowed' : ''}`}
+                className={`px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                  !newCategoryId ? "opacity-50 cursor-not-allowed" : ""
+                }`}
               >
                 追加
               </button>
@@ -499,7 +517,9 @@ export function EventEditForm({
                 type="button"
                 onClick={handleAddSpeaker}
                 disabled={!newSpeakerId}
-                className={`px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 ${!newSpeakerId ? 'opacity-50 cursor-not-allowed' : ''}`}
+                className={`px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                  !newSpeakerId ? "opacity-50 cursor-not-allowed" : ""
+                }`}
               >
                 追加
               </button>
@@ -521,6 +541,31 @@ export function EventEditForm({
                   ×
                 </button>
               </div>
+            ))}
+          </div>
+        </div>
+
+        {/* ゴールセクション */}
+        <div className="space-y-4">
+          <h2 className="text-xl font-semibold border-b pb-2">ゴール</h2>
+          <div className="flex flex-wrap gap-2">
+            {[
+              { type: "IMPROVE_SKILLS", label: "スキル向上" },
+              { type: "EXPERIENCE_TEAM_DEV", label: "チーム開発経験" },
+              { type: "CREATE_PORTFOLIO", label: "ポートフォリオ作成" },
+            ].map(({ type, label }) => (
+              <button
+                key={type}
+                type="button"
+                onClick={() => handleToggleGoal(type as GoalType)}
+                className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                  goals.includes(type as GoalType)
+                    ? "bg-indigo-600 text-white hover:bg-indigo-700"
+                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                }`}
+              >
+                {label}
+              </button>
             ))}
           </div>
         </div>

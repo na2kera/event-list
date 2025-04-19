@@ -1,57 +1,40 @@
-"use client";
-
-import { Navbar } from "@/components/layout/Navbar";
 import { EventSearch } from "@/components/events/EventSearch";
-import { Suspense, useEffect, useState } from "react";
+import { Suspense } from "react";
 import { getEvents } from "@/lib/api/serverApi";
-import { Event } from "@/types";
+import { Header } from "@/components/layout/Header";
 
-// クライアントコンポーネントではmetadataをエクスポートできないため削除
+export const metadata = {
+  title: "イベント検索 | イベント管理アプリ",
+  description: "技術イベント・勉強会を検索するページです。",
+};
 
-// 実際のコンテンツを表示するクライアントコンポーネント
-function EventSearchContent() {
-  const [events, setEvents] = useState<Event[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+export default async function EventSearchPage() {
+  try {
+    // 初期表示用にすべてのイベントを取得
+    const eventsData = await getEvents();
 
-  useEffect(() => {
-    async function fetchEvents() {
-      try {
-        setLoading(true);
-        // 初期表示用にすべてのイベントを取得
-        const fetchedEvents = await getEvents();
-        setEvents(fetchedEvents);
-        setLoading(false);
-      } catch (error) {
-        console.error("Error fetching events:", error);
-        setError("イベントデータの取得中にエラーが発生しました");
-        setLoading(false);
-      }
-    }
-    
-    fetchEvents();
-  }, []);
-
-  if (loading) {
     return (
       <div className="min-h-screen bg-gray-50">
-        <Navbar />
-        <div className="container mx-auto px-4 py-8">
-          <div className="flex justify-center items-center py-12">
-            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-500"></div>
-          </div>
-        </div>
+        <Header />
+        <Suspense
+          fallback={
+            <div className="flex justify-center items-center py-12">
+              <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-500"></div>
+            </div>
+          }
+        >
+          <EventSearch initialEvents={eventsData} />
+        </Suspense>
       </div>
     );
-  }
-
-  if (error) {
+  } catch (error) {
+    console.error("Error fetching events:", error);
     return (
       <div className="min-h-screen bg-gray-50">
-        <Navbar />
+        <Header />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <h1 className="text-4xl font-bold text-gray-900 mb-8">
-            イベントを探す
+            イベントを検索
           </h1>
           <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md my-6">
             <div className="flex items-center">
@@ -68,7 +51,7 @@ function EventSearchContent() {
                 ></path>
               </svg>
               <p>
-                {error}。しばらく経ってから再度お試しください。
+                イベント情報の取得に失敗しました。しばらく経ってから再度お試しください。
               </p>
             </div>
           </div>
@@ -76,20 +59,4 @@ function EventSearchContent() {
       </div>
     );
   }
-
-  return (
-    <div className="min-h-screen bg-gray-50">
-      <Navbar />
-      <EventSearch initialEvents={events} />
-    </div>
-  );
-}
-
-// メインのページコンポーネント - Suspenseでラップする
-export default function EventSearchPage() {
-  return (
-    <Suspense fallback={<div className="min-h-screen bg-gray-50 flex items-center justify-center">Loading...</div>}>
-      <EventSearchContent />
-    </Suspense>
-  );
 }
