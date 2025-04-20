@@ -46,8 +46,8 @@ function LineCallbackContent() {
           throw new Error("不正なステートパラメータです");
         }
 
-        // LINEアクセストークンを取得
-        const tokenResponse = await fetch(`${API_BASE_URL}/line/token`, {
+        // LINE認証処理（トークン取得、プロフィール取得、ユーザー情報保存）を一括で行う
+        const authResponse = await fetch(`${API_BASE_URL}/line/auth`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -55,69 +55,39 @@ function LineCallbackContent() {
           body: JSON.stringify({ code }),
         });
 
-        if (!tokenResponse.ok) {
-          const errorData = await tokenResponse.json();
-          throw new Error(errorData.message || "トークン取得に失敗しました");
+        if (!authResponse.ok) {
+          const errorData = await authResponse.json();
+          throw new Error(errorData.message || "LINE認証に失敗しました");
         }
 
-        const tokenData = await tokenResponse.json();
-        const { access_token } = tokenData;
-
-        console.log("取得したアクセストークン:", access_token);
-
-        // LINEプロフィール情報を取得
-        const profileResponse = await fetch(`${API_BASE_URL}/line/profile`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ access_token }),
-        });
-
-        if (!profileResponse.ok) {
-          const errorData = await profileResponse.json();
-          throw new Error(
-            errorData.message || "プロフィール取得に失敗しました"
-          );
+        const authData = await authResponse.json();
+        console.log("LINE認証結果:", authData);
+        
+        // プロフィール情報を設定
+        if (authData.profile) {
+          setLineProfile({
+            userId: authData.profile.userId,
+            displayName: authData.profile.displayName,
+            pictureUrl: authData.profile.pictureUrl,
+          });
+        } else if (authData.user) {
+          // プロフィール情報がない場合はユーザー情報から設定
+          setLineProfile({
+            userId: authData.user.lineId,
+            displayName: authData.user.name,
+            pictureUrl: authData.user.image,
+          });
         }
 
-        const profileData = await profileResponse.json();
-        setLineProfile(profileData);
-
-        // バックエンドAPIを呼び出してユーザー情報をデータベースに保存
-        try {
-          const saveUserResponse = await fetch(
-            `${API_BASE_URL}/users/line-login`,
-            {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({
-                code,
-                state,
-              }),
-            }
-          );
-
-          if (!saveUserResponse.ok) {
-            const errorData = await saveUserResponse.json();
-            console.error("ユーザー情報保存エラー:", errorData);
-            throw new Error(
-              errorData.message || "ユーザー情報の保存に失敗しました"
-            );
+        // セッション情報をローカルストレージに保存
+        if (authData.user && authData.user.id) {
+          localStorage.setItem("userId", authData.user.id);
+          localStorage.setItem("lineId", authData.user.lineId || "");
+          
+          // トークン情報があれば保存
+          if (authData.token && authData.token.access_token) {
+            localStorage.setItem("lineAccessToken", authData.token.access_token);
           }
-
-          const userData = await saveUserResponse.json();
-          console.log("保存されたユーザー情報:", userData);
-
-          // セッション情報をローカルストレージに保存
-          if (userData.sessionToken) {
-            localStorage.setItem("sessionToken", userData.sessionToken);
-          }
-        } catch (error) {
-          console.error("ユーザー情報保存エラー:", error);
-          // エラーがあってもプロフィール表示は続行
         }
 
         // 成功メッセージを設定
