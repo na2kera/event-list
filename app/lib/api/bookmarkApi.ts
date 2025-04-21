@@ -45,6 +45,5 @@ export const getUserBookmarks = async (userId: string): Promise<Bookmark[]> => {
   }
 
   const data: Bookmark[] = await response.json();
-  console.log("API response:", data);
   return data;
 };

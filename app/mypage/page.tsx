@@ -8,7 +8,6 @@ export default async function MyPage() {
   if (!session?.user?.id) return null;
 
   const userbookmarks = await getUserBookmarks(session.user.id);
-  console.log("userbookmarks:", userbookmarks);
 
   return (
     <div className="container mx-auto px-4 py-8">
