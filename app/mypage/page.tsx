@@ -1,5 +1,6 @@
 import { BookmarkList } from "@/components/mypage/BookmarkList";
 import { getUserBookmarks } from "@/lib/api/bookmarkApi";
+import { getUserProfile } from "@/lib/api/serverApi";
 import { authOptions } from "@/lib/auth";
 import { getServerSession } from "next-auth";
 
@@ -7,7 +8,10 @@ export default async function MyPage() {
   const session = await getServerSession(authOptions);
   if (!session?.user?.id) return null;
 
+  const userProfile = await getUserProfile(session.user.id);
   const userbookmarks = await getUserBookmarks(session.user.id);
+
+  console.log(userProfile);
 
   return (
     <div className="container mx-auto px-4 py-8">
