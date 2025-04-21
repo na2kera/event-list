@@ -1,40 +1,18 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
-import { getUserBookmarks } from "@/lib/api/bookmarkApi";
-import { Event } from "@/types";
 import { EventCard } from "../events/EventCard";
-import { Skeleton } from "../ui/skeleton";
+import { Bookmark } from "@/types";
 
-interface Bookmark {
-  id: string;
-  eventId: string;
-  userId: string;
-  event: Event;
+interface BookmarkListProps {
+  bookmarks: Bookmark[];
 }
 
-export function BookmarkList() {
+export function BookmarkList({ bookmarks }: BookmarkListProps) {
+  // 1. props受け取り直後
+  console.log("[BookmarkList] props.bookmarks:", bookmarks);
+  console.log("BookmarkList bookmarks:", bookmarks);
   const { data: session } = useSession();
-  const [bookmarks, setBookmarks] = useState<Bookmark[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchBookmarks = async () => {
-      if (!session?.user?.id) return;
-
-      try {
-        const data = await getUserBookmarks(session.user.id);
-        setBookmarks(data);
-      } catch (error) {
-        console.error("Error fetching bookmarks:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchBookmarks();
-  }, [session?.user?.id]);
 
   if (!session) {
     return (
@@ -44,16 +22,8 @@ export function BookmarkList() {
     );
   }
 
-  if (isLoading) {
-    return (
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {[...Array(6)].map((_, i) => (
-          <Skeleton key={i} className="h-[300px] rounded-lg" />
-        ))}
-      </div>
-    );
-  }
-
+  // 2. map直前
+  console.log("[BookmarkList] before map, bookmarks:", bookmarks);
   if (bookmarks.length === 0) {
     return (
       <div className="text-center py-8">
@@ -62,15 +32,22 @@ export function BookmarkList() {
     );
   }
 
+  console.log(bookmarks);
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      {bookmarks.map((bookmark) => (
-        <EventCard
-          key={bookmark.id}
-          event={bookmark.event}
-          isBookmarked={true}
-        />
-      ))}
+      {bookmarks.map((bookmark, idx) => {
+        // 3. 各bookmarkの中身
+        console.log(`[BookmarkList] bookmark[${idx}]:`, bookmark);
+        // 4. EventCardに渡すeventの中身
+        console.log(`[BookmarkList] bookmark[${idx}].event:`, bookmark.Event);
+        return (
+          <EventCard
+            key={bookmark.id}
+            event={bookmark.Event}
+            isBookmarked={true}
+          />
+        );
+      })}
     </div>
   );
 }

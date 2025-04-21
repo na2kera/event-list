@@ -1,11 +1,4 @@
-import { Event } from "@/types";
-
-interface Bookmark {
-  id: string;
-  eventId: string;
-  userId: string;
-  event: Event;
-}
+import { Bookmark } from "@/types";
 
 export const addBookmark = async (
   userId: string,
@@ -51,5 +44,7 @@ export const getUserBookmarks = async (userId: string): Promise<Bookmark[]> => {
     throw new Error("Failed to fetch bookmarks");
   }
 
-  return response.json();
+  const data: Bookmark[] = await response.json();
+  console.log("API response:", data);
+  return data;
 };
