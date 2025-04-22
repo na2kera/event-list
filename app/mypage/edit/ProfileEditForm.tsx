@@ -40,11 +40,6 @@ const profileSchema = z.object({
     .email("有効なメールアドレスを入力してください")
     .optional()
     .or(z.literal("")),
-  image: z
-    .string()
-    .url("有効なURLを入力してください")
-    .optional()
-    .or(z.literal("")),
   stack: z.array(z.string()).optional(),
   level: z.string().optional(),
   place: z.string().optional(),
@@ -91,7 +86,6 @@ export function ProfileEditForm({ initialData }: ProfileEditFormProps) {
     defaultValues: {
       name: initialData.name || "",
       email: initialData.email || "",
-      image: initialData.image || "",
       stack: initialData.stack || [],
       level: initialData.level || "",
       place: initialData.place || "",
@@ -140,7 +134,6 @@ export function ProfileEditForm({ initialData }: ProfileEditFormProps) {
       await updateUserProfile(initialData.id, {
         name: data.name || undefined,
         email: data.email || undefined,
-        image: data.image || undefined,
         stack: stacks,
         level: selectedLevel,
         place: data.place || undefined,
@@ -205,20 +198,6 @@ export function ProfileEditForm({ initialData }: ProfileEditFormProps) {
                     type="email"
                     error={!!errors.email}
                     helperText={errors.email?.message}
-                    margin="normal"
-                  />
-                )}
-              />
-              <Controller
-                name="image"
-                control={control}
-                render={({ field }) => (
-                  <TextField
-                    {...field}
-                    fullWidth
-                    label="プロフィール画像URL"
-                    error={!!errors.image}
-                    helperText={errors.image?.message}
                     margin="normal"
                   />
                 )}
