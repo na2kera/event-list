@@ -18,20 +18,26 @@ export type GoalType =
   | "EXPERIENCE_TEAM_DEV"
   | "CREATE_PORTFOLIO";
 
-export interface Bookmark {
+export type Speaker = {
+  avatar: string | undefined;
   id: string;
-  eventId: string;
-  userId: string;
-  createdAt: string;
-  updatedAt: string;
-  Event: Event; // APIレスポンスが大文字ならEvent、小文字ならeventに
-}
+  name: string;
+  occupation: string;
+  affiliation: string;
+  bio: string;
+};
 
-export type Event = {
+export type Category = {
+  id: string;
+  name: string;
+  description?: string;
+};
+
+export interface Event {
   id: string;
   title: string;
   description?: string;
-  eventDate: Date;
+  eventDate: string;
   startTime: string;
   endTime?: string;
   venue: string;
@@ -39,8 +45,8 @@ export type Event = {
   location?: string;
   detailUrl?: string;
   organizationId: string;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string;
+  updatedAt: string;
   image?: string;
   format: EventFormat;
   difficulty: Difficulty;
@@ -68,19 +74,13 @@ export type Event = {
     image: string;
   };
   category?: string;
-};
+}
 
-export type Speaker = {
-  avatar: string | undefined;
+export interface Bookmark {
   id: string;
-  name: string;
-  occupation: string;
-  affiliation: string;
-  bio: string;
-};
-
-export type Category = {
-  id: string;
-  name: string;
-  description?: string;
-};
+  userId: string;
+  eventId: string;
+  createdAt: string;
+  updatedAt: string;
+  Event: Event;
+}

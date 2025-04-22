@@ -251,6 +251,30 @@ export async function getSpeakers() {
 }
 
 /**
+ * ユーザープロフィールを取得する（サーバーサイド用）
+ * @param userId ユーザーID
+ */
+export async function getUserProfile(userId: string) {
+  try {
+    const response = await fetch(`${API_BASE_URL}/users/${userId}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      cache: "no-store",
+    });
+    if (!response.ok) {
+      throw new Error(`API error: ${response.status}`);
+    }
+    const result = await response.json();
+    return result.success ? result.user : result;
+  } catch (error) {
+    console.error("Error fetching user profile:", error);
+    throw error;
+  }
+}
+
+/**
  * ユーザーのブックマーク一覧を取得する（サーバーサイド用）
  * @param userId ユーザーID
  */
