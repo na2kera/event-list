@@ -66,6 +66,8 @@ export function ProfileEditForm({ initialData }: ProfileEditFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [newStack, setNewStack] = useState("");
   const [stacks, setStacks] = useState<string[]>(initialData.stack || []);
+  const [newTag, setNewTag] = useState("");
+  const [tags, setTags] = useState<string[]>(initialData.tag || []);
   const [toast, setToast] = useState<{
     open: boolean;
     message: string;
@@ -108,6 +110,19 @@ export function ProfileEditForm({ initialData }: ProfileEditFormProps) {
     setStacks(stacks.filter((stack) => stack !== stackToRemove));
   };
 
+  // タグの追加
+  const handleAddTag = () => {
+    if (newTag.trim() && !tags.includes(newTag.trim())) {
+      setTags([...tags, newTag.trim()]);
+      setNewTag("");
+    }
+  };
+
+  // タグの削除
+  const handleRemoveTag = (tagToRemove: string) => {
+    setTags(tags.filter((tag) => tag !== tagToRemove));
+  };
+
   const onSubmit = async (data: ProfileFormData) => {
     setIsSubmitting(true);
 
@@ -116,10 +131,10 @@ export function ProfileEditForm({ initialData }: ProfileEditFormProps) {
         name: data.name || undefined,
         email: data.email || undefined,
         image: data.image || undefined,
-        stack: stacks, // 更新されたスタックを使用
+        stack: stacks,
         level: data.level || undefined,
         place: data.place || undefined,
-        tag: data.tag,
+        tag: tags,
         goal: data.goal,
         affiliation: data.affiliation || undefined,
       });
@@ -272,21 +287,47 @@ export function ProfileEditForm({ initialData }: ProfileEditFormProps) {
                   />
                 )}
               />
-              <Controller
-                name="tag"
-                control={control}
-                render={({ field }) => (
+
+              {/* タグ */}
+              <div>
+                <Typography variant="subtitle1" className="mb-2">
+                  タグ
+                </Typography>
+                <div className="flex gap-2 mb-2">
                   <TextField
-                    {...field}
+                    value={newTag}
+                    onChange={(e) => setNewTag(e.target.value)}
+                    placeholder="新しいタグを入力"
                     fullWidth
-                    label="タグ"
-                    error={!!errors.tag}
-                    helperText={errors.tag?.message}
-                    margin="normal"
-                    placeholder="カンマ区切りで入力"
+                    size="small"
                   />
-                )}
-              />
+                  <Button
+                    variant="contained"
+                    onClick={handleAddTag}
+                    disabled={!newTag.trim()}
+                  >
+                    追加
+                  </Button>
+                </div>
+                <div className="flex flex-wrap gap-2 mt-2">
+                  {tags.map((tag, index) => (
+                    <div
+                      key={index}
+                      className="bg-purple-100 text-purple-800 px-3 py-1 rounded-full flex items-center"
+                    >
+                      <span>{tag}</span>
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveTag(tag)}
+                        className="ml-2 text-purple-600 hover:text-purple-800"
+                      >
+                        ×
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
               <Controller
                 name="goal"
                 control={control}
