@@ -32,26 +32,11 @@ const profileSchema = z.object({
     .url("有効なURLを入力してください")
     .optional()
     .or(z.literal("")),
-  stack: z.string().transform((val) =>
-    val
-      .split(",")
-      .map((s) => s.trim())
-      .filter(Boolean)
-  ),
+  stack: z.array(z.string()).optional(),
   level: z.string().optional(),
   place: z.string().optional(),
-  tag: z.string().transform((val) =>
-    val
-      .split(",")
-      .map((s) => s.trim())
-      .filter(Boolean)
-  ),
-  goal: z.string().transform((val) =>
-    val
-      .split(",")
-      .map((s) => s.trim())
-      .filter(Boolean)
-  ),
+  tag: z.array(z.string()).optional(),
+  goal: z.array(z.string()).optional(),
   affiliation: z.string().optional(),
 });
 
