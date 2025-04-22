@@ -14,8 +14,21 @@ import {
   Typography,
   Snackbar,
   Alert,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  FormGroup,
+  FormControlLabel,
+  Checkbox,
 } from "@mui/material";
 import { updateUserProfile, UserProfile } from "@/lib/api/userApi";
+import {
+  DifficultyLevel,
+  GoalType,
+  DIFFICULTY_LABELS,
+  GOAL_LABELS,
+} from "@/types/enums";
 
 const profileSchema = z.object({
   name: z
@@ -53,6 +66,12 @@ export function ProfileEditForm({ initialData }: ProfileEditFormProps) {
   const [stacks, setStacks] = useState<string[]>(initialData.stack || []);
   const [newTag, setNewTag] = useState("");
   const [tags, setTags] = useState<string[]>(initialData.tag || []);
+  const [selectedGoals, setSelectedGoals] = useState<GoalType[]>(
+    (initialData.goal || []) as GoalType[]
+  );
+  const [selectedLevel, setSelectedLevel] = useState<DifficultyLevel>(
+    (initialData.level as DifficultyLevel) || DifficultyLevel.BEGINNER
+  );
   const [toast, setToast] = useState<{
     open: boolean;
     message: string;
@@ -108,6 +127,12 @@ export function ProfileEditForm({ initialData }: ProfileEditFormProps) {
     setTags(tags.filter((tag) => tag !== tagToRemove));
   };
 
+  const handleGoalChange = (goal: GoalType) => {
+    setSelectedGoals((prev) =>
+      prev.includes(goal) ? prev.filter((g) => g !== goal) : [...prev, goal]
+    );
+  };
+
   const onSubmit = async (data: ProfileFormData) => {
     setIsSubmitting(true);
 
@@ -117,10 +142,10 @@ export function ProfileEditForm({ initialData }: ProfileEditFormProps) {
         email: data.email || undefined,
         image: data.image || undefined,
         stack: stacks,
-        level: data.level || undefined,
+        level: selectedLevel,
         place: data.place || undefined,
         tag: tags,
-        goal: data.goal,
+        goal: selectedGoals,
         affiliation: data.affiliation || undefined,
       });
 
@@ -248,14 +273,24 @@ export function ProfileEditForm({ initialData }: ProfileEditFormProps) {
                 name="level"
                 control={control}
                 render={({ field }) => (
-                  <TextField
-                    {...field}
-                    fullWidth
-                    label="スキルレベル"
-                    error={!!errors.level}
-                    helperText={errors.level?.message}
-                    margin="normal"
-                  />
+                  <FormControl fullWidth>
+                    <InputLabel>スキルレベル</InputLabel>
+                    <Select
+                      {...field}
+                      label="スキルレベル"
+                      error={!!errors.level}
+                      value={selectedLevel}
+                      onChange={(e) =>
+                        setSelectedLevel(e.target.value as DifficultyLevel)
+                      }
+                    >
+                      {Object.values(DifficultyLevel).map((level) => (
+                        <MenuItem key={level} value={level}>
+                          {DIFFICULTY_LABELS[level]}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
                 )}
               />
               <Controller
@@ -313,21 +348,26 @@ export function ProfileEditForm({ initialData }: ProfileEditFormProps) {
                 </div>
               </div>
 
-              <Controller
-                name="goal"
-                control={control}
-                render={({ field }) => (
-                  <TextField
-                    {...field}
-                    fullWidth
-                    label="目標"
-                    error={!!errors.goal}
-                    helperText={errors.goal?.message}
-                    margin="normal"
-                    placeholder="カンマ区切りで入力"
-                  />
-                )}
-              />
+              <div>
+                <Typography variant="subtitle1" className="mb-2">
+                  目標
+                </Typography>
+                <FormGroup>
+                  {Object.values(GoalType).map((goal) => (
+                    <FormControlLabel
+                      key={goal}
+                      control={
+                        <Checkbox
+                          checked={selectedGoals.includes(goal)}
+                          onChange={() => handleGoalChange(goal)}
+                        />
+                      }
+                      label={GOAL_LABELS[goal]}
+                    />
+                  ))}
+                </FormGroup>
+              </div>
+
               <Controller
                 name="affiliation"
                 control={control}
