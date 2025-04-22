@@ -6,7 +6,7 @@ import { getServerSession } from "next-auth";
 import Link from "next/link";
 import { Button } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
-import { GOAL_LABELS } from "@/types/enums";
+import { GOAL_LABELS, DIFFICULTY_LABELS } from "@/types/enums";
 
 export default async function MyPage() {
   const session = await getServerSession(authOptions);
@@ -72,7 +72,13 @@ export default async function MyPage() {
 
             <div>
               <h4 className="font-medium mb-2">レベル</h4>
-              <p className="text-gray-700">{userProfile.level || "未設定"}</p>
+              <p className="text-gray-700">
+                {userProfile.level
+                  ? DIFFICULTY_LABELS[
+                      userProfile.level as keyof typeof DIFFICULTY_LABELS
+                    ]
+                  : "未設定"}
+              </p>
             </div>
 
             <div>
