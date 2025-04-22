@@ -6,6 +6,7 @@ import { getServerSession } from "next-auth";
 import Link from "next/link";
 import { Button } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
+import { GOAL_LABELS } from "@/types/enums";
 
 export default async function MyPage() {
   const session = await getServerSession(authOptions);
@@ -97,7 +98,7 @@ export default async function MyPage() {
                     key={index}
                     className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm"
                   >
-                    {goal}
+                    {GOAL_LABELS[goal as keyof typeof GOAL_LABELS] || goal}
                   </span>
                 ))
               ) : (
