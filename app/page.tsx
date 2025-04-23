@@ -1,5 +1,5 @@
 import { Hero } from "./components/Hero";
-import { getEvents } from "@/lib/api/serverApi";
+import { getEvents, getUserProfile } from "@/lib/api/serverApi";
 import { Event } from "@/types";
 import { getServerSession } from "next-auth";
 import { getUserBookmarks } from "@/lib/api/serverApi";
@@ -52,9 +52,14 @@ export default async function Home() {
       isBookmarked: bookmarkedEventIds.includes(event.id),
     }));
 
+    let userProfile = null;
+    if (session?.user?.id) {
+      userProfile = await getUserProfile(session.user.id);
+    }
+
     return (
       <div className="min-h-screen bg-white">
-        <Hero recentEvents={recentEvents} />
+        <Hero recentEvents={recentEvents} userProfile={userProfile} />
       </div>
     );
   } catch (error) {
