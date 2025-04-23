@@ -40,6 +40,18 @@ export const authOptions: NextAuthOptions = {
       },
     }),
   ],
+  cookies: {
+    sessionToken: {
+      name: `${process.env.NODE_ENV === 'production' ? '__Secure-' : ''}next-auth.session-token`,
+      options: {
+        httpOnly: true,
+        sameSite: 'lax',
+        path: '/',
+        secure: process.env.NODE_ENV === 'production',
+        // domain: '.yourdomain.com' // 必要に応じて本番ドメインを設定
+      },
+    },
+  },
   session: {
     strategy: "jwt",
   },
