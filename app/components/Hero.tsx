@@ -11,9 +11,9 @@ import { EventList } from "./events/EventList";
 import { Event } from "@/types";
 import Link from "next/link";
 import { getServerSession } from "next-auth";
-import { getUserProfile } from "@/lib/api/serverApi";
 import { authOptions } from "@/lib/auth";
 import { ClientProfilePopup } from "./ClientProfilePopup";
+import { ProfileData } from "./ProfilePopup";
 
 interface HeroProps {
   recentEvents?: (Event & {
@@ -32,19 +32,20 @@ interface HeroProps {
       category: { id: string; name: string };
     }[];
   })[];
+  userProfile?: ProfileData;
 }
 
-export async function Hero({ recentEvents }: HeroProps) {
+export async function Hero({ recentEvents, userProfile }: HeroProps) {
   const session = await getServerSession(authOptions);
   if (!session?.user?.id) return null;
 
-  const userProfile = await getUserProfile(session.user.id);
-
   return (
     <>
-      {userProfile.stack.length == 0 &&
-        userProfile.tag.length == 0 &&
-        userProfile.goal.length == 0 && (
+      {/* ↓↓↓ userProfile の存在チェックを追加 ↓↓↓ */}
+      {userProfile &&
+        userProfile.stack.length == 0 &&
+        userProfile.tags.length == 0 &&
+        userProfile.goals.length == 0 && (
           <ClientProfilePopup userId={session.user.id} />
         )}
       {/* メインヒーローセクション */}
