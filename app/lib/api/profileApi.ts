@@ -31,7 +31,7 @@ export async function saveUserProfile(
       throw new Error("Failed to save user profile");
     }
 
-    const result = await response.json();
+    // const result = await response.json();
     return { success: true };
   } catch (error) {
     console.error("Error saving profile:", error);
