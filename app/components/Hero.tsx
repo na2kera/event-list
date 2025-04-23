@@ -10,12 +10,22 @@ import { ColumnCard } from "@/components/columns/ColumnCard";
 import { EventList } from "./events/EventList";
 import { Event } from "@/types";
 import Link from "next/link";
+import { getServerSession } from "next-auth";
+import { getUserProfile } from "@/lib/api/serverApi";
+import { authOptions } from "@/lib/auth";
+import { ClientProfilePopup } from "./ClientProfilePopup";
 
 interface HeroProps {
   recentEvents?: (Event & {
     organization: { name: string };
     speakers: {
-      speaker: { id: string; name: string; occupation: string; affiliation: string; bio: string };
+      speaker: {
+        id: string;
+        name: string;
+        occupation: string;
+        affiliation: string;
+        bio: string;
+      };
     }[];
     skills: { id: string; name: string }[];
     categories: {
@@ -24,9 +34,18 @@ interface HeroProps {
   })[];
 }
 
-export function Hero({ recentEvents }: HeroProps) {
+export async function Hero({ recentEvents }: HeroProps) {
+  const session = await getServerSession(authOptions);
+  if (!session?.user?.id) return null;
+
+  const userProfile = await getUserProfile(session.user.id);
+  console.log("userProfile", userProfile);
+
   return (
     <>
+      {/* クライアントサイドポップアップ */}
+      <ClientProfilePopup userId={session.user.id} />
+      
       {/* メインヒーローセクション */}
       <div className="bg-gradient-to-br from-indigo-900 via-indigo-800 to-indigo-900 text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
@@ -88,7 +107,10 @@ export function Hero({ recentEvents }: HeroProps) {
           <h2 className="text-2xl font-bold text-gray-900">
             直近の開催イベント
           </h2>
-          <Link href="/events" className="text-indigo-600 hover:text-indigo-800 font-medium">
+          <Link
+            href="/events"
+            className="text-indigo-600 hover:text-indigo-800 font-medium"
+          >
             すべてのイベントを見る →
           </Link>
         </div>
@@ -183,3 +205,5 @@ const columns = [
     excerpt: "膨大な情報から本当に必要な技術を見極めるコツ",
   },
 ];
+
+
