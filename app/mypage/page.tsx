@@ -4,6 +4,7 @@ import { getUserProfile } from "@/lib/api/serverApi";
 import { authOptions } from "@/lib/auth";
 import { getServerSession } from "next-auth";
 import Link from "next/link";
+import Image from "next/image";
 import { Button } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import { GOAL_LABELS, DIFFICULTY_LABELS } from "@/types/enums";
@@ -34,10 +35,12 @@ export default async function MyPage() {
         <div className="bg-white rounded-lg shadow p-6">
           <div className="flex items-center space-x-4 mb-4">
             {userProfile.image && (
-              <img
+              <Image
                 src={userProfile.image}
                 alt={userProfile.name || "プロフィール画像"}
-                className="w-16 h-16 rounded-full"
+                width={64}
+                height={64}
+                className="rounded-full"
               />
             )}
             <div>
