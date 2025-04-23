@@ -40,7 +40,6 @@ export default async function Home() {
       );
     }
 
-    // 最新の3件のみを表示
     const recentEvents = eventsData.slice(0, 3).map((event) => ({
       ...event,
       isBookmarked: bookmarkedEventIds.includes(event.id),
