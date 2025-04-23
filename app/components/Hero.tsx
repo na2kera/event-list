@@ -39,13 +39,14 @@ export async function Hero({ recentEvents }: HeroProps) {
   if (!session?.user?.id) return null;
 
   const userProfile = await getUserProfile(session.user.id);
-  console.log("userProfile", userProfile);
 
   return (
     <>
-      {/* クライアントサイドポップアップ */}
-      <ClientProfilePopup userId={session.user.id} />
-      
+      {userProfile.stack.length == 0 &&
+        userProfile.tag.length == 0 &&
+        userProfile.goal.length == 0 && (
+          <ClientProfilePopup userId={session.user.id} />
+        )}
       {/* メインヒーローセクション */}
       <div className="bg-gradient-to-br from-indigo-900 via-indigo-800 to-indigo-900 text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
@@ -205,5 +206,3 @@ const columns = [
     excerpt: "膨大な情報から本当に必要な技術を見極めるコツ",
   },
 ];
-
-
