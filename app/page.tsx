@@ -31,13 +31,20 @@ export default async function Home() {
 
     // ユーザーのブックマーク情報を取得
     const session = await getServerSession(authOptions);
+    console.log("===== Homepage Session Info =====");
+    console.log("Session Object:", JSON.stringify(session, null, 2));
+    console.log("Session User ID:", session?.user?.id);
+    console.log("===============================");
     let bookmarkedEventIds: string[] = [];
 
     if (session?.user?.id) {
+      console.log("Fetching bookmarks for user:", session.user.id);
       const bookmarks = await getUserBookmarks(session.user.id);
       bookmarkedEventIds = bookmarks.map(
         (bookmark: Bookmark) => bookmark.eventId
       );
+    } else {
+      console.log("User session or ID not found on homepage.");
     }
 
     const recentEvents = eventsData.slice(0, 3).map((event) => ({
@@ -51,7 +58,12 @@ export default async function Home() {
       </div>
     );
   } catch (error) {
-    console.error("Error fetching events for homepage:", error);
+    console.error("Error fetching data for homepage:", error);
+    if (error instanceof Error) {
+      console.error("Error name:", error.name);
+      console.error("Error message:", error.message);
+      console.error("Error stack:", error.stack);
+    }
 
     // エラーが発生した場合でもHeroコンポーネントを表示（イベントデータなし）
     return (
