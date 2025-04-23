@@ -59,7 +59,11 @@ export default async function Home() {
 
     return (
       <div className="min-h-screen bg-white">
-        <Hero recentEvents={recentEvents} userProfile={userProfile} />
+        <Hero
+          recentEvents={recentEvents}
+          userProfile={userProfile}
+          session={session ?? undefined}
+        />
       </div>
     );
   } catch (error) {
@@ -73,7 +77,7 @@ export default async function Home() {
     // エラーが発生した場合でもHeroコンポーネントを表示（イベントデータなし）
     return (
       <div className="min-h-screen bg-white">
-        <Hero />
+        <Hero recentEvents={[]} />
       </div>
     );
   }

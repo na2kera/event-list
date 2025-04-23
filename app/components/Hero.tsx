@@ -10,10 +10,9 @@ import { ColumnCard } from "@/components/columns/ColumnCard";
 import { EventList } from "./events/EventList";
 import { Event } from "@/types";
 import Link from "next/link";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
 import { ClientProfilePopup } from "./ClientProfilePopup";
 import { ProfileData } from "./ProfilePopup";
+import { Session } from "next-auth";
 
 interface HeroProps {
   recentEvents?: (Event & {
@@ -33,21 +32,18 @@ interface HeroProps {
     }[];
   })[];
   userProfile?: ProfileData;
+  session?: Session;
 }
 
-export async function Hero({ recentEvents, userProfile }: HeroProps) {
-  const session = await getServerSession(authOptions);
-  if (!session?.user?.id) return null;
-
+export async function Hero({ recentEvents, userProfile, session }: HeroProps) {
   return (
     <>
       {/* ↓↓↓ userProfile の存在チェックを追加 ↓↓↓ */}
       {userProfile &&
         userProfile.stack.length == 0 &&
         userProfile.tags.length == 0 &&
-        userProfile.goals.length == 0 && (
-          <ClientProfilePopup userId={session.user.id} />
-        )}
+        userProfile.goals.length == 0 &&
+        session?.user?.id && <ClientProfilePopup userId={session.user.id} />}
       {/* メインヒーローセクション */}
       <div className="bg-gradient-to-br from-indigo-900 via-indigo-800 to-indigo-900 text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
