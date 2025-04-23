@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { GoalType, GOAL_LABELS } from "@/types/enums";
 
 interface ProfilePopupProps {
   isOpen: boolean;
@@ -11,13 +12,13 @@ interface ProfilePopupProps {
 export interface ProfileData {
   stack: string[];
   tags: string[];
-  goal: string;
+  goals: GoalType[];
 }
 
 export function ProfilePopup({ isOpen, onClose, onSave }: ProfilePopupProps) {
   const [stack, setStack] = useState<string[]>([]);
   const [tags, setTags] = useState<string[]>([]);
-  const [goal, setGoal] = useState("");
+  const [goals, setGoals] = useState<GoalType[]>([GoalType.IMPROVE_SKILLS]);
   const [newStack, setNewStack] = useState("");
   const [newTag, setNewTag] = useState("");
 
@@ -49,7 +50,7 @@ export function ProfilePopup({ isOpen, onClose, onSave }: ProfilePopupProps) {
 
   // 保存処理
   const handleSave = () => {
-    onSave({ stack, tags, goal });
+    onSave({ stack, tags, goals });
     onClose();
   };
 
@@ -68,8 +69,11 @@ export function ProfilePopup({ isOpen, onClose, onSave }: ProfilePopupProps) {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg shadow-xl w-full max-w-md mx-4 overflow-hidden">
+    <div className="fixed inset-0 z-50 flex items-center justify-center pointer-events-none">
+      <div
+        className="absolute inset-0 bg-transparent pointer-events-none"
+      ></div>
+      <div className="bg-white shadow-xl w-full max-w-md mx-4 overflow-hidden relative z-10 border border-indigo-200 rounded-lg pointer-events-auto">
         {/* ヘッダー */}
         <div className="bg-indigo-600 px-6 py-4">
           <h2 className="text-xl font-bold text-white">プロフィール設定</h2>
@@ -115,7 +119,6 @@ export function ProfilePopup({ isOpen, onClose, onSave }: ProfilePopupProps) {
               ))}
             </div>
           </div>
-
           {/* タグ入力 */}
           <div className="mb-6">
             <label className="block text-gray-700 font-medium mb-2">
@@ -154,21 +157,44 @@ export function ProfilePopup({ isOpen, onClose, onSave }: ProfilePopupProps) {
               ))}
             </div>
           </div>
-
-          {/* 目標入力 */}
+          {/* 目標選択（複数選択可能） */}
           <div className="mb-6">
             <label className="block text-gray-700 font-medium mb-2">
-              成長目標
+              成長目標（複数選択可能）
             </label>
-            <textarea
-              value={goal}
-              onChange={(e) => setGoal(e.target.value)}
-              className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              rows={3}
-              placeholder="あなたの目標を入力してください"
-            ></textarea>
+            <div className="space-y-2">
+              {Object.entries(GOAL_LABELS).map(([goalType, label]) => {
+                const goalTypeEnum = goalType as GoalType;
+                const isChecked = goals.includes(goalTypeEnum);
+                
+                const toggleGoal = () => {
+                  if (isChecked) {
+                    // 選択済みの場合は削除（ただし最低1つは必要）
+                    if (goals.length > 1) {
+                      setGoals(goals.filter(g => g !== goalTypeEnum));
+                    }
+                  } else {
+                    // 未選択の場合は追加
+                    setGoals([...goals, goalTypeEnum]);
+                  }
+                };
+                
+                return (
+                  <label key={goalType} className="flex items-center space-x-2 cursor-pointer p-2 hover:bg-gray-50 rounded-md">
+                    <input
+                      type="checkbox"
+                      name="goals"
+                      value={goalType}
+                      checked={isChecked}
+                      onChange={toggleGoal}
+                      className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 rounded"
+                    />
+                    <span className="text-gray-700">{label}</span>
+                  </label>
+                );
+              })}
+            </div>
           </div>
-
           {/* ボタン */}
           <div className="flex justify-end gap-3">
             <button
