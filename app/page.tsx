@@ -4,7 +4,6 @@ import { Event } from "@/types";
 import { getServerSession } from "next-auth";
 import { getUserBookmarks } from "@/lib/api/serverApi";
 import { authOptions } from "./lib/auth";
-import { Header } from "@/components/layout/Header";
 
 interface Bookmark {
   eventId: string;
@@ -49,7 +48,6 @@ export default async function Home() {
 
     return (
       <div className="min-h-screen bg-white">
-        <Header />
         <Hero recentEvents={recentEvents} />
       </div>
     );
@@ -59,7 +57,6 @@ export default async function Home() {
     // エラーが発生した場合でもHeroコンポーネントを表示（イベントデータなし）
     return (
       <div className="min-h-screen bg-white">
-        <Header />
         <Hero />
       </div>
     );

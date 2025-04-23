@@ -1,7 +1,6 @@
 import { Container } from "@/components/layout/Container";
 import { EventDetailClient } from "@/components/events/EventDetailClient";
 import { notFound } from "next/navigation";
-import { Header } from "@/components/layout/Header";
 
 // バックエンドAPIのベースURL
 const API_BASE_URL =
@@ -38,7 +37,6 @@ export default async function EventPage({
 
     return (
       <div className="min-h-screen bg-gray-50">
-        <Header />
         <Container>
           <EventDetailClient eventId={id} eventData={eventData} />
         </Container>
