@@ -1,5 +1,6 @@
 import NextAuth from "next-auth";
 import GithubProvider from "next-auth/providers/github";
+import LineProvider from "next-auth/providers/line";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { prisma } from "@/lib/prisma";
 
@@ -20,6 +21,10 @@ const handler = NextAuth({
     GithubProvider({
       clientId: process.env.GITHUB_ID as string,
       clientSecret: process.env.GITHUB_SECRET as string,
+    }),
+    LineProvider({
+      clientId: process.env.NEXT_PUBLIC_LINE_CHANNEL_ID as string,
+      clientSecret: process.env.NEXT_PUBLIC_LINE_CHANNEL_SECRET as string,
     }),
   ],
   pages: {

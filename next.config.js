@@ -5,6 +5,7 @@ const nextConfig = {
       "images.microcms-assets.io",
       "images.unsplash.com",
       "avatars.githubusercontent.com",
+      "profile.line-scdn.net",
     ],
   },
 };
