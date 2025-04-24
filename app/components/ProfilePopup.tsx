@@ -19,15 +19,14 @@ interface ProfilePopupProps {
 
 export interface ProfileData {
   stack: string[];
-  tag: string[];
-  goal: GoalType[];
-  // ... other properties
+  tags: string[];
+  goals: GoalType[];
 }
 
 const profileSchema = z.object({
   stack: z.array(z.string()),
-  tag: z.array(z.string()),
-  goal: z
+  tags: z.array(z.string()),
+  goals: z
     .array(z.nativeEnum(GoalType))
     .min(1, "少なくとも1つの目標を選択してください"),
 });
@@ -60,14 +59,14 @@ export function ProfilePopup({
     resolver: zodResolver(profileSchema),
     defaultValues: {
       stack: initialData?.stack || [],
-      tag: initialData?.tags || [],
-      goal: initialData?.goals || [GoalType.IMPROVE_SKILLS],
+      tags: initialData?.tags || [],
+      goals: initialData?.goals || [GoalType.IMPROVE_SKILLS],
     },
   });
 
   const stack = watch("stack");
-  const tags = watch("tag");
-  const goals = watch("goal");
+  const tags = watch("tags");
+  const goals = watch("goals");
 
   // スタック追加処理
   const handleAddStack = () => {
@@ -80,7 +79,7 @@ export function ProfilePopup({
   // タグ追加処理
   const handleAddTag = () => {
     if (newTag.trim() && !tags.includes(newTag.trim())) {
-      setValue("tag", [...tags, newTag.trim()]);
+      setValue("tags", [...tags, newTag.trim()]);
       setNewTag("");
     }
   };
@@ -96,7 +95,7 @@ export function ProfilePopup({
   // タグ削除処理
   const handleRemoveTag = (index: number) => {
     setValue(
-      "tag",
+      "tags",
       tags.filter((_, i) => i !== index)
     );
   };
@@ -107,12 +106,12 @@ export function ProfilePopup({
     if (isSelected && goals.length > 1) {
       // 選択済みで、他にも選択されている場合は削除
       setValue(
-        "goal",
+        "goals",
         goals.filter((g) => g !== goalType)
       );
     } else if (!isSelected) {
       // 未選択の場合は追加
-      setValue("goal", [...goals, goalType]);
+      setValue("goals", [...goals, goalType]);
     }
   };
 
@@ -277,8 +276,8 @@ export function ProfilePopup({
                 </span>
               ))}
             </div>
-            {errors.tag && (
-              <p className="text-red-500 text-sm mt-1">{errors.tag.message}</p>
+            {errors.tags && (
+              <p className="text-red-500 text-sm mt-1">{errors.tags.message}</p>
             )}
           </div>
           {/* 目標選択（複数選択可能） */}
@@ -298,7 +297,7 @@ export function ProfilePopup({
                   >
                     <input
                       type="checkbox"
-                      name="goal"
+                      name="goals"
                       value={goalType}
                       checked={isChecked}
                       onChange={() => toggleGoal(goalTypeEnum)}
@@ -309,8 +308,10 @@ export function ProfilePopup({
                 );
               })}
             </div>
-            {errors.goal && (
-              <p className="text-red-500 text-sm mt-1">{errors.goal.message}</p>
+            {errors.goals && (
+              <p className="text-red-500 text-sm mt-1">
+                {errors.goals.message}
+              </p>
             )}
           </div>
           {/* ボタン */}
