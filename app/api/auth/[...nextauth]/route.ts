@@ -32,7 +32,7 @@ interface LineProfile extends Profile {
   email?: string;
 }
 
-export const authOptions: AuthOptions = {
+const authOptions: AuthOptions = {
   adapter: PrismaAdapter(prisma),
   providers: [
     GithubProvider({
