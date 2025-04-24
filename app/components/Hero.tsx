@@ -36,13 +36,23 @@ interface HeroProps {
 }
 
 export async function Hero({ recentEvents, userProfile, session }: HeroProps) {
+  // データの変換
+  const transformedProfile = userProfile
+    ? {
+        ...userProfile,
+        tags: userProfile.tag || [],
+        goals: userProfile.goal || [],
+      }
+    : undefined;
+
+  console.log(transformedProfile);
   return (
     <>
       {/* ↓↓↓ userProfile の存在チェックを追加 ↓↓↓ */}
       {userProfile &&
         userProfile.stack?.length === 0 &&
-        userProfile.tags?.length === 0 &&
-        userProfile.goals?.length === 0 &&
+        userProfile.tag?.length === 0 &&
+        userProfile.goal?.length === 0 &&
         session?.user?.id && <ClientProfilePopup userId={session.user.id} />}
       {/* メインヒーローセクション */}
       <div className="bg-gradient-to-br from-indigo-900 via-indigo-800 to-indigo-900 text-white">
