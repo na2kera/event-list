@@ -256,7 +256,10 @@ export async function getSpeakers() {
  */
 export async function getUserProfile(userId: string) {
   try {
-    const response = await fetch(`${API_BASE_URL}/users/${userId}`, {
+    const requestUrl = `${API_BASE_URL}/users/${userId}`;
+    console.log(`[serverApi] Fetching user profile for ID: ${userId} at URL: ${requestUrl}`); // Log request URL
+
+    const response = await fetch(requestUrl, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -264,12 +267,13 @@ export async function getUserProfile(userId: string) {
       cache: "no-store",
     });
     if (!response.ok) {
+      console.error(`[serverApi] API error ${response.status} for user ID: ${userId} at URL: ${response.url}`); // Log error details
       throw new Error(`API error: ${response.status}`);
     }
     const result = await response.json();
     return result.success ? result.user : result;
   } catch (error) {
-    console.error("Error fetching user profile:", error);
+    console.error("[serverApi] Error fetching user profile:", error);
     throw error;
   }
 }
