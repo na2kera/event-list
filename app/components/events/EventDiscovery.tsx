@@ -6,6 +6,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { Event, EventFormat } from "@/types";
+import { BookmarkButton } from "./BookmarkButton";
 
 type EventType = "all" | "hackathon" | "workshop" | "contest";
 type DifficultyLevel =
@@ -31,6 +32,7 @@ interface EventDiscoveryProps {
     categories?: {
       category: { id: string; name: string };
     }[];
+    isBookmarked: boolean;
   })[];
   initialType?: string;
 }
@@ -302,13 +304,21 @@ export function EventDiscovery({
                         className="object-cover"
                       />
                     </div>
-                    <span className="absolute top-4 right-4 px-3 py-1 bg-white rounded-full text-sm font-medium text-gray-700">
+                    {/* イベントタイプ表示 */}
+                    <span className="absolute top-4 left-4 px-3 py-1 bg-white rounded-full text-sm font-medium text-gray-700 z-10">
                       {getEventType(event) === "hackathon"
                         ? "ハッカソン"
                         : getEventType(event) === "workshop"
                         ? "ワークショップ"
                         : "コンテスト"}
                     </span>
+                    {/* BookmarkButton を追加 */}
+                    <div className="absolute top-4 right-4 z-10">
+                      <BookmarkButton
+                        eventId={event.id}
+                        isBookmarked={event.isBookmarked}
+                      />
+                    </div>
                   </div>
 
                   <div className="p-6">

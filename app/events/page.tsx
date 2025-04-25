@@ -1,14 +1,19 @@
 import { EventDiscovery } from "@/components/events/EventDiscovery";
-import { getEvents } from "@/lib/api/serverApi";
+import { getEvents, getUserBookmarks } from "@/lib/api/serverApi";
 import { Suspense } from "react";
 import { Event } from "@/types";
+import { getServerSession } from "next-auth";
+import { authOptions } from "../lib/auth";
 
 export const metadata = {
   title: "イベント一覧 | イベント管理アプリ",
   description: "技術イベント・勉強会の一覧ページです。",
 };
 
-// URLパラメータの型定義
+interface Bookmark {
+  eventId: string;
+}
+
 type SearchParams = {
   type?: string;
 };
@@ -19,11 +24,9 @@ export default async function EventsPage({
   searchParams: Promise<SearchParams>;
 }) {
   try {
-    // URLパラメータからイベントタイプを取得
     const { type } = await searchParams;
     const eventType = type || "all";
 
-    // イベントタイプに基づいてデータフェッチを行う
     const japaneseEventType =
       eventType === "hackathon"
         ? "ハッカソン"
@@ -33,8 +36,7 @@ export default async function EventsPage({
         ? "コンテスト"
         : undefined;
 
-    // サーバーサイドでデータフェッチを行う
-    const eventsData = (await getEvents(japaneseEventType)) as (Event & {
+    const rawEventsData = (await getEvents(japaneseEventType)) as (Event & {
       organization: { name: string };
       speakers: {
         speaker: {
@@ -50,6 +52,21 @@ export default async function EventsPage({
         category: { id: string; name: string };
       }[];
     })[];
+
+    const session = await getServerSession(authOptions);
+    let bookmarkedEventIds: string[] = [];
+
+    if (session?.user?.id) {
+      const bookmarks = await getUserBookmarks(session.user.id);
+      bookmarkedEventIds = bookmarks.map(
+        (bookmark: Bookmark) => bookmark.eventId
+      );
+    }
+
+    const eventsData = rawEventsData.map((event) => ({
+      ...event,
+      isBookmarked: bookmarkedEventIds.includes(event.id),
+    }));
 
     return (
       <div className="min-h-screen bg-gray-50">
