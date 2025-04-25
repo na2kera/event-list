@@ -31,10 +31,10 @@ export default async function MyPage() {
         </div>
         <div className="bg-white rounded-lg shadow p-6">
           <div className="flex items-center space-x-4 mb-4">
-            {userProfile.image && (
+            {userProfile?.image && (
               <Image
                 src={userProfile.image}
-                alt={userProfile.name || "プロフィール画像"}
+                alt={userProfile.name ?? "プロフィール画像"}
                 width={64}
                 height={64}
                 className="rounded-full"
@@ -42,9 +42,9 @@ export default async function MyPage() {
             )}
             <div>
               <h3 className="text-lg font-semibold">
-                {userProfile.name || "未設定"}
+                {userProfile?.name ?? "未設定"}
               </h3>
-              {userProfile.email && (
+              {userProfile?.email && (
                 <p className="text-gray-600">{userProfile.email}</p>
               )}
             </div>
@@ -73,7 +73,7 @@ export default async function MyPage() {
             <div>
               <h4 className="font-medium mb-2">レベル</h4>
               <p className="text-gray-700">
-                {userProfile.level
+                {userProfile?.level
                   ? DIFFICULTY_LABELS[
                       userProfile.level as keyof typeof DIFFICULTY_LABELS
                     ]
@@ -83,13 +83,13 @@ export default async function MyPage() {
 
             <div>
               <h4 className="font-medium mb-2">場所</h4>
-              <p className="text-gray-700">{userProfile.place || "未設定"}</p>
+              <p className="text-gray-700">{userProfile?.place ?? "未設定"}</p>
             </div>
 
             <div>
               <h4 className="font-medium mb-2">所属</h4>
               <p className="text-gray-700">
-                {userProfile.affiliation || "未設定"}
+                {userProfile?.affiliation ?? "未設定"}
               </p>
             </div>
           </div>
@@ -104,7 +104,7 @@ export default async function MyPage() {
                     key={index}
                     className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm"
                   >
-                    {GOAL_LABELS[goal as keyof typeof GOAL_LABELS] || goal}
+                    {GOAL_LABELS[goal as keyof typeof GOAL_LABELS] ?? goal}
                   </span>
                 ))
               ) : (
