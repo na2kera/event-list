@@ -54,7 +54,12 @@ export default async function Home() {
 
     let userProfile = null;
     if (session?.user?.id) {
-      userProfile = await getUserProfile(session.user.id);
+      try {
+        userProfile = await getUserProfile(session.user.id);
+      } catch (profileError) {
+        console.warn("ユーザープロファイル取得エラー（無視して続行）:", profileError);
+        // プロファイルが取得できなくても処理を続行
+      }
     }
 
     return (
