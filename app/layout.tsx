@@ -7,7 +7,7 @@ import { Header } from "@/components/layout/Header";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Event List",
+  title: "GeekQuest",
   description: "Event management application",
 };
 
@@ -21,9 +21,7 @@ export default function RootLayout({
       <body className={inter.className}>
         <Providers>
           <Header />
-          <main className="min-h-screen pt-4">
-            {children}
-          </main>
+          <main className="min-h-screen pt-4">{children}</main>
         </Providers>
       </body>
     </html>
