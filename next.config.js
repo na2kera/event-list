@@ -6,6 +6,7 @@ const nextConfig = {
       "images.unsplash.com",
       "avatars.githubusercontent.com",
       "profile.line-scdn.net",
+      "media.connpass.com",
     ],
   },
 };
