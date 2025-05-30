@@ -7,6 +7,8 @@ const nextConfig = {
       "avatars.githubusercontent.com",
       "profile.line-scdn.net",
       "media.connpass.com",
+      "d6c2c7bywy6ln.cloudfront.net",
+      "s3.techplay.jp",
     ],
   },
 };
