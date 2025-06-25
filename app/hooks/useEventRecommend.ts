@@ -1,24 +1,6 @@
 import { useState } from "react";
-import { Event } from "@/types";
 import { useSession } from "next-auth/react";
-
-type RecommendedEvent = Event & {
-  organization: { name: string; id: string; logo?: string };
-  speakers: {
-    speaker: {
-      id: string;
-      name: string;
-      occupation: string;
-      affiliation: string;
-      bio: string;
-    };
-  }[];
-  skills: { id: string; name: string }[];
-  categories: {
-    category: { id: string; name: string };
-  }[];
-  isBookmarked?: boolean;
-};
+import { RecommendedEvent } from "@/types/recommend";
 
 export const useEventRecommend = () => {
   const { data: session } = useSession();
