@@ -32,6 +32,12 @@ export function Header() {
                 イベント一覧
               </Link>
               <Link
+                href="/event-recommend"
+                className="text-gray-700 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium transition-colors"
+              >
+                おすすめ
+              </Link>
+              <Link
                 href="/mypage"
                 className="text-gray-700 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium transition-colors"
               >
@@ -148,6 +154,13 @@ export function Header() {
               onClick={() => setIsMobileMenuOpen(false)}
             >
               イベント一覧
+            </Link>
+            <Link
+              href="/event-recommend"
+              className="block px-4 py-2 text-gray-700 hover:bg-indigo-50 hover:text-indigo-600"
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              おすすめ
             </Link>
             {session && (
               <Link
