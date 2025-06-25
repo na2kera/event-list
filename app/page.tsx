@@ -1,89 +1,84 @@
-import { Hero } from "./components/Hero";
-import { getEvents, getUserProfile } from "@/lib/api/serverApi";
-import { Event } from "@/types";
-import { getServerSession } from "next-auth";
-import { getUserBookmarks } from "@/lib/api/serverApi";
-import { authOptions } from "./lib/auth";
+"use client";
 
-interface Bookmark {
-  eventId: string;
-}
+import React from "react";
+import "@chatscope/chat-ui-kit-styles/dist/default/styles.min.css";
 
-export default async function Home() {
-  try {
-    // サーバーサイドでイベントデータを取得
-    const eventsData = (await getEvents()) as (Event & {
-      organization: { name: string };
-      speakers: {
-        speaker: {
-          id: string;
-          name: string;
-          occupation: string;
-          affiliation: string;
-          bio: string;
-        };
-      }[];
-      skills: { id: string; name: string }[];
-      categories: {
-        category: { id: string; name: string };
-      }[];
-    })[];
+// カスタムフック
+import { useChat } from "./hooks/useChat";
+import { useTechSelection } from "./hooks/useTechSelection";
 
-    // ユーザーのブックマーク情報を取得
-    const session = await getServerSession(authOptions);
-    console.log("===== Homepage Session Info =====");
-    console.log("Session Object:", JSON.stringify(session, null, 2));
-    console.log("Session User ID:", session?.user?.id);
-    console.log("===============================");
-    let bookmarkedEventIds: string[] = [];
+// コンポーネント
+import { Header } from "./components/Header";
+import { ChatSection } from "./components/chat/ChatSection";
+import { SelectedTechnologies } from "./components/tech/SelectedTechnologies";
+import { TechCategorySection } from "./components/tech/TechCategorySection";
+import { TechSelectionModal } from "./components/tech/TechSelectionModal";
+import { UsageGuide } from "./components/UsageGuide";
+import { ChatStyles } from "./components/ChatStyles";
 
-    if (session?.user?.id) {
-      console.log("Fetching bookmarks for user:", session.user.id);
-      const bookmarks = await getUserBookmarks(session.user.id);
-      bookmarkedEventIds = bookmarks.map(
-        (bookmark: Bookmark) => bookmark.eventId
-      );
-    } else {
-      console.log("User session or ID not found on homepage.");
-    }
+export default function Home() {
+  // カスタムフック
+  const { messages, isLoading, handleSend } = useChat();
+  const {
+    selectedTechnologies,
+    modalPosition,
+    isModalOpen,
+    modalRef,
+    handleCategorySelect,
+    handleTechnologyToggle,
+    handleRemoveTechnology,
+    closeModal,
+    getSelectedCategoryData,
+  } = useTechSelection();
 
-    const recentEvents = eventsData.slice(0, 3).map((event) => ({
-      ...event,
-      isBookmarked: bookmarkedEventIds.includes(event.id),
-    }));
+  const handleSearchWithSelected = () => {
+    if (selectedTechnologies.length === 0) return;
+    handleSend(`${selectedTechnologies.join(", ")} のイベントを探しています`);
+  };
 
-    let userProfile = null;
-    if (session?.user?.id) {
-      try {
-        userProfile = await getUserProfile(session.user.id);
-      } catch (profileError) {
-        console.warn("ユーザープロファイル取得エラー（無視して続行）:", profileError);
-        // プロファイルが取得できなくても処理を続行
-      }
-    }
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-indigo-900 via-indigo-800 to-indigo-900">
+      {/* ヘッダーセクション */}
+      <Header />
 
-    return (
-      <div className="min-h-screen bg-white">
-        <Hero
-          recentEvents={recentEvents}
-          userProfile={userProfile}
-          session={session ?? undefined}
+      {/* チャット画面 */}
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
+        <ChatSection
+          messages={messages}
+          isLoading={isLoading}
+          onSend={handleSend}
         />
-      </div>
-    );
-  } catch (error) {
-    console.error("Error fetching data for homepage:", error);
-    if (error instanceof Error) {
-      console.error("Error name:", error.name);
-      console.error("Error message:", error.message);
-      console.error("Error stack:", error.stack);
-    }
 
-    // エラーが発生した場合でもHeroコンポーネントを表示（イベントデータなし）
-    return (
-      <div className="min-h-screen bg-white">
-        <Hero recentEvents={[]} />
+        {/* 選択済み技術チップス */}
+        <SelectedTechnologies
+          selectedTechnologies={selectedTechnologies}
+          onRemoveTechnology={handleRemoveTechnology}
+          onSearchWithSelected={handleSearchWithSelected}
+        />
+
+        {/* 技術分野選択ボタン */}
+        <TechCategorySection
+          isLoading={isLoading}
+          onCategorySelect={handleCategorySelect}
+        />
+
+        {/* 使い方ガイド */}
+        <UsageGuide />
       </div>
-    );
-  }
+
+      {/* 技術選択モーダル */}
+      <TechSelectionModal
+        isOpen={isModalOpen}
+        position={modalPosition}
+        categoryData={getSelectedCategoryData()}
+        selectedTechnologies={selectedTechnologies}
+        modalRef={modalRef}
+        onClose={closeModal}
+        onTechnologyToggle={handleTechnologyToggle}
+      />
+
+      {/* カスタムスタイル */}
+      <ChatStyles />
+    </div>
+  );
 }
