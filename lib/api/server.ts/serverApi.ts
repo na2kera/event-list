@@ -3,6 +3,8 @@
  * Server Componentsから使用することを想定
  */
 
+import { Event } from "@prisma/client";
+
 // バックエンドAPIのベースURL（サーバーサイドでは環境変数から取得）
 const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001/api";
@@ -317,7 +319,7 @@ export async function getUserBookmarks(userId: string) {
 export async function fetchEventRecommendations(
   message: string,
   userId?: string
-): Promise<{ query: string; recommendations: any[] }> {
+): Promise<{ query: string; recommendations: Event[] }> {
   try {
     const response = await fetch(`${API_BASE_URL}/recommend/message`, {
       method: "POST",

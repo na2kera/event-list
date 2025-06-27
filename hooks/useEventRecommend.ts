@@ -18,11 +18,16 @@ export const useEventRecommend = () => {
     setError(null);
 
     try {
-      const response = await fetch("/api/recommend", {
+      // フロント環境変数からベースURLを取得し、バックエンドの /recommend/user エンドポイントを呼び出す
+      const API_BASE_URL =
+        process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001/api";
+
+      const response = await fetch(`${API_BASE_URL}/recommend/user`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
+        body: JSON.stringify({ userId: session.user.id }),
       });
 
       if (!response.ok) {

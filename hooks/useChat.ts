@@ -94,9 +94,9 @@ export const useChat = () => {
       // 推薦結果をチャット用の文字列に整形
       let respText = `「${data.query}」に関連するイベント候補はこちらです！\n\n`;
       data.recommendations.slice(0, 5).forEach((rec, idx) => {
-        const ev = rec.event || rec; // モック / 実データ両対応
-        respText += `🚀 **${ev.title || ev.name || `イベント${idx + 1}`}**\n`;
-        if (ev.date) respText += `📅 ${ev.date}\n`;
+        const ev = rec || rec; // モック / 実データ両対応
+        respText += `🚀 **${ev.title || `イベント${idx + 1}`}**\n`;
+        if (ev.eventDate) respText += `📅 ${ev.eventDate}\n`;
         if (ev.location) respText += `📍 ${ev.location}\n`;
         if (ev.description) respText += `💡 ${ev.description}\n`;
         respText += "\n";

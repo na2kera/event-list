@@ -7,11 +7,20 @@ export type Organization = {
   email?: string;
 };
 
-export type Difficulty = "BEGINNER" | "INTERMEDIATE" | "ADVANCED";
+export type Difficulty =
+  | "BEGINNER"
+  | "INTERMEDIATE"
+  | "ADVANCED"
+  | "FOR_EVERYONE";
 
 export type EventFormat = "ONLINE" | "OFFLINE" | "HYBRID";
 
-export type EventType = "HACKATHON" | "WORKSHOP" | "CONTEST" | "LIGHTNING_TALK";
+export type EventType =
+  | "HACKATHON"
+  | "WORKSHOP"
+  | "CONTEST"
+  | "LIGHTNING_TALK"
+  | "OTHER";
 
 export type GoalType =
   | "IMPROVE_SKILLS"
@@ -44,7 +53,7 @@ export interface Event {
   address?: string;
   location?: string;
   detailUrl?: string;
-  organizationId: string;
+  organizationId?: string;
   createdAt: string;
   updatedAt: string;
   image?: string;
@@ -74,6 +83,10 @@ export interface Event {
     image: string;
   };
   category?: string;
+  embedding?: number[];
+  keywords?: string[];
+  keyPhrases?: string[];
+  keySentences?: string[];
 }
 
 export interface Bookmark {
