@@ -1,8 +1,12 @@
-import { Container } from "@/components/layout/Container";
+import { Container } from "components/layout/Container";
 import { notFound } from "next/navigation";
-import { getEventById, getCategories, getSpeakers } from "@/lib/api/serverApi";
-import { EventEditForm } from "@/components/events/EventEditForm";
-import { Header } from "@/components/layout/Header";
+import {
+  getEventById,
+  getCategories,
+  getSpeakers,
+} from "lib/api/server.ts/serverApi";
+import { EventEditForm } from "components/events/EventEditForm";
+import { Header } from "components/layout/Header";
 
 export default async function EventEditPage({
   params,

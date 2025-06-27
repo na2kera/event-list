@@ -1,14 +1,14 @@
 "use client";
 
 import { useSession } from "next-auth/react";
-import { useEventRecommend } from "@/hooks/useEventRecommend";
-import { Container } from "@/components/layout/Container";
-import { LoginPromptSection } from "@/components/recommend/LoginPromptSection";
-import { RecommendHeader } from "@/components/recommend/RecommendHeader";
-import { ErrorDisplay } from "@/components/recommend/ErrorDisplay";
-import { LoadingState } from "@/components/recommend/LoadingState";
-import { ResultsSection } from "@/components/recommend/ResultsSection";
-import { EmptyState } from "@/components/recommend/EmptyState";
+import { useEventRecommend } from "hooks/useEventRecommend";
+import { Container } from "components/layout/Container";
+import { LoginPromptSection } from "components/recommend/LoginPromptSection";
+import { RecommendHeader } from "components/recommend/RecommendHeader";
+import { ErrorDisplay } from "components/recommend/ErrorDisplay";
+import { LoadingState } from "components/recommend/LoadingState";
+import { ResultsSection } from "components/recommend/ResultsSection";
+import { EmptyState } from "components/recommend/EmptyState";
 
 export default function EventRecommendPage() {
   const { data: session } = useSession();

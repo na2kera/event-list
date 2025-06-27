@@ -1,9 +1,9 @@
-import { EventDiscovery } from "@/components/events/EventDiscovery";
-import { getEvents, getUserBookmarks } from "@/lib/api/serverApi";
+import { EventDiscovery } from "components/events/EventDiscovery";
+import { getEvents, getUserBookmarks } from "lib/api/server.ts/serverApi";
 import { Suspense } from "react";
 import { Event } from "@/types";
 import { getServerSession } from "next-auth";
-import { authOptions } from "../lib/auth";
+import { authOptions } from "../../lib/auth";
 
 export const metadata = {
   title: "イベント一覧 | イベント管理アプリ",

@@ -1,13 +1,13 @@
-import { BookmarkList } from "@/components/mypage/BookmarkList";
-import { getUserBookmarks } from "@/lib/api/bookmarkApi";
-import { getUserProfile } from "@/lib/api/serverApi";
-import { authOptions } from "@/lib/auth";
+import { BookmarkList } from "components/mypage/BookmarkList";
+import { getUserBookmarks } from "lib/api/client.ts/bookmarkApi";
+import { getUserProfile } from "lib/api/server.ts/serverApi";
+import { authOptions } from "lib/auth";
 import { getServerSession } from "next-auth";
 import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
-import { GOAL_LABELS, DIFFICULTY_LABELS } from "@/types/enums";
+import { GOAL_LABELS, DIFFICULTY_LABELS } from "types/enums";
 
 export default async function MyPage() {
   const session = await getServerSession(authOptions);
@@ -87,7 +87,9 @@ export default async function MyPage() {
 
               <div>
                 <h4 className="font-medium mb-2">場所</h4>
-                <p className="text-gray-700">{userProfile?.place ?? "未設定"}</p>
+                <p className="text-gray-700">
+                  {userProfile?.place ?? "未設定"}
+                </p>
               </div>
 
               <div>
@@ -139,12 +141,15 @@ export default async function MyPage() {
 
         {/* ブックマークセクション */}
         <section>
-          <h2 className="text-xl font-semibold mb-4">ブックマークしたイベント</h2>
+          <h2 className="text-xl font-semibold mb-4">
+            ブックマークしたイベント
+          </h2>
           <BookmarkList bookmarks={userbookmarks} />
         </section>
       </div>
     );
-  } catch (error) { // エラーハンドリングを追加
+  } catch (error) {
+    // エラーハンドリングを追加
     console.error(`MyPage: Error fetching data for user ID ${userId}:`, error);
     // エラー発生時の表示を考慮
     return (

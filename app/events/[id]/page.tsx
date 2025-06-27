@@ -1,5 +1,5 @@
-import { Container } from "@/components/layout/Container";
-import { EventDetailClient } from "@/components/events/EventDetailClient";
+import { Container } from "components/layout/Container";
+import { EventDetailClient } from "components/events/EventDetailClient";
 import { notFound } from "next/navigation";
 
 // バックエンドAPIのベースURL

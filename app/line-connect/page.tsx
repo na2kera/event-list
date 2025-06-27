@@ -1,5 +1,5 @@
 import React from "react";
-import LineLoginButton from "../components/line/LineLoginButton";
+import LineLoginButton from "../../components/line/LineLoginButton";
 
 const LineConnectPage = () => {
   return (

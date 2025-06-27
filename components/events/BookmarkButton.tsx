@@ -3,8 +3,8 @@
 import { useState } from "react";
 import { useSession } from "next-auth/react";
 import { Bookmark } from "lucide-react";
-import { addBookmark, removeBookmark } from "@/lib/api/bookmarkApi";
-import { cn } from "@/lib/utils";
+import { addBookmark, removeBookmark } from "lib/api/client.ts/bookmarkApi";
+import { cn } from "lib/utils";
 import { useRouter } from "next/navigation";
 
 interface BookmarkButtonProps {

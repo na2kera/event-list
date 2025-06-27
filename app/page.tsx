@@ -4,17 +4,17 @@ import React from "react";
 import "@chatscope/chat-ui-kit-styles/dist/default/styles.min.css";
 
 // カスタムフック
-import { useChat } from "./hooks/useChat";
-import { useTechSelection } from "./hooks/useTechSelection";
+import { useChat } from "../hooks/useChat";
+import { useTechSelection } from "../hooks/useTechSelection";
 
 // コンポーネント
-import { Header } from "./components/Header";
-import { ChatSection } from "./components/chat/ChatSection";
-import { SelectedTechnologies } from "./components/tech/SelectedTechnologies";
-import { TechCategorySection } from "./components/tech/TechCategorySection";
-import { TechSelectionModal } from "./components/tech/TechSelectionModal";
-import { UsageGuide } from "./components/UsageGuide";
-import { ChatStyles } from "./components/ChatStyles";
+import { Header } from "../components/Header";
+import { ChatSection } from "../components/chat/ChatSection";
+import { SelectedTechnologies } from "../components/tech/SelectedTechnologies";
+import { TechCategorySection } from "../components/tech/TechCategorySection";
+import { TechSelectionModal } from "../components/tech/TechSelectionModal";
+import { UsageGuide } from "../components/UsageGuide";
+import { ChatStyles } from "../components/ChatStyles";
 
 export default function Home() {
   // カスタムフック

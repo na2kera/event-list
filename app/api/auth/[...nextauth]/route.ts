@@ -1,10 +1,16 @@
-import NextAuth, { AuthOptions, Account, Profile, User, Session } from "next-auth";
+import NextAuth, {
+  AuthOptions,
+  Account,
+  Profile,
+  User,
+  Session,
+} from "next-auth";
 import { AdapterUser } from "next-auth/adapters";
 import { JWT } from "next-auth/jwt";
 import GithubProvider from "next-auth/providers/github";
 import LineProvider from "next-auth/providers/line";
 import { PrismaAdapter } from "@auth/prisma-adapter";
-import { prisma } from "@/lib/prisma";
+import { prisma } from "lib/prisma";
 
 declare module "next-auth" {
   interface Session {
@@ -79,21 +85,23 @@ const authOptions: AuthOptions = {
           return false;
         }
         console.log(
-          "Attempting backend sync. User (NextAuth):", JSON.stringify(user, null, 2),
-          "Account (NextAuth):", JSON.stringify(account, null, 2)
+          "Attempting backend sync. User (NextAuth):",
+          JSON.stringify(user, null, 2),
+          "Account (NextAuth):",
+          JSON.stringify(account, null, 2)
         );
 
         try {
           const response = await fetch(
-            `${process.env.NEXT_PUBLIC_API_URL}/auth/sync`, 
+            `${process.env.NEXT_PUBLIC_API_URL}/auth/sync`,
             {
               method: "POST",
               headers: {
                 "Content-Type": "application/json",
               },
               body: JSON.stringify({
-                user: user,      
-                account: account 
+                user: user,
+                account: account,
               }),
             }
           );

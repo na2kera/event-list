@@ -1,7 +1,7 @@
-import { EventSearch } from "@/components/events/EventSearch";
+import { EventSearch } from "components/events/EventSearch";
 import { Suspense } from "react";
-import { getEvents } from "@/lib/api/serverApi";
-import { Header } from "@/components/layout/Header";
+import { getEvents } from "lib/api/server.ts/serverApi";
+import { Header } from "components/layout/Header";
 
 export const metadata = {
   title: "イベント検索 | イベント管理アプリ",

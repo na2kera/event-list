@@ -1,6 +1,6 @@
 import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
-import { getUserProfile } from "@/lib/api/userApi";
+import { authOptions } from "lib/auth";
+import { getUserProfile } from "lib/api/client.ts/userApi";
 import { ProfileEditForm } from "./ProfileEditForm";
 
 export default async function ProfileEditPage() {

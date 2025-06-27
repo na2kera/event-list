@@ -1,4 +1,4 @@
-import { GoalType } from "@/types/enums";
+import { GoalType } from "types/enums";
 
 export interface ProfileData {
   stack: string[];

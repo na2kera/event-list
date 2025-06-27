@@ -2,9 +2,9 @@
 
 import React, { useState, useEffect } from "react";
 import { ProfilePopup, ProfileData } from "./ProfilePopup";
-import { saveUserProfile } from "@/lib/api/profileApi";
-import { getUserProfile } from "@/lib/api/userApi";
-import { GoalType } from "@/types/enums";
+import { saveUserProfile } from "lib/api/client.ts/profileApi";
+import { getUserProfile } from "lib/api/client.ts/userApi";
+import { GoalType } from "types/enums";
 
 interface ClientProfilePopupProps {
   userId: string;
@@ -28,7 +28,7 @@ export function ClientProfilePopup({ userId }: ClientProfilePopupProps) {
         setInitialData({
           stack: userProfile.stack || [],
           tags: userProfile.tag || [],
-          goals: (userProfile.goal || []).map(g => g as GoalType)
+          goals: (userProfile.goal || []).map((g) => g as GoalType),
         });
       } catch (error) {
         console.error("ユーザープロフィール取得エラー:", error);
@@ -58,9 +58,9 @@ export function ClientProfilePopup({ userId }: ClientProfilePopupProps) {
   }
 
   return (
-    <ProfilePopup 
-      isOpen={isOpen} 
-      onClose={() => setIsOpen(false)} 
+    <ProfilePopup
+      isOpen={isOpen}
+      onClose={() => setIsOpen(false)}
       onSave={handleSaveProfile}
       initialData={initialData}
     />
