@@ -1,4 +1,4 @@
-import { getSpeakerList } from "@/lib/api/microcms";
+import { getSpeakerList } from "lib/api/client.ts/microcms";
 import Link from "next/link";
 import Image from "next/image";
 

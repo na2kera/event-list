@@ -1,8 +1,8 @@
 import Link from "next/link";
 import { Sparkles, User, ArrowRight } from "lucide-react";
-import { Container } from "@/components/layout/Container";
+import { Container } from "components/layout/Container";
 import { RecommendBenefitCard } from "./RecommendBenefitCard";
-import { RECOMMEND_BENEFITS } from "@/constants/recommendConstants";
+import { RECOMMEND_BENEFITS } from "constants/recommendConstants";
 
 export function LoginPromptSection() {
   return (

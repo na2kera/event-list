@@ -1,6 +1,6 @@
 import { Target } from "lucide-react";
-import { EventList } from "@/components/events/EventList";
-import { RecommendedEvent } from "@/types/recommend";
+import { EventList } from "components/events/EventList";
+import { RecommendedEvent } from "types/recommend";
 
 interface ResultsSectionProps {
   events: RecommendedEvent[];

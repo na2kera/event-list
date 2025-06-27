@@ -257,7 +257,9 @@ export async function getSpeakers() {
 export async function getUserProfile(userId: string) {
   try {
     const requestUrl = `${API_BASE_URL}/users/${userId}`;
-    console.log(`[serverApi] Fetching user profile for ID: ${userId} at URL: ${requestUrl}`); // Log request URL
+    console.log(
+      `[serverApi] Fetching user profile for ID: ${userId} at URL: ${requestUrl}`
+    ); // Log request URL
 
     const response = await fetch(requestUrl, {
       method: "GET",
@@ -267,7 +269,9 @@ export async function getUserProfile(userId: string) {
       cache: "no-store",
     });
     if (!response.ok) {
-      console.error(`[serverApi] API error ${response.status} for user ID: ${userId} at URL: ${response.url}`); // Log error details
+      console.error(
+        `[serverApi] API error ${response.status} for user ID: ${userId} at URL: ${response.url}`
+      ); // Log error details
       throw new Error(`API error: ${response.status}`);
     }
     const result = await response.json();
@@ -301,6 +305,37 @@ export async function getUserBookmarks(userId: string) {
     return result.success ? result.data : result;
   } catch (error) {
     console.error("Error fetching user bookmarks:", error);
+    throw error;
+  }
+}
+
+/**
+ * チャットメッセージからイベントをレコメンド
+ * @param message ユーザーが入力した検索・要望メッセージ
+ * @param userId  オプション：ユーザーID（ログイン時）
+ */
+export async function fetchEventRecommendations(
+  message: string,
+  userId?: string
+): Promise<{ query: string; recommendations: any[] }> {
+  try {
+    const response = await fetch(`${API_BASE_URL}/recommend/message`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ message, userId }),
+    });
+
+    if (!response.ok) {
+      throw new Error(`API error: ${response.status}`);
+    }
+
+    const result = await response.json();
+    // バックエンドは { query, recommendations } 形式で返却する想定
+    return result;
+  } catch (error) {
+    console.error("Error fetching event recommendations:", error);
     throw error;
   }
 }

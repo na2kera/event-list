@@ -3,7 +3,7 @@
 import { useState, FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { Event, Speaker, Category, GoalType } from "@/types";
-import { updateEvent } from "@/lib/api/serverApi";
+import { updateEvent } from "lib/api/server.ts/serverApi";
 
 interface EventEditFormProps {
   eventId: string;

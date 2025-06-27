@@ -2,8 +2,15 @@
 
 import { useEffect, useState } from "react";
 import { Event, Speaker, Category } from "@/types";
-import { fetchEventById } from "@/lib/api/backendApi";
-import { ArrowRight, Calendar, Clock, MapPin, Target, Edit } from "lucide-react";
+import { fetchEventById } from "lib/api/client.ts/eventApi";
+import {
+  ArrowRight,
+  Calendar,
+  Clock,
+  MapPin,
+  Target,
+  Edit,
+} from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 
@@ -124,9 +131,9 @@ export function EventDetail({ eventId, initialEventData }: EventDetailProps) {
               <h2 className="text-2xl font-bold text-gray-900 mb-4">
                 イベント概要
               </h2>
-              <div 
+              <div
                 className="text-gray-600 mb-6 prose prose-indigo max-w-none"
-                dangerouslySetInnerHTML={{ __html: event.description || '' }}
+                dangerouslySetInnerHTML={{ __html: event.description || "" }}
               />
 
               {/* イベントカテゴリ */}

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { fetchEventRecommendations } from "@/lib/api/backendApi";
+import { fetchEventRecommendations } from "lib/api/server.ts/serverApi";
 
 export interface ChatMessage {
   id: string;

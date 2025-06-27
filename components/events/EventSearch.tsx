@@ -5,7 +5,7 @@ import { Search, Calendar, MapPin, Filter } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import { Event } from "@/types";
-import { searchEvents, EventSearchParams } from "@/lib/api/backendApi";
+import { searchEvents, EventSearchParams } from "lib/api/client.ts/eventApi";
 import { format } from "date-fns";
 import { ja } from "date-fns/locale";
 

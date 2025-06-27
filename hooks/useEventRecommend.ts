@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useSession } from "next-auth/react";
-import { RecommendedEvent } from "@/types/recommend";
+import { RecommendedEvent } from "types/recommend";
 
 export const useEventRecommend = () => {
   const { data: session } = useSession();

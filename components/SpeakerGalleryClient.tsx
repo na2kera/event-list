@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import type { SpeakerContent } from "@/lib/api/microcms";
+import type { SpeakerContent } from "lib/api/client.ts/microcms";
 import Image from "next/image";
 import Link from "next/link";
 

@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { GoalType, GOAL_LABELS } from "@/types/enums";
+import { GoalType, GOAL_LABELS } from "types/enums";
 
 interface ProfilePopupProps {
   isOpen: boolean;

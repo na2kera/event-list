@@ -22,13 +22,13 @@ import {
   FormControlLabel,
   Checkbox,
 } from "@mui/material";
-import { updateUserProfile, UserProfile } from "@/lib/api/userApi";
+import { updateUserProfile, UserProfile } from "lib/api/client.ts/userApi";
 import {
   DifficultyLevel,
   GoalType,
   DIFFICULTY_LABELS,
   GOAL_LABELS,
-} from "@/types/enums";
+} from "types/enums";
 
 const profileSchema = z.object({
   name: z
