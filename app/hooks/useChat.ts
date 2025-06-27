@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { fetchEventRecommendations } from "@/lib/api/backendApi";
 
 export interface ChatMessage {
   id: string;
@@ -87,40 +88,37 @@ export const useChat = () => {
     setIsLoading(true);
 
     try {
-      // API呼び出し（今回はコメントのみ）
-      // const response = await fetch('/api/recommend-events', {
-      //   method: 'POST',
-      //   headers: {
-      //     'Content-Type': 'application/json',
-      //   },
-      //   body: JSON.stringify({
-      //     query: message,
-      //     userId: session?.user?.id // ユーザーIDがある場合
-      //   })
-      // });
-      //
-      // const data = await response.json();
+      // バックエンド API でレコメンド取得
+      const data = await fetchEventRecommendations(message);
 
-      // 現在はモックレスポンス
-      setTimeout(() => {
-        const mockResponse = generateMockEventResponse(message);
-        const systemResponse: ChatMessage = {
-          id: (Date.now() + 1).toString(),
-          message: mockResponse,
-          sentTime: "just now",
-          sender: "System",
-          direction: "incoming",
-        };
+      // 推薦結果をチャット用の文字列に整形
+      let respText = `「${data.query}」に関連するイベント候補はこちらです！\n\n`;
+      data.recommendations.slice(0, 5).forEach((rec, idx) => {
+        const ev = rec.event || rec; // モック / 実データ両対応
+        respText += `🚀 **${ev.title || ev.name || `イベント${idx + 1}`}**\n`;
+        if (ev.date) respText += `📅 ${ev.date}\n`;
+        if (ev.location) respText += `📍 ${ev.location}\n`;
+        if (ev.description) respText += `💡 ${ev.description}\n`;
+        respText += "\n";
+      });
 
-        setMessages((prevMessages) => [...prevMessages, systemResponse]);
-        setIsLoading(false);
-      }, 1500);
+      const systemResponse: ChatMessage = {
+        id: (Date.now() + 1).toString(),
+        message: respText.trim(),
+        sentTime: "just now",
+        sender: "System",
+        direction: "incoming",
+      };
+
+      setMessages((prevMessages) => [...prevMessages, systemResponse]);
+      setIsLoading(false);
     } catch (error) {
       console.error("イベント検索エラー:", error);
+      // フォールバックでモックレスポンス
+      const fallback = generateMockEventResponse(message);
       const errorResponse: ChatMessage = {
         id: (Date.now() + 1).toString(),
-        message:
-          "申し訳ございません。イベントの検索中にエラーが発生しました。もう一度お試しください。",
+        message: `${fallback}\n⚠️ 本番 API でエラーが発生したためモックデータを表示しています。`,
         sentTime: "just now",
         sender: "System",
         direction: "incoming",
