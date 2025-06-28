@@ -94,11 +94,26 @@ export const useChat = () => {
       // 推薦結果をチャット用の文字列に整形
       let respText = `「${data.query}」に関連するイベント候補はこちらです！\n\n`;
       data.recommendations.slice(0, 5).forEach((rec, idx) => {
-        const ev = rec || rec; // モック / 実データ両対応
+        // バックエンド本番: { event, label, score }, モック時は event プロパティなし
+        const ev = (rec as any).event ?? rec;
+
         respText += `🚀 **${ev.title || `イベント${idx + 1}`}**\n`;
-        if (ev.eventDate) respText += `📅 ${ev.eventDate}\n`;
-        if (ev.location) respText += `📍 ${ev.location}\n`;
-        if (ev.description) respText += `💡 ${ev.description}\n`;
+
+        const dateText = ev.eventDate ?? ev.startTime ?? "";
+        if (dateText) respText += `📅 ${dateText}\n`;
+
+        const locText = ev.location ?? ev.venue ?? ev.address ?? "";
+        if (locText) respText += `📍 ${locText}\n`;
+
+        if (ev.description) {
+          // HTML タグを除去し、長すぎる場合は省略
+          const plain = ev.description
+            .replace(/<[^>]+>/g, "")
+            .replace(/\n+/g, " ");
+          respText += `💡 ${plain.slice(0, 120)}${
+            plain.length > 120 ? "…" : ""
+          }\n`;
+        }
         respText += "\n";
       });
 
