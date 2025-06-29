@@ -20,7 +20,8 @@ export const useEventRecommend = () => {
     try {
       // フロント環境変数からベースURLを取得し、バックエンドの /recommend/user エンドポイントを呼び出す
       const API_BASE_URL =
-        process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001/api";
+        process.env.NEXT_PUBLIC_INTERNAL_API_URL ||
+        "http://event-list-backend:3001/api";
 
       const response = await fetch(`${API_BASE_URL}/recommend/user`, {
         method: "POST",

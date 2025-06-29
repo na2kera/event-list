@@ -6,7 +6,8 @@ import Link from "next/link";
 
 // バックエンドAPIのベースURL
 const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001/api";
+  process.env.NEXT_PUBLIC_INTERNAL_API_URL ||
+  "http://event-list-backend:3001/api";
 
 function LineCallbackContent() {
   const [status, setStatus] = useState<"loading" | "success" | "error">(
@@ -62,7 +63,7 @@ function LineCallbackContent() {
 
         const authData = await authResponse.json();
         console.log("LINE認証結果:", authData);
-        
+
         // プロフィール情報を設定
         if (authData.profile) {
           setLineProfile({
@@ -83,10 +84,13 @@ function LineCallbackContent() {
         if (authData.user && authData.user.id) {
           localStorage.setItem("userId", authData.user.id);
           localStorage.setItem("lineId", authData.user.lineId || "");
-          
+
           // トークン情報があれば保存
           if (authData.token && authData.token.access_token) {
-            localStorage.setItem("lineAccessToken", authData.token.access_token);
+            localStorage.setItem(
+              "lineAccessToken",
+              authData.token.access_token
+            );
           }
         }
 

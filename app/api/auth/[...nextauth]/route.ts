@@ -93,7 +93,7 @@ const authOptions: AuthOptions = {
 
         try {
           const response = await fetch(
-            `${process.env.NEXT_PUBLIC_API_URL}/auth/sync`,
+            `${process.env.NEXT_PUBLIC_INTERNAL_API_URL}/auth/sync`,
             {
               method: "POST",
               headers: {

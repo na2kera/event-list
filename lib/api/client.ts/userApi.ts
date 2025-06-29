@@ -26,7 +26,7 @@ export interface UpdateUserProfileData {
 
 export async function getUserProfile(userId: string): Promise<UserProfile> {
   const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/users/${userId}`,
+    `${process.env.NEXT_PUBLIC_INTERNAL_API_URL}/users/${userId}`,
     {
       method: "GET",
       headers: {
@@ -49,7 +49,7 @@ export async function updateUserProfile(
   data: UpdateUserProfileData
 ): Promise<UserProfile> {
   const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/users/${userId}`,
+    `${process.env.NEXT_PUBLIC_INTERNAL_API_URL}/users/${userId}`,
     {
       method: "PUT",
       headers: {

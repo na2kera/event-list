@@ -12,7 +12,7 @@ export async function saveUserProfile(
 ): Promise<{ success: boolean }> {
   try {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/users/${userId}`,
+      `${process.env.NEXT_PUBLIC_INTERNAL_API_URL}/users/${userId}`,
       {
         method: "PUT",
         headers: {

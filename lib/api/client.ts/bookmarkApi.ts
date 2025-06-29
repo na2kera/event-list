@@ -4,13 +4,16 @@ export const addBookmark = async (
   userId: string,
   eventId: string
 ): Promise<Bookmark> => {
-  const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/bookmarks`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ userId, eventId }),
-  });
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_INTERNAL_API_URL}/bookmarks`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ userId, eventId }),
+    }
+  );
 
   if (!response.ok) {
     throw new Error("Failed to add bookmark");
@@ -24,7 +27,7 @@ export const removeBookmark = async (
   eventId: string
 ): Promise<void> => {
   const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/bookmarks/${userId}/${eventId}`,
+    `${process.env.NEXT_PUBLIC_INTERNAL_API_URL}/bookmarks/${userId}/${eventId}`,
     {
       method: "DELETE",
     }
@@ -37,7 +40,7 @@ export const removeBookmark = async (
 
 export const getUserBookmarks = async (userId: string): Promise<Bookmark[]> => {
   const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/bookmarks/user/${userId}`
+    `${process.env.NEXT_PUBLIC_INTERNAL_API_URL}/bookmarks/user/${userId}`
   );
 
   if (!response.ok) {

@@ -4,7 +4,8 @@
 
 // バックエンドAPIのベースURL（開発環境では3001ポートを使用）
 const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001/api";
+  process.env.NEXT_PUBLIC_INTERNAL_API_URL ||
+  "http://event-list-backend:3001/api";
 
 /**
  * イベント検索用のパラメータ型定義
