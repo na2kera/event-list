@@ -18,7 +18,10 @@ interface ChatSectionProps {
   isLoading: boolean;
   onSend: (message: string) => void;
   selectedTechnologies: string[];
-  onCategorySelect: (categoryId: string, event: React.MouseEvent<HTMLButtonElement>) => void;
+  onCategorySelect: (
+    categoryId: string,
+    event: React.MouseEvent<HTMLButtonElement>
+  ) => void;
   onRemoveTechnology: (technology: string) => void;
   onSearchWithSelected: () => void;
 }
@@ -37,26 +40,32 @@ export function ChatSection({
       <MainContainer responsive style={{ height: "100%" }}>
         <Sidebar position="left" scrollable={false}>
           <div className="p-4 flex flex-col h-full">
-            <div className="flex-shrink-0 pb-4 border-b border-gray-200">
+            <div className="pb-4 border-b border-gray-200">
               <TechCategorySection
                 isLoading={isLoading}
                 onCategorySelect={onCategorySelect}
               />
             </div>
-            <div className="flex-grow overflow-y-auto pt-4">
-              <h2 className="text-sm font-semibold mb-2 text-gray-600 px-2">選択中の技術</h2>
+            <div className="pt-4">
+              <h2 className="text-sm font-semibold mb-2 text-gray-600 px-2">
+                選択中の技術
+              </h2>
               <SelectedTechnologies
                 selectedTechnologies={selectedTechnologies}
                 onRemoveTechnology={onRemoveTechnology}
                 onSearchWithSelected={onSearchWithSelected}
               />
             </div>
+            <div className="flex-grow"></div>
           </div>
         </Sidebar>
 
         <ChatContainer>
           <ConversationHeader>
-            <ConversationHeader.Content userName="イベント検索Bot" info="興味のある技術分野を選択するか、テキストで質問してください" />
+            <ConversationHeader.Content
+              userName="イベント検索Bot"
+              info="興味のある技術分野を選択するか、テキストで質問してください"
+            />
           </ConversationHeader>
           <MessageList
             scrollBehavior="smooth"
