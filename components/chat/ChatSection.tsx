@@ -6,65 +6,97 @@ import {
   Message,
   MessageInput,
   TypingIndicator,
+  Sidebar,
+  ConversationHeader,
 } from "@chatscope/chat-ui-kit-react";
-import { Search } from "lucide-react";
+import { SelectedTechnologies } from "../tech/SelectedTechnologies";
+import { TechCategorySection } from "../tech/TechCategorySection";
 import type { ChatMessage } from "../../hooks/useChat";
 
 interface ChatSectionProps {
   messages: ChatMessage[];
   isLoading: boolean;
   onSend: (message: string) => void;
+  selectedTechnologies: string[];
+  onCategorySelect: (
+    categoryId: string,
+    event: React.MouseEvent<HTMLButtonElement>
+  ) => void;
+  onRemoveTechnology: (technology: string) => void;
+  onSearchWithSelected: () => void;
 }
 
-export function ChatSection({ messages, isLoading, onSend }: ChatSectionProps) {
+export function ChatSection({
+  messages,
+  isLoading,
+  onSend,
+  selectedTechnologies,
+  onCategorySelect,
+  onRemoveTechnology,
+  onSearchWithSelected,
+}: ChatSectionProps) {
   return (
-    <div className="bg-white/95 backdrop-blur-sm rounded-2xl shadow-2xl border border-white/20 overflow-hidden">
-      <div className="bg-gradient-to-r from-indigo-600 to-indigo-700 px-6 py-4">
-        <div className="flex items-center">
-          <div className="flex items-center justify-center w-10 h-10 bg-white/20 rounded-full mr-3">
-            <Search className="h-5 w-5 text-white" />
+    <div className="h-screen">
+      <MainContainer responsive style={{ height: "100%" }}>
+        <Sidebar position="left" scrollable={false}>
+          <div className="p-4 flex flex-col h-full">
+            <div className="pb-4 border-b border-gray-200">
+              <TechCategorySection
+                isLoading={isLoading}
+                onCategorySelect={onCategorySelect}
+              />
+            </div>
+            <div className="pt-4">
+              <h2 className="text-sm font-semibold mb-2 text-gray-600 px-2">
+                選択中の技術
+              </h2>
+              <SelectedTechnologies
+                selectedTechnologies={selectedTechnologies}
+                onRemoveTechnology={onRemoveTechnology}
+                onSearchWithSelected={onSearchWithSelected}
+              />
+            </div>
+            <div className="flex-grow"></div>
           </div>
-          <div>
-            <h2 className="text-white font-semibold">テックイベント検索</h2>
-            <p className="text-indigo-200 text-sm">オンライン</p>
-          </div>
-        </div>
-      </div>
+        </Sidebar>
 
-      <div style={{ position: "relative", height: "65vh" }}>
-        <MainContainer>
-          <ChatContainer>
-            <MessageList
-              scrollBehavior="smooth"
-              typingIndicator={
-                isLoading ? (
-                  <TypingIndicator content="イベントを検索中..." />
-                ) : null
-              }
-            >
-              {messages.map((message) => (
-                <Message
-                  key={message.id}
-                  model={{
-                    message: message.message,
-                    sentTime: message.sentTime,
-                    sender: message.sender,
-                    direction: message.direction,
-                    position: "single",
-                  }}
-                />
-              ))}
-            </MessageList>
-            <MessageInput
-              placeholder="技術やイベントの条件を入力してください..."
-              onSend={onSend}
-              disabled={isLoading}
-              attachButton={false}
-              sendButton={true}
+        <ChatContainer>
+          <ConversationHeader>
+            <ConversationHeader.Content
+              userName="イベント検索Bot"
+              info="興味のある技術分野を選択するか、テキストで質問してください"
             />
-          </ChatContainer>
-        </MainContainer>
-      </div>
+          </ConversationHeader>
+          <MessageList
+            scrollBehavior="smooth"
+            typingIndicator={
+              isLoading ? (
+                <TypingIndicator content="イベントを検索中..." />
+              ) : null
+            }
+          >
+            {messages.map((message) => (
+              <Message
+                key={message.id}
+                model={{
+                  message: message.message,
+                  sentTime: message.sentTime,
+                  sender: message.sender,
+                  direction: message.direction,
+                  position: "single",
+                }}
+              />
+            ))}
+          </MessageList>
+          <MessageInput
+            placeholder="技術やイベントの条件を入力してください..."
+            onSend={onSend}
+            disabled={isLoading}
+            attachButton={false}
+            sendButton={true}
+          />
+        </ChatContainer>
+      </MainContainer>
     </div>
   );
 }

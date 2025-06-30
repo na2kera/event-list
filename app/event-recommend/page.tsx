@@ -21,15 +21,10 @@ export default function EventRecommendPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50">
-      <Container>
-        <div className="py-12">
-          <RecommendHeader
-            onRecommendClick={fetchRecommendedEvents}
-            isLoading={isLoading}
-            hasEvents={events.length > 0}
-            hasError={!!error}
-          />
+    <div className="flex flex-col h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50">
+      <Container className="flex-grow flex flex-col">
+        <div className="py-12 flex-grow flex flex-col justify-center">
+          <RecommendHeader onFieldSelect={fetchRecommendedEvents} />
 
           {error && <ErrorDisplay error={error} />}
 

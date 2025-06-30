@@ -8,12 +8,8 @@ import { useChat } from "../hooks/useChat";
 import { useTechSelection } from "../hooks/useTechSelection";
 
 // コンポーネント
-import { Header } from "../components/Header";
 import { ChatSection } from "../components/chat/ChatSection";
-import { SelectedTechnologies } from "../components/tech/SelectedTechnologies";
-import { TechCategorySection } from "../components/tech/TechCategorySection";
 import { TechSelectionModal } from "../components/tech/TechSelectionModal";
-import { UsageGuide } from "../components/UsageGuide";
 import { ChatStyles } from "../components/ChatStyles";
 
 export default function Home() {
@@ -37,36 +33,16 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-900 via-indigo-800 to-indigo-900">
-      {/* ヘッダーセクション */}
-      <Header />
-
-      {/* チャット画面 */}
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
-        <ChatSection
-          messages={messages}
-          isLoading={isLoading}
-          onSend={handleSend}
-        />
-
-        {/* 選択済み技術チップス */}
-        <SelectedTechnologies
-          selectedTechnologies={selectedTechnologies}
-          onRemoveTechnology={handleRemoveTechnology}
-          onSearchWithSelected={handleSearchWithSelected}
-        />
-
-        {/* 技術分野選択ボタン */}
-        <TechCategorySection
-          isLoading={isLoading}
-          onCategorySelect={handleCategorySelect}
-        />
-
-        {/* 使い方ガイド */}
-        <UsageGuide />
-      </div>
-
-      {/* 技術選択モーダル */}
+    <div className="h-screen">
+      <ChatSection
+        messages={messages}
+        isLoading={isLoading}
+        onSend={handleSend}
+        selectedTechnologies={selectedTechnologies}
+        onCategorySelect={handleCategorySelect}
+        onRemoveTechnology={handleRemoveTechnology}
+        onSearchWithSelected={handleSearchWithSelected}
+      />
       <TechSelectionModal
         isOpen={isModalOpen}
         position={modalPosition}
@@ -76,8 +52,6 @@ export default function Home() {
         onClose={closeModal}
         onTechnologyToggle={handleTechnologyToggle}
       />
-
-      {/* カスタムスタイル */}
       <ChatStyles />
     </div>
   );
