@@ -26,9 +26,17 @@ export function ChatStyles() {
         color: white !important;
       }
 
+      .cs-sidebar {
+        background-color: #f9fafb;
+        border-right: 1px solid #e5e7eb;
+      }
+      .cs-chat-container {
+        background-color: #ffffff;
+      }
+
       .cs-message-input {
         background: rgba(255, 255, 255, 0.95) !important;
-        border-top: 1px solid #e2e8f0 !important;
+        border-top: 1px solid #e5e7eb !important;
       }
 
       .cs-message-input__content-editor {
