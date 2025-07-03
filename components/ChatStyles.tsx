@@ -78,10 +78,29 @@ export function ChatStyles() {
         background: transparent !important;
       }
 
+      /* 固定位置のチャット入力フォーム */
+      .fixed-chat-input {
+        position: fixed !important;
+        bottom: 20px !important;
+        left: 84px !important; /* サイドバー(64px) + 余白(20px) */
+        right: 20px !important;
+        max-width: 800px !important;
+        z-index: 1000 !important;
+        margin: 0 auto !important;
+      }
+
       /* レスポンシブ対応 */
       @media (max-width: 768px) {
         .cs-message-input {
           border-radius: 12px !important;
+        }
+
+        .fixed-chat-input {
+          left: 20px !important;
+          right: 20px !important;
+          margin-left: 0 !important;
+          transform: none !important;
+          width: calc(100% - 40px) !important;
         }
       }
     `}</style>

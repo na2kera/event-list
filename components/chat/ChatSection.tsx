@@ -74,6 +74,10 @@ export function ChatSection({
               />
             ))}
           </MessageList>
+        </ChatContainer>
+
+        {/* 固定位置のチャット入力フォーム */}
+        <div className="fixed-chat-input">
           <MessageInput
             placeholder="技術やイベントの条件を入力してください..."
             onSend={onSend}
@@ -81,7 +85,7 @@ export function ChatSection({
             attachButton={false}
             sendButton={true}
           />
-        </ChatContainer>
+        </div>
       </div>
     </div>
   );
