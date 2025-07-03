@@ -74,16 +74,18 @@ export function ChatSection({
               />
             ))}
           </MessageList>
-          <div className="chat-input-container">
-            <MessageInput
-              placeholder="技術やイベントの条件を入力してください..."
-              onSend={onSend}
-              disabled={isLoading}
-              attachButton={false}
-              sendButton={true}
-            />
-          </div>
         </ChatContainer>
+
+        {/* 固定位置のチャット入力フォーム */}
+        <div className="fixed-chat-input">
+          <MessageInput
+            placeholder="技術やイベントの条件を入力してください..."
+            onSend={onSend}
+            disabled={isLoading}
+            attachButton={false}
+            sendButton={true}
+          />
+        </div>
       </div>
     </div>
   );
