@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { TechCategorySection } from "../tech/TechCategorySection";
 import { SelectedTechnologies } from "../tech/SelectedTechnologies";
-import { Settings, ChevronRight } from "lucide-react";
+import { Filter, ChevronRight } from "lucide-react";
 
 interface HoverableSidebarProps {
   selectedTechnologies: string[];
@@ -92,16 +92,22 @@ export function HoverableSidebar({
         aria-label={isExpanded ? "サイドバーを閉じる" : "サイドバーを開く"}
       >
         {/* 細い状態のアイコン表示 */}
-        <div className={`${isExpanded ? "hidden" : "block"} p-4`}>
-          <div className="flex flex-col items-center space-y-4">
-            <div className="p-2 rounded-lg bg-indigo-100 text-indigo-600">
-              <Settings className="h-6 w-6" />
+        <div className={`${isExpanded ? "hidden" : "block"} p-3`}>
+          <div className="flex flex-col items-center space-y-6">
+            <div className="p-2.5 rounded-xl bg-indigo-100 text-indigo-600 shadow-sm">
+              <Filter className="h-7 w-7" />
             </div>
-            <div className="text-xs text-center text-gray-600 transform rotate-90 whitespace-nowrap">
+            <div className="text-[10px] text-center text-gray-500 transform rotate-90 whitespace-nowrap font-medium">
               技術選択
             </div>
             {selectedTechnologies.length > 0 && (
-              <div className="w-3 h-3 bg-indigo-600 rounded-full"></div>
+              <div className="relative">
+                <div className="w-4 h-4 bg-indigo-600 rounded-full flex items-center justify-center">
+                  <span className="text-white text-[10px] font-bold">
+                    {selectedTechnologies.length}
+                  </span>
+                </div>
+              </div>
             )}
           </div>
         </div>
