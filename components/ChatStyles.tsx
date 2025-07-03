@@ -35,35 +35,40 @@ export function ChatStyles() {
       }
 
       .cs-message-input {
-        background: rgba(255, 255, 255, 0.98) !important;
+        background: rgba(255, 255, 255, 0.95) !important;
         border: 2px solid #e2e8f0 !important;
-        border-radius: 16px !important;
-        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1),
-          0 4px 10px rgba(0, 0, 0, 0.05) !important;
+        border-radius: 24px !important;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12),
+          0 2px 8px rgba(0, 0, 0, 0.08) !important;
         backdrop-filter: blur(8px) !important;
         transition: all 0.3s ease !important;
         overflow: hidden !important;
+        min-height: 48px !important;
+        max-height: 48px !important;
       }
 
       .cs-message-input:hover {
-        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15),
-          0 6px 15px rgba(0, 0, 0, 0.08) !important;
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.16),
+          0 4px 12px rgba(0, 0, 0, 0.12) !important;
         border-color: #c7d2fe !important;
-        transform: translateY(-2px) !important;
+        transform: translateY(-1px) !important;
       }
 
       .cs-message-input:focus-within {
         border-color: #6366f1 !important;
-        box-shadow: 0 15px 35px rgba(99, 102, 241, 0.15),
-          0 6px 15px rgba(99, 102, 241, 0.08) !important;
+        box-shadow: 0 12px 40px rgba(99, 102, 241, 0.2),
+          0 4px 12px rgba(99, 102, 241, 0.12) !important;
       }
 
       .cs-message-input__content-editor {
-        padding: 16px 20px !important;
+        padding: 12px 20px !important;
         font-size: 16px !important;
+        line-height: 1.5 !important;
         color: #1e293b !important;
         background: transparent !important;
         border: none !important;
+        min-height: 24px !important;
+        max-height: 24px !important;
       }
 
       .cs-button--send {
@@ -71,6 +76,23 @@ export function ChatStyles() {
           135deg,
           #4f46e5 0%,
           #6366f1 100%
+        ) !important;
+        border-radius: 16px !important;
+        margin: 4px 12px 4px 0 !important;
+        padding: 10px 16px !important;
+        box-shadow: 0 4px 16px rgba(99, 102, 241, 0.3) !important;
+        transition: all 0.2s ease !important;
+        min-width: 40px !important;
+        height: 40px !important;
+      }
+
+      .cs-button--send:hover {
+        transform: translateY(-1px) !important;
+        box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4) !important;
+        background: linear-gradient(
+          135deg,
+          #4338ca 0%,
+          #5b21b6 100%
         ) !important;
       }
 
@@ -81,12 +103,13 @@ export function ChatStyles() {
       /* 固定位置のチャット入力フォーム */
       .fixed-chat-input {
         position: fixed !important;
-        bottom: 20px !important;
-        left: 84px !important; /* サイドバー(64px) + 余白(20px) */
-        right: 20px !important;
+        bottom: 30px !important;
+        left: 50% !important;
+        transform: translateX(-50%) !important;
+        width: calc(100% - 100px) !important; /* 横幅を広げる */
         max-width: 800px !important;
         z-index: 1000 !important;
-        margin: 0 auto !important;
+        padding: 0 20px !important;
       }
 
       /* レスポンシブ対応 */
@@ -98,9 +121,9 @@ export function ChatStyles() {
         .fixed-chat-input {
           left: 20px !important;
           right: 20px !important;
-          margin-left: 0 !important;
           transform: none !important;
           width: calc(100% - 40px) !important;
+          padding: 0 !important;
         }
       }
     `}</style>
