@@ -11,6 +11,7 @@ import { useTechSelection } from "../hooks/useTechSelection";
 import { ChatSection } from "../components/chat/ChatSection";
 import { TechSelectionModal } from "../components/tech/TechSelectionModal";
 import { ChatStyles } from "../components/ChatStyles";
+import { Header } from "../components/layout/Header";
 
 export default function Home() {
   // カスタムフック
@@ -33,16 +34,19 @@ export default function Home() {
   };
 
   return (
-    <div className="h-screen">
-      <ChatSection
-        messages={messages}
-        isLoading={isLoading}
-        onSend={handleSend}
-        selectedTechnologies={selectedTechnologies}
-        onCategorySelect={handleCategorySelect}
-        onRemoveTechnology={handleRemoveTechnology}
-        onSearchWithSelected={handleSearchWithSelected}
-      />
+    <div className="h-screen flex flex-col">
+      <Header />
+      <div className="flex-1">
+        <ChatSection
+          messages={messages}
+          isLoading={isLoading}
+          onSend={handleSend}
+          selectedTechnologies={selectedTechnologies}
+          onCategorySelect={handleCategorySelect}
+          onRemoveTechnology={handleRemoveTechnology}
+          onSearchWithSelected={handleSearchWithSelected}
+        />
+      </div>
       <TechSelectionModal
         isOpen={isModalOpen}
         position={modalPosition}
