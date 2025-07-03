@@ -321,16 +321,13 @@ export async function fetchEventRecommendations(
   userId?: string
 ): Promise<{ query: string; recommendations: Event[] }> {
   try {
-    const response = await fetch(
-      `http://localhost:3001/api/recommend/message`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ message, userId }),
-      }
-    );
+    const response = await fetch(`${API_BASE_URL}/recommend/message`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ message, userId }),
+    });
 
     if (!response.ok) {
       throw new Error(`API error: ${response.status}`);
