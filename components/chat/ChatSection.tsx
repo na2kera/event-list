@@ -74,15 +74,13 @@ export function ChatSection({
               />
             ))}
           </MessageList>
-          <div className="chat-input-container">
-            <MessageInput
-              placeholder="技術やイベントの条件を入力してください..."
-              onSend={onSend}
-              disabled={isLoading}
-              attachButton={false}
-              sendButton={true}
-            />
-          </div>
+          <MessageInput
+            placeholder="技術やイベントの条件を入力してください..."
+            onSend={onSend}
+            disabled={isLoading}
+            attachButton={false}
+            sendButton={true}
+          />
         </ChatContainer>
       </div>
     </div>
