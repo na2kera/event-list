@@ -43,8 +43,8 @@ export function ChatStyles() {
         backdrop-filter: blur(8px) !important;
         transition: all 0.3s ease !important;
         overflow: hidden !important;
-        min-height: 48px !important;
-        max-height: 48px !important;
+        min-height: 52px !important;
+        max-height: 52px !important;
       }
 
       .cs-message-input:hover {
@@ -61,14 +61,16 @@ export function ChatStyles() {
       }
 
       .cs-message-input__content-editor {
-        padding: 12px 20px !important;
+        padding: 14px 20px !important;
         font-size: 16px !important;
-        line-height: 1.5 !important;
+        line-height: 1.4 !important;
         color: #1e293b !important;
         background: transparent !important;
         border: none !important;
-        min-height: 24px !important;
-        max-height: 24px !important;
+        min-height: 20px !important;
+        height: 20px !important;
+        display: flex !important;
+        align-items: center !important;
       }
 
       .cs-button--send {
