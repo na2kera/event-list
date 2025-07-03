@@ -36,7 +36,7 @@ export function ChatSection({
   onSearchWithSelected,
 }: ChatSectionProps) {
   return (
-    <div className="h-screen">
+    <div className="h-full">
       <MainContainer responsive style={{ height: "100%" }}>
         <Sidebar position="left" scrollable={false}>
           <div className="p-4 flex flex-col h-full">
