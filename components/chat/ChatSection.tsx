@@ -1,16 +1,13 @@
 import React from "react";
 import {
-  MainContainer,
   ChatContainer,
   MessageList,
   Message,
   MessageInput,
   TypingIndicator,
-  Sidebar,
   ConversationHeader,
 } from "@chatscope/chat-ui-kit-react";
-import { SelectedTechnologies } from "../tech/SelectedTechnologies";
-import { TechCategorySection } from "../tech/TechCategorySection";
+import { HoverableSidebar } from "./HoverableSidebar";
 import type { ChatMessage } from "../../hooks/useChat";
 
 interface ChatSectionProps {
@@ -36,30 +33,18 @@ export function ChatSection({
   onSearchWithSelected,
 }: ChatSectionProps) {
   return (
-    <div className="h-full">
-      <MainContainer responsive style={{ height: "100%" }}>
-        <Sidebar position="left" scrollable={false}>
-          <div className="p-4 flex flex-col h-full">
-            <div className="pb-4 border-b border-gray-200">
-              <TechCategorySection
-                isLoading={isLoading}
-                onCategorySelect={onCategorySelect}
-              />
-            </div>
-            <div className="pt-4">
-              <h2 className="text-sm font-semibold mb-2 text-gray-600 px-2">
-                選択中の技術
-              </h2>
-              <SelectedTechnologies
-                selectedTechnologies={selectedTechnologies}
-                onRemoveTechnology={onRemoveTechnology}
-                onSearchWithSelected={onSearchWithSelected}
-              />
-            </div>
-            <div className="flex-grow"></div>
-          </div>
-        </Sidebar>
+    <div className="h-full flex">
+      {/* ホバー対応サイドバー */}
+      <HoverableSidebar
+        selectedTechnologies={selectedTechnologies}
+        isLoading={isLoading}
+        onCategorySelect={onCategorySelect}
+        onRemoveTechnology={onRemoveTechnology}
+        onSearchWithSelected={onSearchWithSelected}
+      />
 
+      {/* メインチャットエリア */}
+      <div className="flex-1 md:ml-16 h-full">
         <ChatContainer>
           <ConversationHeader>
             <ConversationHeader.Content
@@ -74,6 +59,7 @@ export function ChatSection({
                 <TypingIndicator content="イベントを検索中..." />
               ) : null
             }
+            style={{ paddingBottom: "100px" }}
           >
             {messages.map((message) => (
               <Message
@@ -88,15 +74,17 @@ export function ChatSection({
               />
             ))}
           </MessageList>
-          <MessageInput
-            placeholder="技術やイベントの条件を入力してください..."
-            onSend={onSend}
-            disabled={isLoading}
-            attachButton={false}
-            sendButton={true}
-          />
+          <div className="chat-input-container">
+            <MessageInput
+              placeholder="技術やイベントの条件を入力してください..."
+              onSend={onSend}
+              disabled={isLoading}
+              attachButton={false}
+              sendButton={true}
+            />
+          </div>
         </ChatContainer>
-      </MainContainer>
+      </div>
     </div>
   );
 }
