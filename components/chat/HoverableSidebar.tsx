@@ -25,6 +25,13 @@ export function HoverableSidebar({
   const [isMobile, setIsMobile] = useState(false);
   const [isManuallyCollapsed, setIsManuallyCollapsed] = useState(false);
 
+  // 検索実行時にサイドバーを閉じる
+  const handleSearchWithSelected = () => {
+    onSearchWithSelected();
+    setIsExpanded(false);
+    setIsManuallyCollapsed(true);
+  };
+
   // モバイル判定
   React.useEffect(() => {
     const checkIsMobile = () => {
@@ -127,7 +134,7 @@ export function HoverableSidebar({
             <SelectedTechnologies
               selectedTechnologies={selectedTechnologies}
               onRemoveTechnology={onRemoveTechnology}
-              onSearchWithSelected={onSearchWithSelected}
+              onSearchWithSelected={handleSearchWithSelected}
             />
           </div>
         </div>
