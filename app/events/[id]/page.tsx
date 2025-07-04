@@ -1,4 +1,5 @@
 import { Container } from "components/layout/Container";
+import { Header } from "components/layout/Header";
 import { EventDetailClient } from "components/events/EventDetailClient";
 import { notFound } from "next/navigation";
 
@@ -37,6 +38,7 @@ export default async function EventPage({
 
     return (
       <div className="min-h-screen bg-gray-50">
+        <Header />
         <Container>
           <EventDetailClient eventId={id} eventData={eventData} />
         </Container>

@@ -7,6 +7,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { Event, EventFormat } from "@/types";
 import { BookmarkButton } from "./BookmarkButton";
+import { prefectureOptions } from "../../constants/prefectures";
 
 type EventType = "all" | "hackathon" | "workshop" | "contest";
 type DifficultyLevel =
@@ -45,7 +46,6 @@ export function EventDiscovery({
   const [selectedType, setSelectedType] = useState<EventType>(
     initialType as EventType
   );
-  const [selectedFormat, setSelectedFormat] = useState<Format>("all");
   const [selectedDifficulty, setSelectedDifficulty] = useState<
     DifficultyLevel | "all"
   >("all");
@@ -53,6 +53,7 @@ export function EventDiscovery({
   const [showOnlyFree, setShowOnlyFree] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [keyPhraseQuery, setKeyPhraseQuery] = useState("");
+  const [selectedLocation, setSelectedLocation] = useState<string>("");
 
   const getEventType = (event: Event): Exclude<EventType, "all"> => {
     // バックエンドから返されるeventTypeフィールドがある場合はそれを優先
@@ -94,13 +95,10 @@ export function EventDiscovery({
 
   const filteredEvents = events.filter((event) => {
     const eventType = getEventType(event);
-    const eventFormat = getEventFormat(event);
     const eventDifficulty = getEventDifficulty(event);
     const eventPrice = event.price || 0;
 
     if (selectedType !== "all" && eventType !== selectedType) return false;
-    if (selectedFormat !== "all" && eventFormat !== selectedFormat)
-      return false;
     if (selectedDifficulty !== "all" && eventDifficulty !== selectedDifficulty)
       return false;
     if (showOnlyFree && eventPrice > 0) return false;
@@ -121,6 +119,7 @@ export function EventDiscovery({
     ) {
       return false;
     }
+    if (selectedLocation && event.location !== selectedLocation) return false;
     return true;
   });
 
@@ -199,20 +198,19 @@ export function EventDiscovery({
               </div>
             </div>
 
-            {/* Format */}
+            {/* 開催地（都道府県＋オンライン） */}
             <div>
-              <h3 className="text-sm font-medium text-gray-900 mb-3">
-                開催形式
-              </h3>
+              <h3 className="text-sm font-medium text-gray-900 mb-3">開催地</h3>
               <select
-                value={selectedFormat}
-                onChange={(e) => setSelectedFormat(e.target.value as Format)}
+                value={selectedLocation}
+                onChange={(e) => setSelectedLocation(e.target.value)}
                 className="w-full rounded-md border-gray-300 focus:border-indigo-500 focus:ring-indigo-500"
               >
-                <option value="all">すべての形式</option>
-                <option value="ONLINE">オンライン</option>
-                <option value="OFFLINE">オフライン</option>
-                <option value="HYBRID">ハイブリッド</option>
+                {prefectureOptions.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
               </select>
             </div>
 

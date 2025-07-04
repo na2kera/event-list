@@ -8,6 +8,7 @@ import { Event } from "@/types";
 import { searchEvents, EventSearchParams } from "lib/api/client.ts/eventApi";
 import { format } from "date-fns";
 import { ja } from "date-fns/locale";
+import { prefectureOptions } from "../../constants/prefectures";
 
 interface EventSearchProps {
   initialEvents: Event[];
@@ -223,16 +224,20 @@ export function EventSearch({ initialEvents }: EventSearchProps) {
                 >
                   開催場所
                 </label>
-                <input
+                <select
                   id="location"
-                  type="text"
-                  placeholder="地域や会場名で検索"
                   value={searchParams.location || ""}
                   onChange={(e) =>
                     handleParamChange("location", e.target.value)
                   }
                   className="w-full rounded-md border-gray-300 focus:border-indigo-500 focus:ring-indigo-500"
-                />
+                >
+                  {prefectureOptions.map((option) => (
+                    <option key={option.value} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
+                </select>
               </div>
 
               {/* カテゴリ */}
