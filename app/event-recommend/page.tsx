@@ -13,14 +13,7 @@ import { Header } from "components/layout/Header";
 
 export default function EventRecommendPage() {
   const { data: session } = useSession();
-  const {
-    events,
-    isLoading,
-    error,
-    fetchRecommendedEvents,
-    fetchRecommendedEventsNoCache,
-    rawRecommendData,
-  } = useEventRecommend();
+  const { events, isLoading, error, rawRecommendData } = useEventRecommend();
 
   // ログインチェック
   if (!session) {
