@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { Pencil } from "lucide-react";
+import { Pencil, Code, Target, Tag as TagIcon } from "lucide-react";
 import { GOAL_LABELS, DIFFICULTY_LABELS } from "types/enums";
 import { Bookmark } from "@/types";
 import { BookmarkList } from "./BookmarkList";
@@ -35,7 +35,7 @@ export function MyPageContent({
 
       {/* プロフィールセクション */}
       <section className="mb-8">
-        <div className="relative bg-gradient-to-r from-blue-50 via-indigo-50 to-purple-50 rounded-lg p-6 mb-6 flex flex-col md:flex-row md:items-center justify-between">
+        <div className="relative bg-gradient-to-r from-blue-50 via-indigo-50 to-purple-50 rounded-2xl p-6 mb-6 flex flex-col md:flex-row md:items-center justify-between">
           <div className="flex items-center space-x-4">
             {userProfile?.image && (
               <Image
@@ -60,7 +60,7 @@ export function MyPageContent({
             </button>
           </Link>
         </div>
-        <div className="bg-white rounded-lg shadow p-6">
+        <div className="bg-white rounded-2xl shadow p-6">
           
 
           {/* 技術情報 */}
@@ -74,6 +74,7 @@ export function MyPageContent({
                       key={index}
                       className="inline-flex items-center gap-1 rounded-full border border-indigo-200 bg-indigo-50 px-3 py-1 text-xs font-medium text-indigo-700 shadow-sm"
                     >
+                      <Code className="w-3 h-3" />
                       {tech}
                     </span>
                   ))
@@ -117,7 +118,8 @@ export function MyPageContent({
                     key={index}
                     className="inline-flex items-center gap-1 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs font-medium text-emerald-700 shadow-sm"
                   >
-                    {GOAL_LABELS[goal as keyof typeof GOAL_LABELS] ?? goal}
+                    <Target className="w-3 h-3" />
+                     {GOAL_LABELS[goal as keyof typeof GOAL_LABELS] ?? goal}
                   </span>
                 ))
               ) : (
@@ -135,7 +137,8 @@ export function MyPageContent({
                     key={index}
                     className="inline-flex items-center gap-1 rounded-full border border-violet-200 bg-violet-50 px-3 py-1 text-xs font-medium text-violet-700 shadow-sm"
                   >
-                    {tag}
+                    <TagIcon className="w-3 h-3" />
+                     {tag}
                   </span>
                 ))
               ) : (
