@@ -13,7 +13,7 @@ import { Header } from "components/layout/Header";
 
 export default function EventRecommendPage() {
   const { data: session } = useSession();
-  const { events, isLoading, error } = useEventRecommend();
+  const { events, isLoading, error, rawRecommendData } = useEventRecommend();
 
   // ログインチェック
   if (!session) {
@@ -37,7 +37,11 @@ export default function EventRecommendPage() {
           {isLoading && <LoadingState />}
 
           {!isLoading && events.length > 0 && (
-            <ResultsSection events={events} eventsCount={events.length} />
+            <ResultsSection
+              events={events}
+              eventsCount={events.length}
+              rawRecommendData={rawRecommendData}
+            />
           )}
 
           {!isLoading && !error && events.length === 0 && <EmptyState />}
