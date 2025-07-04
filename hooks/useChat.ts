@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { fetchEventRecommendations } from "lib/api/server.ts/serverApi";
 import { Event } from "@/types";
 
@@ -26,9 +26,49 @@ const initialMessage: ChatMessage = {
   direction: "incoming",
 };
 
+const CHAT_STORAGE_KEY = "tech-event-chat-history";
+
+// sessionStorageからチャット履歴を復元
+const loadChatHistory = (): ChatMessage[] => {
+  if (typeof window === "undefined") return [initialMessage];
+
+  try {
+    const stored = sessionStorage.getItem(CHAT_STORAGE_KEY);
+    if (stored) {
+      const parsed = JSON.parse(stored);
+      // 保存されたデータが配列で、最低限の形式を満たしているかチェック
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        return parsed;
+      }
+    }
+  } catch (error) {
+    console.warn("チャット履歴の復元に失敗しました:", error);
+  }
+
+  return [initialMessage];
+};
+
+// sessionStorageにチャット履歴を保存
+const saveChatHistory = (messages: ChatMessage[]) => {
+  if (typeof window === "undefined") return;
+
+  try {
+    sessionStorage.setItem(CHAT_STORAGE_KEY, JSON.stringify(messages));
+  } catch (error) {
+    console.warn("チャット履歴の保存に失敗しました:", error);
+  }
+};
+
 export const useChat = () => {
-  const [messages, setMessages] = useState<ChatMessage[]>([initialMessage]);
+  const [messages, setMessages] = useState<ChatMessage[]>(() =>
+    loadChatHistory()
+  );
   const [isLoading, setIsLoading] = useState(false);
+
+  // メッセージが更新されるたびにsessionStorageに保存
+  useEffect(() => {
+    saveChatHistory(messages);
+  }, [messages]);
 
   const handleSend = async ({ message, tags }: ChatSendPayload) => {
     // ユーザーメッセージを追加
