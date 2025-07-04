@@ -115,6 +115,30 @@ export function ChatSection({
 
         {/* 独自実装のチャット入力フォーム */}
         <div className="fixed bottom-0 left-0 right-0 md:left-16 bg-white border-t border-gray-200 p-4 z-10">
+          {isLoading && (
+            <div className="flex items-center justify-center mb-2 text-blue-600 text-sm">
+              <svg
+                className="animate-spin h-5 w-5 mr-2 text-blue-500"
+                viewBox="0 0 24 24"
+              >
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                  fill="none"
+                />
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8v8z"
+                />
+              </svg>
+              検索中...
+            </div>
+          )}
           <form onSubmit={handleSubmit} className="max-w-4xl mx-auto">
             {/* タグUI表示（入力欄上のみ） */}
             {selectedTechnologies.length > 0 && (

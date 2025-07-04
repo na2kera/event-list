@@ -69,18 +69,31 @@ export const useChat = () => {
           return reasons[idx % reasons.length];
         });
 
-      const systemResponse: ChatMessage = {
-        id: (Date.now() + 1).toString(),
-        message: `「${data.query}」に関連するイベントを見つけました！✨`,
-        sentTime: "just now",
-        sender: "System",
-        direction: "incoming",
-        events: data.recommendations.slice(0, 5).map((rec) => {
-          const ev = (rec as unknown as { event?: Event } & Event).event ?? rec;
-          return ev as Event;
-        }),
-        recommendReasons,
-      };
+      let systemResponse: ChatMessage;
+      if (!data.recommendations || data.recommendations.length === 0) {
+        systemResponse = {
+          id: (Date.now() + 1).toString(),
+          message:
+            "ご希望に合うイベントが見つかりませんでした。条件を変えて再度お試しください。",
+          sentTime: "just now",
+          sender: "System",
+          direction: "incoming",
+        };
+      } else {
+        systemResponse = {
+          id: (Date.now() + 1).toString(),
+          message: `「${data.query}」に関連するイベントを見つけました！✨`,
+          sentTime: "just now",
+          sender: "System",
+          direction: "incoming",
+          events: data.recommendations.slice(0, 5).map((rec) => {
+            const ev =
+              (rec as unknown as { event?: Event } & Event).event ?? rec;
+            return ev as Event;
+          }),
+          recommendReasons,
+        };
+      }
 
       setMessages((prevMessages) => [...prevMessages, systemResponse]);
       setIsLoading(false);

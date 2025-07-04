@@ -45,21 +45,17 @@ export function EventCard({
         isBookmarked ? "border-indigo-300" : ""
       }`}
     >
-      <div className="relative">
-        {event?.image && typeof event.image === "string" ? (
-          <Image
-            src={event.image}
-            alt={event.title}
-            width={600}
-            height={270}
-            className="w-full h-48 object-cover"
-            unoptimized
-          />
-        ) : (
-          <div className="w-full h-48 bg-gray-100 flex items-center justify-center text-gray-400">
-            No Image
-          </div>
-        )}
+      <div className="relative w-full h-48">
+        <Image
+          src={
+            event.image ||
+            "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4"
+          }
+          alt={event.title}
+          fill
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+          className="object-cover"
+        />
         <div className="absolute top-2 right-2">
           {event?.id && (
             <BookmarkButton eventId={event.id} isBookmarked={isBookmarked} />
@@ -149,11 +145,11 @@ export function EventCard({
           )}
         </div>
 
-        {event.description && (
+        {/* event.description && (
           <p className="text-gray-600 mb-4 line-clamp-3 text-sm">
             {event.description}
           </p>
-        )}
+        ) */}
 
         {recommendReason && (
           <div className="mb-4 p-3 bg-gradient-to-r from-indigo-50 to-purple-50 rounded-lg border border-indigo-100">
