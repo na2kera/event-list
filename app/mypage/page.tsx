@@ -1,6 +1,6 @@
 import { getUserBookmarks } from "lib/api/client.ts/bookmarkApi";
 import { getUserProfile } from "lib/api/server.ts/serverApi";
-import { authOptions } from "lib/auth";
+import { authOptions } from "../api/auth/[...nextauth]/route";
 import { getServerSession } from "next-auth";
 import { Header } from "components/layout/Header";
 import { MyPageContent } from "components/mypage/MyPageContent";
@@ -18,7 +18,10 @@ export default async function MyPage() {
     return (
       <div className="min-h-screen bg-gray-50">
         <Header />
-        <MyPageContent userProfile={userProfile} userBookmarks={userbookmarks} />
+        <MyPageContent
+          userProfile={userProfile}
+          userBookmarks={userbookmarks}
+        />
       </div>
     );
   } catch (error) {

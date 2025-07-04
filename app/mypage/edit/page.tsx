@@ -1,5 +1,5 @@
 import { getServerSession } from "next-auth";
-import { authOptions } from "lib/auth";
+import { authOptions } from "../../api/auth/[...nextauth]/route";
 import { getUserProfile } from "lib/api/client.ts/userApi";
 import { Header } from "components/layout/Header";
 import { ProfileEditForm } from "./ProfileEditForm";

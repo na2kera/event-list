@@ -9,6 +9,7 @@ import { AdapterUser } from "next-auth/adapters";
 import { JWT } from "next-auth/jwt";
 import GithubProvider from "next-auth/providers/github";
 import LineProvider from "next-auth/providers/line";
+import CredentialsProvider from "next-auth/providers/credentials";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { prisma } from "lib/prisma";
 
@@ -59,6 +60,58 @@ const authOptions: AuthOptions = {
           image: profile.picture,
           lineId: profile.sub,
         };
+      },
+    }),
+    CredentialsProvider({
+      name: "Test User Credentials",
+      credentials: {
+        email: { label: "Email", type: "email" },
+        password: { label: "Password", type: "password" },
+      },
+      async authorize(credentials) {
+        if (!credentials?.email || !credentials?.password) {
+          console.error("Missing credentials");
+          return null;
+        }
+
+        try {
+          // バックエンドのテストユーザーログインAPIを呼び出し
+          const response = await fetch(
+            `${process.env.NEXT_PUBLIC_API_URL}/auth/login`,
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                email: credentials.email,
+                password: credentials.password,
+              }),
+            }
+          );
+
+          if (!response.ok) {
+            console.error("Backend authentication failed");
+            return null;
+          }
+
+          const data = await response.json();
+
+          if (data.success && data.user) {
+            console.log("Test user authentication successful");
+            return {
+              id: data.user.id,
+              email: data.user.email,
+              name: data.user.name,
+              image: data.user.image,
+            };
+          }
+
+          return null;
+        } catch (error) {
+          console.error("Error during test user authentication:", error);
+          return null;
+        }
       },
     }),
   ],
@@ -177,4 +230,4 @@ const authOptions: AuthOptions = {
 
 const handler = NextAuth(authOptions);
 
-export { handler as GET, handler as POST };
+export { handler as GET, handler as POST, authOptions };

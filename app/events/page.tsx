@@ -3,7 +3,7 @@ import { getEvents, getUserBookmarks } from "lib/api/server.ts/serverApi";
 import { Suspense } from "react";
 import { Event } from "@/types";
 import { getServerSession } from "next-auth";
-import { authOptions } from "../../lib/auth";
+import { authOptions } from "../api/auth/[...nextauth]/route";
 import { Header } from "components/layout/Header";
 
 export const metadata = {
