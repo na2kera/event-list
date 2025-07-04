@@ -2,7 +2,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "lib/authOptions";
 import { getUserProfile } from "lib/api/client.ts/userApi";
 import { Header } from "components/layout/Header";
-import { ProfileEditForm } from "./ProfileEditForm";
+import { ProfileEditFormSimple } from "../../../components/mypage/ProfileEditFormSimple";
 
 export default async function ProfileEditPage() {
   const session = await getServerSession(authOptions);
@@ -14,7 +14,7 @@ export default async function ProfileEditPage() {
     <div className="min-h-screen bg-gray-50">
       <Header />
       <div className="container mx-auto px-4 py-8">
-        <ProfileEditForm initialData={user} />
+        <ProfileEditFormSimple initialData={user} />
       </div>
     </div>
   );
