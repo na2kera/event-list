@@ -20,7 +20,7 @@ export interface ChatSendPayload {
 const initialMessage: ChatMessage = {
   id: "1",
   message:
-    "こんにちは！テックイベント推薦システムです。🚀\n\n最新の技術イベントをお探しですか？\n下のカテゴリから選ぶか、自由にご希望をお聞かせください！",
+    "こんにちは！テックイベント推薦システムです。🚀\n\n最新の技術イベントをお探しですか？左のサイドバーからキーワードを選ぶか、自由にご希望をお聞かせください！",
   sentTime: "just now",
   sender: "System",
   direction: "incoming",
