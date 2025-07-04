@@ -1,11 +1,6 @@
 import { Sparkles } from "lucide-react";
-import { TechFieldSelector } from "./TechFieldSelector";
 
-interface RecommendHeaderProps {
-  onFieldSelect: (field: string) => void;
-}
-
-export function RecommendHeader({ onFieldSelect }: RecommendHeaderProps) {
+export function RecommendHeader() {
   return (
     <div className="text-center mb-12">
       <Sparkles className="h-12 w-12 text-indigo-600 mx-auto mb-6" />
@@ -13,8 +8,6 @@ export function RecommendHeader({ onFieldSelect }: RecommendHeaderProps) {
         あなたにおすすめの
         <span className="text-indigo-600">イベント</span>
       </h1>
-      {/* 技術分野選択 */}
-      <TechFieldSelector onFieldSelect={onFieldSelect} />
     </div>
   );
 }
