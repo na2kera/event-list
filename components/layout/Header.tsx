@@ -123,7 +123,7 @@ export function Header() {
                       </Link>
                       <button
                         onClick={() => {
-                          signOut();
+                          signOut({ callbackUrl: "/" });
                           setIsMenuOpen(false);
                         }}
                         className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-600"
@@ -174,7 +174,7 @@ export function Header() {
             {session ? (
               <button
                 onClick={() => {
-                  signOut();
+                  signOut({ callbackUrl: "/" });
                   setIsMobileMenuOpen(false);
                 }}
                 className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-indigo-50 hover:text-indigo-600"
