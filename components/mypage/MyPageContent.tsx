@@ -2,8 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { Button } from "@mui/material";
-import EditIcon from "@mui/icons-material/Edit";
+import { Pencil } from "lucide-react";
 import { GOAL_LABELS, DIFFICULTY_LABELS } from "types/enums";
 import { Bookmark } from "@/types";
 import { BookmarkList } from "./BookmarkList";
@@ -36,34 +35,33 @@ export function MyPageContent({
 
       {/* プロフィールセクション */}
       <section className="mb-8">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-xl font-semibold">プロフィール</h2>
-          <Link href="/mypage/edit">
-            <Button variant="outlined" startIcon={<EditIcon />} size="small">
-              編集
-            </Button>
-          </Link>
-        </div>
-        <div className="bg-white rounded-lg shadow p-6">
-          <div className="flex items-center space-x-4 mb-4">
+        <div className="relative bg-gradient-to-r from-blue-50 via-indigo-50 to-purple-50 rounded-lg p-6 mb-6 flex flex-col md:flex-row md:items-center justify-between">
+          <div className="flex items-center space-x-4">
             {userProfile?.image && (
               <Image
                 src={userProfile.image}
                 alt={userProfile.name ?? "プロフィール画像"}
-                width={64}
-                height={64}
+                width={80}
+                height={80}
                 className="rounded-full"
               />
             )}
             <div>
-              <h3 className="text-lg font-semibold">
-                {userProfile?.name ?? "未設定"}
-              </h3>
-              {userProfile?.email && (
-                <p className="text-gray-600">{userProfile.email}</p>
+              <h2 className="text-2xl font-bold">{userProfile?.name ?? "未設定"}</h2>
+              {userProfile?.affiliation && (
+                <p className="text-gray-600">{userProfile.affiliation}</p>
               )}
             </div>
           </div>
+          <Link href="/mypage/edit" className="mt-4 md:mt-0">
+            <button className="inline-flex items-center gap-2 px-4 py-2 rounded-md bg-indigo-600 text-white hover:bg-indigo-700 focus:outline-none">
+              <Pencil size={16} />
+              プロフィール編集
+            </button>
+          </Link>
+        </div>
+        <div className="bg-white rounded-lg shadow p-6">
+          
 
           {/* 技術情報 */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -74,7 +72,7 @@ export function MyPageContent({
                   userProfile.stack.map((tech: string, index: number) => (
                     <span
                       key={index}
-                      className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm"
+                      className="inline-flex items-center gap-1 rounded-full border border-indigo-200 bg-indigo-50 px-3 py-1 text-xs font-medium text-indigo-700 shadow-sm"
                     >
                       {tech}
                     </span>
@@ -117,7 +115,7 @@ export function MyPageContent({
                 userProfile.goal.map((goal: string, index: number) => (
                   <span
                     key={index}
-                    className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm"
+                    className="inline-flex items-center gap-1 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs font-medium text-emerald-700 shadow-sm"
                   >
                     {GOAL_LABELS[goal as keyof typeof GOAL_LABELS] ?? goal}
                   </span>
@@ -135,7 +133,7 @@ export function MyPageContent({
                 userProfile.tag.map((tag: string, index: number) => (
                   <span
                     key={index}
-                    className="bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-sm"
+                    className="inline-flex items-center gap-1 rounded-full border border-violet-200 bg-violet-50 px-3 py-1 text-xs font-medium text-violet-700 shadow-sm"
                   >
                     {tag}
                   </span>
