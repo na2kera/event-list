@@ -164,7 +164,7 @@ export function ProfileEditFormSimple({
               type="text"
               value={newStack}
               onChange={(e) => setNewStack(e.target.value)}
-              className="flex-grow rounded-md border-gray-300 focus:ring-indigo-500 focus:border-indigo-500"
+              className="flex-grow rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
               placeholder="新しいスキル"
               disabled={isSubmitting}
             />
@@ -207,7 +207,7 @@ export function ProfileEditFormSimple({
               list="tag-options"
               value={tagInput}
               onChange={(e) => setTagInput(e.target.value)}
-              className="flex-grow rounded-md border-gray-300 focus:ring-indigo-500 focus:border-indigo-500"
+              className="flex-grow rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
               placeholder="タグを入力"
               disabled={isSubmitting}
             />
