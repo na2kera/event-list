@@ -76,6 +76,7 @@ export function ProfileEditFormSimple({
 
   // タグ選択用の状態
   const [searchTerm, setSearchTerm] = useState("");
+  const [tagInput, setTagInput] = useState("");
 
   const addStack = () => {
     if (newStack.trim() && !stacks.includes(newStack.trim())) {
@@ -93,6 +94,13 @@ export function ProfileEditFormSimple({
         ? prev.filter((t) => t !== tagTitle)
         : [...prev, tagTitle]
     );
+  };
+
+  const addTag = () => {
+    if (tagInput.trim() && !tags.includes(tagInput.trim())) {
+      setTags([...tags, tagInput.trim()]);
+      setTagInput("");
+    }
   };
 
   const removeTag = (t: string) => {
@@ -227,6 +235,34 @@ export function ProfileEditFormSimple({
             )}
           </h3>
 
+          {/* カスタムタグ追加 */}
+          <div className="mb-4 p-3 bg-blue-50 rounded-lg border border-blue-200">
+            <p className="text-sm text-blue-700 mb-2 font-medium">
+              💡 カスタムタグを追加
+            </p>
+            <div className="flex gap-2">
+              <input
+                type="text"
+                value={tagInput}
+                onChange={(e) => setTagInput(e.target.value)}
+                className="flex-grow rounded-md border border-blue-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                placeholder="オリジナルのタグを入力"
+                disabled={isSubmitting}
+                onKeyPress={(e) =>
+                  e.key === "Enter" && (e.preventDefault(), addTag())
+                }
+              />
+              <button
+                type="button"
+                onClick={addTag}
+                className="px-4 py-2 rounded-md bg-purple-600 text-white text-sm hover:bg-purple-700 transition-colors disabled:opacity-50"
+                disabled={isSubmitting || !tagInput.trim()}
+              >
+                追加
+              </button>
+            </div>
+          </div>
+
           {/* 検索バー */}
           <div className="relative mb-4">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
@@ -235,7 +271,7 @@ export function ProfileEditFormSimple({
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-              placeholder="タグを検索..."
+              placeholder="既定のタグを検索..."
               disabled={isSubmitting}
             />
             {searchTerm && (
