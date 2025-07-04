@@ -7,10 +7,6 @@ import { tagData } from "../../constants/tagData";
 interface HoverableSidebarProps {
   selectedTechnologies: string[];
   isLoading: boolean;
-  onCategorySelect: (
-    categoryId: string,
-    event: React.MouseEvent<HTMLButtonElement>
-  ) => void;
   onRemoveTechnology: (technology: string) => void;
   onSearchWithSelected: () => void;
   onTagClick: (tag: string) => void;
@@ -20,7 +16,6 @@ interface HoverableSidebarProps {
 export function HoverableSidebar({
   selectedTechnologies,
   isLoading,
-  onCategorySelect,
   onRemoveTechnology,
   onSearchWithSelected,
   onTagClick,
@@ -133,7 +128,6 @@ export function HoverableSidebar({
           <div className="pb-4 border-b border-gray-200">
             <TechCategorySection
               isLoading={isLoading}
-              onCategorySelect={onCategorySelect}
               additionalTagData={tagData}
               onTagClick={onTagClick}
               selectedTechnologies={selectedTechnologies}

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Search, Calendar, MapPin, Filter } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
@@ -34,7 +34,7 @@ export function EventSearch({ initialEvents }: EventSearchProps) {
   const [showFilters, setShowFilters] = useState<boolean>(false);
 
   // 検索実行
-  const handleSearch = async () => {
+  const handleSearch = useCallback(async () => {
     setIsLoading(true);
     setError(null);
 
@@ -57,7 +57,7 @@ export function EventSearch({ initialEvents }: EventSearchProps) {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [searchParams]);
 
   // パラメータ変更時の処理
   const handleParamChange = (

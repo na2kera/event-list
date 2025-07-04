@@ -21,7 +21,6 @@ export default function Home() {
     modalPosition,
     isModalOpen,
     modalRef,
-    handleCategorySelect,
     handleTechnologyToggle,
     handleRemoveTechnology,
     closeModal,
@@ -42,7 +41,6 @@ export default function Home() {
           isLoading={isLoading}
           onSend={(payload) => handleSend(payload)}
           selectedTechnologies={selectedTechnologies}
-          onCategorySelect={handleCategorySelect}
           onRemoveTechnology={handleRemoveTechnology}
           onSearchWithSelected={handleSearchWithSelected}
           handleTechnologyToggle={handleTechnologyToggle}

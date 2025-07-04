@@ -15,10 +15,6 @@ interface ChatSectionProps {
   isLoading: boolean;
   onSend: (payload: { message: string; tags: string[] }) => void;
   selectedTechnologies: string[];
-  onCategorySelect: (
-    categoryId: string,
-    event: React.MouseEvent<HTMLButtonElement>
-  ) => void;
   onRemoveTechnology: (technology: string) => void;
   onSearchWithSelected: () => void;
 }
@@ -28,7 +24,6 @@ export function ChatSection({
   isLoading,
   onSend,
   selectedTechnologies,
-  onCategorySelect,
   onRemoveTechnology,
   onSearchWithSelected,
   handleTechnologyToggle,
@@ -63,7 +58,6 @@ export function ChatSection({
       <HoverableSidebar
         selectedTechnologies={selectedTechnologies}
         isLoading={isLoading}
-        onCategorySelect={onCategorySelect}
         onRemoveTechnology={onRemoveTechnology}
         onSearchWithSelected={onSearchWithSelected}
         onTechnologyToggle={handleTechnologyToggle}

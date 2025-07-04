@@ -21,7 +21,6 @@ import {
   FormGroup,
   FormControlLabel,
   Checkbox,
-  Autocomplete,
   Chip,
   Box,
 } from "@mui/material";
@@ -33,7 +32,6 @@ import {
   DIFFICULTY_LABELS,
   GOAL_LABELS,
 } from "types/enums";
-import { predefinedTags } from "../../../lib/data/tags";
 import { tagData } from "../../../constants/tagData";
 
 const profileSchema = z.object({

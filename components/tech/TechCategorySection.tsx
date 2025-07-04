@@ -4,10 +4,6 @@ import { techCategories } from "../../constants/techCategories";
 
 interface TechCategorySectionProps {
   isLoading: boolean;
-  onCategorySelect: (
-    categoryId: string,
-    event: React.MouseEvent<HTMLButtonElement>
-  ) => void;
   additionalTagData?: typeof tagData;
   onTagClick?: (tag: string) => void;
   selectedTechnologies: string[];
@@ -16,7 +12,6 @@ interface TechCategorySectionProps {
 
 export const TechCategorySection: React.FC<TechCategorySectionProps> = ({
   isLoading,
-  onCategorySelect,
   additionalTagData,
   onTagClick,
   selectedTechnologies,
