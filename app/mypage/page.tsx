@@ -1,6 +1,6 @@
 import { getUserBookmarks } from "lib/api/client.ts/bookmarkApi";
 import { getUserProfile } from "lib/api/server.ts/serverApi";
-import { authOptions } from "../api/auth/[...nextauth]/route";
+import { authOptions } from "lib/authOptions";
 import { getServerSession } from "next-auth";
 import { Header } from "components/layout/Header";
 import { MyPageContent } from "components/mypage/MyPageContent";
