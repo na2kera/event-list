@@ -25,7 +25,7 @@ import {
   Chip,
   Box,
 } from "@mui/material";
-import { Layers, Building2, Target as TargetIcon, Tag as TagLucide } from "lucide-react";
+import { Layers, Target as TargetIcon, Tag as TagLucide } from "lucide-react";
 import { updateUserProfile, UserProfile } from "lib/api/client.ts/userApi";
 import {
   DifficultyLevel,
@@ -366,9 +366,6 @@ export function ProfileEditForm({ initialData }: ProfileEditFormProps) {
                 </FormGroup>
               </div>
 
-              <Typography variant="subtitle1" className="mb-2 flex items-center gap-1">
-                  <Building2 className="w-4 h-4 text-sky-600" /> 所属
-                </Typography>
 
               <Controller
                 name="affiliation"
