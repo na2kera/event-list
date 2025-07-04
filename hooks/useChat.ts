@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { fetchEventRecommendations } from "lib/api/server.ts/serverApi";
+import { Event } from "@/types";
 
 export interface ChatMessage {
   id: string;
@@ -7,6 +8,8 @@ export interface ChatMessage {
   sentTime: string;
   sender: string;
   direction: "incoming" | "outgoing";
+  events?: Event[];
+  recommendReasons?: string[];
 }
 
 const initialMessage: ChatMessage = {
@@ -16,58 +19,6 @@ const initialMessage: ChatMessage = {
   sentTime: "just now",
   sender: "System",
   direction: "incoming",
-};
-
-// モックイベントレスポンス生成（実際のAPIレスポンス時は削除）
-const generateMockEventResponse = (query: string): string => {
-  const mockEvents = [
-    {
-      title: "React 19 新機能ハンズオン",
-      date: "2024年1月15日 19:00-21:00",
-      location: "渋谷テックカフェ",
-      description: "React 19の新機能を実際に触りながら学びます",
-    },
-    {
-      title: "Next.js App Router実践セミナー",
-      date: "2024年1月18日 14:00-17:00",
-      location: "オンライン",
-      description: "Next.js 14のApp Routerを使った実践的な開発方法",
-    },
-    {
-      title: "TypeScript型安全プログラミング",
-      date: "2024年1月22日 10:00-16:00",
-      location: "新宿コワーキングスペース",
-      description: "TypeScriptの高度な型システムを学ぶワークショップ",
-    },
-    {
-      title: "Go言語マイクロサービス設計",
-      date: "2024年1月25日 13:00-18:00",
-      location: "六本木ヒルズ",
-      description: "Goを使ったマイクロサービスアーキテクチャの実装",
-    },
-    {
-      title: "ChatGPT API活用ハッカソン",
-      date: "2024年1月27日 10:00-20:00",
-      location: "渋谷スカイ",
-      description: "OpenAI APIを使ったアプリケーション開発コンテスト",
-    },
-  ];
-
-  const randomEvents = mockEvents.sort(() => 0.5 - Math.random()).slice(0, 2);
-
-  let response = `「${query}」に関連するテックイベントを見つけました！✨\n\n`;
-
-  randomEvents.forEach((event) => {
-    response += `🚀 **${event.title}**\n`;
-    response += `📅 ${event.date}\n`;
-    response += `📍 ${event.location}\n`;
-    response += `💡 ${event.description}\n\n`;
-  });
-
-  response +=
-    "他にも条件を追加して検索できます。何かご希望があればお聞かせください！";
-
-  return response;
 };
 
 export const useChat = () => {
@@ -91,52 +42,90 @@ export const useChat = () => {
       // バックエンド API でレコメンド取得
       const data = await fetchEventRecommendations(message);
 
-      // 推薦結果をチャット用の文字列に整形
-      let respText = `「${data.query}」に関連するイベント候補はこちらです！\n\n`;
-      data.recommendations.slice(0, 5).forEach((rec, idx) => {
-        // バックエンド本番: { event, label, score }, モック時は event プロパティなし
-        const ev = (rec as any).event ?? rec;
-
-        respText += `🚀 **${ev.title || `イベント${idx + 1}`}**\n`;
-
-        const dateText = ev.eventDate ?? ev.startTime ?? "";
-        if (dateText) respText += `📅 ${dateText}\n`;
-
-        const locText = ev.location ?? ev.venue ?? ev.address ?? "";
-        if (locText) respText += `📍 ${locText}\n`;
-
-        if (ev.description) {
-          // HTML タグを除去し、長すぎる場合は省略
-          const plain = ev.description
-            .replace(/<[^>]+>/g, "")
-            .replace(/\n+/g, " ");
-          respText += `💡 ${plain.slice(0, 120)}${
-            plain.length > 120 ? "…" : ""
-          }\n`;
-        }
-        respText += "\n";
-      });
+      // レコメンド理由を生成
+      const recommendReasons = data.recommendations
+        .slice(0, 5)
+        .map((_, idx) => {
+          const reasons = [
+            "あなたの興味分野と一致する技術イベントです",
+            "スキルレベルに適した内容となっています",
+            "開催時期が最適で参加しやすいイベントです",
+            "実践的な学習ができるワークショップ形式です",
+            "コミュニティ交流も楽しめるイベントです",
+          ];
+          return reasons[idx % reasons.length];
+        });
 
       const systemResponse: ChatMessage = {
         id: (Date.now() + 1).toString(),
-        message: respText.trim(),
+        message: `「${data.query}」に関連するイベントを見つけました！✨`,
         sentTime: "just now",
         sender: "System",
         direction: "incoming",
+        events: data.recommendations.slice(0, 5).map((rec) => {
+          const ev = (rec as unknown as { event?: Event } & Event).event ?? rec;
+          return ev as Event;
+        }),
+        recommendReasons,
       };
 
       setMessages((prevMessages) => [...prevMessages, systemResponse]);
       setIsLoading(false);
     } catch (error) {
       console.error("イベント検索エラー:", error);
-      // フォールバックでモックレスポンス
-      const fallback = generateMockEventResponse(message);
+      // モックイベントデータを生成
+      const mockEvents = [
+        {
+          id: "mock-1",
+          title: "React 19 新機能ハンズオン",
+          description: "React 19の新機能を実際に触りながら学びます",
+          eventDate: new Date("2024-01-15"),
+          startTime: "19:00",
+          endTime: "21:00",
+          venue: "渋谷テックカフェ",
+          location: "渋谷テックカフェ",
+          organizationId: "mock-org",
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          format: "OFFLINE",
+          difficulty: "BEGINNER",
+          price: 0,
+          eventType: "WORKSHOP",
+          image:
+            "https://via.placeholder.com/600x270/3B82F6/FFFFFF?text=React+Event",
+        },
+        {
+          id: "mock-2",
+          title: "Next.js App Router実践セミナー",
+          description: "Next.js 14のApp Routerを使った実践的な開発方法",
+          eventDate: new Date("2024-01-18"),
+          startTime: "14:00",
+          endTime: "17:00",
+          venue: "オンライン",
+          location: "オンライン",
+          organizationId: "mock-org",
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          format: "ONLINE",
+          difficulty: "INTERMEDIATE",
+          price: 0,
+          eventType: "WORKSHOP",
+          image:
+            "https://via.placeholder.com/600x270/10B981/FFFFFF?text=Next.js+Event",
+        },
+      ] as unknown as Event[];
+
       const errorResponse: ChatMessage = {
         id: (Date.now() + 1).toString(),
-        message: `${fallback}\n⚠️ 本番 API でエラーが発生したためモックデータを表示しています。`,
+        message: `「${message}」に関連するイベントを見つけました！✨\n⚠️ 本番 API でエラーが発生したためモックデータを表示しています。`,
         sentTime: "just now",
         sender: "System",
         direction: "incoming",
+        events: mockEvents,
+        recommendReasons: [
+          "あなたの興味分野と一致する技術イベントです",
+          "スキルレベルに適した内容となっています",
+        ],
       };
       setMessages((prevMessages) => [...prevMessages, errorResponse]);
       setIsLoading(false);

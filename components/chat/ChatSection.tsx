@@ -8,6 +8,7 @@ import {
   ConversationHeader,
 } from "@chatscope/chat-ui-kit-react";
 import { HoverableSidebar } from "./HoverableSidebar";
+import { EventCarousel } from "./EventCarousel";
 import type { ChatMessage } from "../../hooks/useChat";
 
 interface ChatSectionProps {
@@ -62,16 +63,26 @@ export function ChatSection({
             style={{ paddingBottom: "100px" }}
           >
             {messages.map((message) => (
-              <Message
-                key={message.id}
-                model={{
-                  message: message.message,
-                  sentTime: message.sentTime,
-                  sender: message.sender,
-                  direction: message.direction,
-                  position: "single",
-                }}
-              />
+              <div key={message.id}>
+                <Message
+                  model={{
+                    message: message.message,
+                    sentTime: message.sentTime,
+                    sender: message.sender,
+                    direction: message.direction,
+                    position: "single",
+                  }}
+                />
+                {/* レコメンドされたイベントがある場合はカルーセルを表示 */}
+                {message.events && message.events.length > 0 && (
+                  <div className="mt-4 px-4 -mx-4">
+                    <EventCarousel
+                      events={message.events}
+                      recommendReasons={message.recommendReasons}
+                    />
+                  </div>
+                )}
+              </div>
             ))}
           </MessageList>
         </ChatContainer>
