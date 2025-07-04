@@ -52,9 +52,9 @@ export function EventList({ events = [] }: EventListProps) {
   return (
     <div>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {events.map((event) => (
+        {events.map((event, idx) => (
           <EventCard
-            key={event.id}
+            key={event.id ? event.id : `event-${idx}`}
             event={event}
             isBookmarked={event.isBookmarked || false}
           />

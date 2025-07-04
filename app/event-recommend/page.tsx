@@ -13,8 +13,14 @@ import { Header } from "components/layout/Header";
 
 export default function EventRecommendPage() {
   const { data: session } = useSession();
-  const { events, isLoading, error, fetchRecommendedEvents } =
-    useEventRecommend();
+  const {
+    events,
+    isLoading,
+    error,
+    fetchRecommendedEvents,
+    fetchRecommendedEventsNoCache,
+    rawRecommendData,
+  } = useEventRecommend();
 
   // ログインチェック
   if (!session) {
@@ -31,14 +37,21 @@ export default function EventRecommendPage() {
       <Header />
       <Container className="flex-grow flex flex-col">
         <div className="py-12 flex-grow flex flex-col justify-center">
-          <RecommendHeader onFieldSelect={fetchRecommendedEvents} />
+          <RecommendHeader
+            onFieldSelect={fetchRecommendedEvents}
+            onReloadRecommend={fetchRecommendedEventsNoCache}
+          />
 
           {error && <ErrorDisplay error={error} />}
 
           {isLoading && <LoadingState />}
 
           {!isLoading && events.length > 0 && (
-            <ResultsSection events={events} eventsCount={events.length} />
+            <ResultsSection
+              events={events}
+              eventsCount={events.length}
+              rawRecommendData={rawRecommendData}
+            />
           )}
 
           {!isLoading && !error && events.length === 0 && <EmptyState />}

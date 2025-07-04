@@ -5,9 +5,17 @@ import { RecommendedEvent } from "types/recommend";
 interface ResultsSectionProps {
   events: RecommendedEvent[];
   eventsCount: number;
+  rawRecommendData: {
+    tag: string;
+    recommendations: { event: RecommendedEvent }[];
+  }[];
 }
 
-export function ResultsSection({ events, eventsCount }: ResultsSectionProps) {
+export function ResultsSection({
+  events,
+  eventsCount,
+  rawRecommendData,
+}: ResultsSectionProps) {
   return (
     <div className="space-y-8">
       {/* 結果ヘッダー */}
@@ -23,9 +31,22 @@ export function ResultsSection({ events, eventsCount }: ResultsSectionProps) {
         </p>
       </div>
 
-      {/* イベント一覧 */}
-      <div className="bg-white rounded-2xl shadow-lg p-8 border border-gray-100">
-        <EventList events={events} />
+      {/* タグごとにイベント一覧を表示 */}
+      <div className="bg-white rounded-2xl shadow-lg p-8 border border-gray-100 space-y-8">
+        {rawRecommendData.length > 0 ? (
+          rawRecommendData.map((tagGroup) => (
+            <div key={tagGroup.tag} className="mb-8">
+              <h3 className="text-xl font-bold text-indigo-700 mb-4">
+                {tagGroup.tag} のおすすめ
+              </h3>
+              <EventList
+                events={tagGroup.recommendations.map((rec) => rec.event)}
+              />
+            </div>
+          ))
+        ) : (
+          <EventList events={events} />
+        )}
       </div>
     </div>
   );
