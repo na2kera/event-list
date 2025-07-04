@@ -13,7 +13,7 @@ import type { ChatMessage } from "../../hooks/useChat";
 interface ChatSectionProps {
   messages: ChatMessage[];
   isLoading: boolean;
-  onSend: (message: string) => void;
+  onSend: (payload: { message: string; tags: string[] }) => void;
   selectedTechnologies: string[];
   onCategorySelect: (
     categoryId: string,
@@ -31,13 +31,17 @@ export function ChatSection({
   onCategorySelect,
   onRemoveTechnology,
   onSearchWithSelected,
-}: ChatSectionProps) {
+  handleTechnologyToggle,
+}: ChatSectionProps & { handleTechnologyToggle: (tag: string) => void }) {
   const [inputMessage, setInputMessage] = useState("");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (inputMessage.trim() && !isLoading) {
-      onSend(inputMessage.trim());
+    if (
+      (inputMessage.trim() || selectedTechnologies.length > 0) &&
+      !isLoading
+    ) {
+      onSend({ message: inputMessage.trim(), tags: selectedTechnologies });
       setInputMessage("");
     }
   };
@@ -49,6 +53,10 @@ export function ChatSection({
     }
   };
 
+  const handleTagClick = () => {
+    // 何もしない
+  };
+
   return (
     <div className="h-full flex">
       {/* ホバー対応サイドバー */}
@@ -58,6 +66,8 @@ export function ChatSection({
         onCategorySelect={onCategorySelect}
         onRemoveTechnology={onRemoveTechnology}
         onSearchWithSelected={onSearchWithSelected}
+        onTechnologyToggle={handleTechnologyToggle}
+        onTagClick={handleTagClick}
       />
 
       {/* メインチャットエリア */}
@@ -106,8 +116,41 @@ export function ChatSection({
         {/* 独自実装のチャット入力フォーム */}
         <div className="fixed bottom-0 left-0 right-0 md:left-16 bg-white border-t border-gray-200 p-4 z-10">
           <form onSubmit={handleSubmit} className="max-w-4xl mx-auto">
+            {/* タグUI表示（入力欄上のみ） */}
+            {selectedTechnologies.length > 0 && (
+              <div className="mb-2 flex flex-wrap gap-2">
+                {selectedTechnologies.map((tech) => (
+                  <div
+                    key={tech}
+                    className="flex items-center gap-1 px-2 py-1 rounded-md text-xs font-medium bg-indigo-100 text-indigo-800"
+                  >
+                    <span>{tech}</span>
+                    <button
+                      type="button"
+                      onClick={() => onRemoveTechnology(tech)}
+                      className="p-0.5 rounded-full hover:bg-indigo-200 transition-colors"
+                    >
+                      <svg
+                        className="h-3 w-3"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M6 18L18 6M6 6l12 12"
+                        />
+                      </svg>
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
             <div className="flex items-stretch gap-3">
               <div className="flex-1">
+                {/* テキストインプットは常に表示 */}
                 <textarea
                   value={inputMessage}
                   onChange={(e) => setInputMessage(e.target.value)}
@@ -121,7 +164,10 @@ export function ChatSection({
               </div>
               <button
                 type="submit"
-                disabled={isLoading || !inputMessage.trim()}
+                disabled={
+                  isLoading ||
+                  (selectedTechnologies.length === 0 && !inputMessage.trim())
+                }
                 className="h-12 w-12 bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors duration-200 flex items-center justify-center"
               >
                 <svg

@@ -12,6 +12,11 @@ export interface ChatMessage {
   recommendReasons?: string[];
 }
 
+export interface ChatSendPayload {
+  message: string;
+  tags: string[];
+}
+
 const initialMessage: ChatMessage = {
   id: "1",
   message:
@@ -25,11 +30,19 @@ export const useChat = () => {
   const [messages, setMessages] = useState<ChatMessage[]>([initialMessage]);
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleSend = async (message: string) => {
+  const handleSend = async ({ message, tags }: ChatSendPayload) => {
     // ユーザーメッセージを追加
+    let userMessageText = message;
+    if (tags && tags.length > 0) {
+      if (userMessageText) {
+        userMessageText = userMessageText + "・" + tags.join("・");
+      } else {
+        userMessageText = tags.join("・");
+      }
+    }
     const newUserMessage: ChatMessage = {
       id: Date.now().toString(),
-      message: message,
+      message: userMessageText,
       sentTime: "just now",
       sender: "You",
       direction: "outgoing",
@@ -40,7 +53,7 @@ export const useChat = () => {
 
     try {
       // バックエンド API でレコメンド取得
-      const data = await fetchEventRecommendations(message);
+      const data = await fetchEventRecommendations(message, tags);
 
       // レコメンド理由を生成
       const recommendReasons = data.recommendations

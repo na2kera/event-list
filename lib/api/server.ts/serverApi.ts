@@ -314,10 +314,12 @@ export async function getUserBookmarks(userId: string) {
 /**
  * チャットメッセージからイベントをレコメンド
  * @param message ユーザーが入力した検索・要望メッセージ
+ * @param tags 選択中の技術タグ
  * @param userId  オプション：ユーザーID（ログイン時）
  */
 export async function fetchEventRecommendations(
   message: string,
+  tags?: string[],
   userId?: string
 ): Promise<{ query: string; recommendations: Event[] }> {
   try {
@@ -326,7 +328,7 @@ export async function fetchEventRecommendations(
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ message, userId }),
+      body: JSON.stringify({ message, tags, userId }),
     });
 
     if (!response.ok) {

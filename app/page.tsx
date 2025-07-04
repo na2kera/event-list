@@ -30,7 +30,7 @@ export default function Home() {
 
   const handleSearchWithSelected = () => {
     if (selectedTechnologies.length === 0) return;
-    handleSend(`${selectedTechnologies.join(", ")} のイベントを探しています`);
+    handleSend({ message: "", tags: selectedTechnologies });
   };
 
   return (
@@ -40,11 +40,12 @@ export default function Home() {
         <ChatSection
           messages={messages}
           isLoading={isLoading}
-          onSend={handleSend}
+          onSend={(payload) => handleSend(payload)}
           selectedTechnologies={selectedTechnologies}
           onCategorySelect={handleCategorySelect}
           onRemoveTechnology={handleRemoveTechnology}
           onSearchWithSelected={handleSearchWithSelected}
+          handleTechnologyToggle={handleTechnologyToggle}
         />
       </div>
       <TechSelectionModal
