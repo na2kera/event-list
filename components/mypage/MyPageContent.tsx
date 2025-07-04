@@ -42,7 +42,7 @@ export function MyPageContent({
     <div className="container mx-auto px-4 py-8">
       {/* プロフィールセクション */}
       <section className="mb-8">
-        <div className="relative bg-gradient-to-r from-blue-50 via-indigo-50 to-purple-50 rounded-2xl p-6 mb-6 flex flex-col md:flex-row md:items-center justify-between">
+        <div className="relative bg-gradient-to-r from-blue-50 via-indigo-50 to-purple-50 rounded-3xl p-6 mb-6 flex flex-col md:flex-row md:items-center justify-between">
           <div className="flex items-center space-x-4">
             {userProfile?.image && (
               <Image
@@ -54,7 +54,7 @@ export function MyPageContent({
               />
             )}
             <div>
-              <h2 className="text-2xl font-bold">
+              <h2 className="text-2xl font-bold text-gray-800">
                 {userProfile?.name ?? "未設定"}
               </h2>
               {userProfile?.affiliation && (
@@ -69,7 +69,7 @@ export function MyPageContent({
             </button>
           </Link>
         </div>
-        <div className="bg-white rounded-2xl shadow p-6">
+        <div className="bg-white rounded-3xl shadow p-6">
           {/* 技術情報 */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
