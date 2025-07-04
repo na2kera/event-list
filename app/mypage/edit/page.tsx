@@ -1,6 +1,7 @@
 import { getServerSession } from "next-auth";
 import { authOptions } from "lib/auth";
 import { getUserProfile } from "lib/api/client.ts/userApi";
+import { Header } from "components/layout/Header";
 import { ProfileEditForm } from "./ProfileEditForm";
 
 export default async function ProfileEditPage() {
@@ -10,8 +11,11 @@ export default async function ProfileEditPage() {
   const user = await getUserProfile(session.user.id);
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <ProfileEditForm initialData={user} />
+    <div className="min-h-screen bg-gray-50">
+      <Header />
+      <div className="container mx-auto px-4 py-8">
+        <ProfileEditForm initialData={user} />
+      </div>
     </div>
   );
 }

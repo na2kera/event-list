@@ -1,15 +1,12 @@
 "use client";
 
-import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { Button, Accordion, AccordionSummary, AccordionDetails } from "@mui/material";
+import { Button } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { GOAL_LABELS, DIFFICULTY_LABELS } from "types/enums";
 import { Bookmark } from "@/types";
 import { BookmarkList } from "./BookmarkList";
-import { InterestTagManager } from "./InterestTagManager";
 
 interface UserProfile {
   id: string;
@@ -29,13 +26,10 @@ interface MyPageContentProps {
   userBookmarks: Bookmark[];
 }
 
-export function MyPageContent({ userProfile, userBookmarks }: MyPageContentProps) {
-  const [expanded, setExpanded] = useState<boolean>(false);
-
-  const handleAccordionChange = (event: React.SyntheticEvent, isExpanded: boolean) => {
-    setExpanded(isExpanded);
-  };
-
+export function MyPageContent({
+  userProfile,
+  userBookmarks,
+}: MyPageContentProps) {
   return (
     <div className="container mx-auto px-4 py-8">
       <h1 className="text-2xl font-bold mb-6">マイページ</h1>
@@ -45,11 +39,7 @@ export function MyPageContent({ userProfile, userBookmarks }: MyPageContentProps
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-xl font-semibold">プロフィール</h2>
           <Link href="/mypage/edit">
-            <Button
-              variant="outlined"
-              startIcon={<EditIcon />}
-              size="small"
-            >
+            <Button variant="outlined" startIcon={<EditIcon />} size="small">
               編集
             </Button>
           </Link>
@@ -108,9 +98,7 @@ export function MyPageContent({ userProfile, userBookmarks }: MyPageContentProps
 
             <div>
               <h4 className="font-medium mb-2">場所</h4>
-              <p className="text-gray-700">
-                {userProfile?.place ?? "未設定"}
-              </p>
+              <p className="text-gray-700">{userProfile?.place ?? "未設定"}</p>
             </div>
 
             <div>
@@ -142,7 +130,7 @@ export function MyPageContent({ userProfile, userBookmarks }: MyPageContentProps
 
           <div className="mt-4">
             <h4 className="font-medium mb-2">興味タグ</h4>
-            <div className="flex flex-wrap gap-2 mb-4">
+            <div className="flex flex-wrap gap-2">
               {userProfile.tag?.length > 0 ? (
                 userProfile.tag.map((tag: string, index: number) => (
                   <span
@@ -156,31 +144,13 @@ export function MyPageContent({ userProfile, userBookmarks }: MyPageContentProps
                 <p className="text-gray-500">未設定</p>
               )}
             </div>
-            <Accordion 
-              expanded={expanded} 
-              onChange={handleAccordionChange}
-              sx={{ mt: 2 }}
-            >
-              <AccordionSummary
-                expandIcon={<ExpandMoreIcon />}
-                aria-controls="interest-tags-content"
-                id="interest-tags-header"
-              >
-                興味タグを編集
-              </AccordionSummary>
-              <AccordionDetails>
-                <InterestTagManager initialTags={userProfile.tag} />
-              </AccordionDetails>
-            </Accordion>
           </div>
         </div>
       </section>
 
       {/* ブックマークセクション */}
       <section>
-        <h2 className="text-xl font-semibold mb-4">
-          ブックマークしたイベント
-        </h2>
+        <h2 className="text-xl font-semibold mb-4">ブックマークしたイベント</h2>
         <BookmarkList bookmarks={userBookmarks} />
       </section>
     </div>

@@ -21,6 +21,9 @@ import {
   FormGroup,
   FormControlLabel,
   Checkbox,
+  Autocomplete,
+  Chip,
+  Box,
 } from "@mui/material";
 import { updateUserProfile, UserProfile } from "lib/api/client.ts/userApi";
 import {
@@ -29,6 +32,7 @@ import {
   DIFFICULTY_LABELS,
   GOAL_LABELS,
 } from "types/enums";
+import { predefinedTags } from "../../../lib/data/tags";
 
 const profileSchema = z.object({
   name: z
@@ -59,7 +63,6 @@ export function ProfileEditForm({ initialData }: ProfileEditFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [newStack, setNewStack] = useState("");
   const [stacks, setStacks] = useState<string[]>(initialData.stack || []);
-  const [newTag, setNewTag] = useState("");
   const [tags, setTags] = useState<string[]>(initialData.tag || []);
   const [selectedGoals, setSelectedGoals] = useState<GoalType[]>(
     (initialData.goal || []) as GoalType[]
@@ -108,17 +111,9 @@ export function ProfileEditForm({ initialData }: ProfileEditFormProps) {
     setStacks(stacks.filter((stack) => stack !== stackToRemove));
   };
 
-  // タグの追加
-  const handleAddTag = () => {
-    if (newTag.trim() && !tags.includes(newTag.trim())) {
-      setTags([...tags, newTag.trim()]);
-      setNewTag("");
-    }
-  };
-
-  // タグの削除
-  const handleRemoveTag = (tagToRemove: string) => {
-    setTags(tags.filter((tag) => tag !== tagToRemove));
+  // タグの変更（Autocomplete用）
+  const handleTagChange = (event: React.SyntheticEvent, newValue: string[]) => {
+    setTags(newValue);
   };
 
   const handleGoalChange = (goal: GoalType) => {
@@ -287,44 +282,67 @@ export function ProfileEditForm({ initialData }: ProfileEditFormProps) {
                 )}
               />
 
-              {/* タグ */}
+              {/* 興味タグ */}
               <div>
                 <Typography variant="subtitle1" className="mb-2">
-                  タグ
+                  興味タグ
                 </Typography>
-                <div className="flex gap-2 mb-2">
-                  <TextField
-                    value={newTag}
-                    onChange={(e) => setNewTag(e.target.value)}
-                    placeholder="新しいタグを入力"
-                    fullWidth
-                    size="small"
-                  />
-                  <Button
-                    variant="contained"
-                    onClick={handleAddTag}
-                    disabled={!newTag.trim()}
-                  >
-                    追加
-                  </Button>
-                </div>
-                <div className="flex flex-wrap gap-2 mt-2">
-                  {tags.map((tag, index) => (
-                    <div
-                      key={index}
-                      className="bg-purple-100 text-purple-800 px-3 py-1 rounded-full flex items-center"
+                <Typography
+                  variant="body2"
+                  color="text.secondary"
+                  sx={{ mb: 2 }}
+                >
+                  興味のある技術やトピックを選択してください。リストにない場合は、自由に入力することもできます。
+                </Typography>
+                <Autocomplete
+                  multiple
+                  freeSolo
+                  value={tags}
+                  onChange={handleTagChange}
+                  options={predefinedTags}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="興味タグ"
+                      placeholder="タグを選択または入力してください"
+                      helperText="Enterキーで新しいタグを追加できます"
+                      fullWidth
+                    />
+                  )}
+                  renderTags={(value: readonly string[], getTagProps) =>
+                    value.map((option: string, index: number) => (
+                      <Chip
+                        variant="outlined"
+                        label={option}
+                        {...getTagProps({ index })}
+                        key={option}
+                        color="primary"
+                        size="medium"
+                      />
+                    ))
+                  }
+                  disabled={isSubmitting}
+                />
+                {tags.length > 0 && (
+                  <Box sx={{ mt: 2 }}>
+                    <Typography variant="caption" color="text.secondary">
+                      選択された興味タグ ({tags.length}個)
+                    </Typography>
+                    <Box
+                      sx={{ display: "flex", flexWrap: "wrap", gap: 1, mt: 1 }}
                     >
-                      <span>{tag}</span>
-                      <button
-                        type="button"
-                        onClick={() => handleRemoveTag(tag)}
-                        className="ml-2 text-purple-600 hover:text-purple-800"
-                      >
-                        ×
-                      </button>
-                    </div>
-                  ))}
-                </div>
+                      {tags.map((tag, index) => (
+                        <Chip
+                          key={index}
+                          label={tag}
+                          color="secondary"
+                          size="small"
+                          variant="filled"
+                        />
+                      ))}
+                    </Box>
+                  </Box>
+                )}
               </div>
 
               <div>
