@@ -25,6 +25,7 @@ import {
   Chip,
   Box,
 } from "@mui/material";
+import { Layers, Target as TargetIcon, Tag as TagLucide } from "lucide-react";
 import { updateUserProfile, UserProfile } from "lib/api/client.ts/userApi";
 import {
   DifficultyLevel,
@@ -161,7 +162,7 @@ export function ProfileEditForm({ initialData }: ProfileEditFormProps) {
 
   return (
     <>
-      <Card>
+      <Card className="mx-auto max-w-xl rounded-3xl">
         <CardHeader title="プロフィール編集" />
         <CardContent>
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
@@ -205,8 +206,8 @@ export function ProfileEditForm({ initialData }: ProfileEditFormProps) {
 
               {/* 技術スタック */}
               <div>
-                <Typography variant="subtitle1" className="mb-2">
-                  技術スタック
+                <Typography variant="subtitle1" className="mb-2 flex items-center gap-1">
+                  <Layers className="w-4 h-4 text-indigo-600" /> 技術スタック
                 </Typography>
                 <div className="flex gap-2 mb-2">
                   <TextField
@@ -284,8 +285,8 @@ export function ProfileEditForm({ initialData }: ProfileEditFormProps) {
 
               {/* 興味タグ */}
               <div>
-                <Typography variant="subtitle1" className="mb-2">
-                  興味タグ
+                <Typography variant="subtitle1" className="mb-2 flex items-center gap-1">
+                  <TagLucide className="w-4 h-4 text-purple-600" /> 興味タグ
                 </Typography>
                 <Typography
                   variant="body2"
@@ -346,8 +347,8 @@ export function ProfileEditForm({ initialData }: ProfileEditFormProps) {
               </div>
 
               <div>
-                <Typography variant="subtitle1" className="mb-2">
-                  目標
+                <Typography variant="subtitle1" className="mb-2 flex items-center gap-1">
+                  <TargetIcon className="w-4 h-4 text-emerald-600" /> 目標
                 </Typography>
                 <FormGroup>
                   {Object.values(GoalType).map((goal) => (
@@ -364,6 +365,7 @@ export function ProfileEditForm({ initialData }: ProfileEditFormProps) {
                   ))}
                 </FormGroup>
               </div>
+
 
               <Controller
                 name="affiliation"
