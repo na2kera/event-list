@@ -11,6 +11,8 @@ import {
   Tag as TagIcon,
   Building2,
   Code,
+  Search,
+  X,
 } from "lucide-react";
 import {
   DifficultyLevel,
@@ -68,10 +70,13 @@ export function ProfileEditFormSimple({
   const [stacks, setStacks] = useState<string[]>(initialData.stack || []);
   const [newStack, setNewStack] = useState("");
   const [tags, setTags] = useState<string[]>(initialData.tag || []);
-  const [tagInput, setTagInput] = useState("");
   const [selectedGoals, setSelectedGoals] = useState<GoalType[]>(
     (initialData.goal || []) as GoalType[]
   );
+
+  // タグ選択用の状態
+  const [searchTerm, setSearchTerm] = useState("");
+  const [tagInput, setTagInput] = useState("");
 
   const addStack = () => {
     if (newStack.trim() && !stacks.includes(newStack.trim())) {
@@ -83,12 +88,21 @@ export function ProfileEditFormSimple({
     setStacks(stacks.filter((i) => i !== s));
   };
 
+  const toggleTag = (tagTitle: string) => {
+    setTags((prev) =>
+      prev.includes(tagTitle)
+        ? prev.filter((t) => t !== tagTitle)
+        : [...prev, tagTitle]
+    );
+  };
+
   const addTag = () => {
     if (tagInput.trim() && !tags.includes(tagInput.trim())) {
       setTags([...tags, tagInput.trim()]);
       setTagInput("");
     }
   };
+
   const removeTag = (t: string) => {
     setTags(tags.filter((i) => i !== t));
   };
@@ -96,6 +110,16 @@ export function ProfileEditFormSimple({
   const toggleGoal = (g: GoalType) => {
     setSelectedGoals((prev) =>
       prev.includes(g) ? prev.filter((x) => x !== g) : [...prev, g]
+    );
+  };
+
+  // 検索結果のフィルタリング（全100個のタグから）
+  const getFilteredTags = () => {
+    if (!searchTerm) {
+      return predefinedTags;
+    }
+    return predefinedTags.filter((tag) =>
+      tag.toLowerCase().includes(searchTerm.toLowerCase())
     );
   };
 
@@ -117,7 +141,7 @@ export function ProfileEditFormSimple({
   };
 
   return (
-    <div className="mx-auto max-w-xl bg-white rounded-3xl shadow p-8">
+    <div className="mx-auto max-w-4xl bg-white rounded-3xl shadow p-8">
       <h2 className="text-xl font-semibold text-gray-800 mb-6">
         プロフィール編集
       </h2>
@@ -149,7 +173,9 @@ export function ProfileEditFormSimple({
               disabled={isSubmitting}
             />
             {errors.email && (
-              <p className="text-sm text-red-600 mt-1">{errors.email.message}</p>
+              <p className="text-sm text-red-600 mt-1">
+                {errors.email.message}
+              </p>
             )}
           </div>
         </div>
@@ -197,51 +223,132 @@ export function ProfileEditFormSimple({
           </div>
         </div>
 
-        {/* 興味タグ */}
+        {/* 興味タグ - 改善されたUI */}
         <div>
-          <h3 className="flex items-center gap-1 text-sm font-medium text-gray-700 mb-2">
-            <TagIcon className="w-4 h-4 text-purple-600" /> 興味タグ
+          <h3 className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-4">
+            <TagIcon className="w-4 h-4 text-purple-600" />
+            興味タグ
+            {tags.length > 0 && (
+              <span className="text-xs bg-purple-100 text-purple-700 px-2 py-1 rounded-full">
+                {tags.length}個選択中
+              </span>
+            )}
           </h3>
-          <div className="flex gap-2 mb-2">
+
+          {/* カスタムタグ追加 */}
+          <div className="mb-4 p-3 bg-blue-50 rounded-lg border border-blue-200">
+            <p className="text-sm text-blue-700 mb-2 font-medium">
+              💡 カスタムタグを追加
+            </p>
+            <div className="flex gap-2">
+              <input
+                type="text"
+                value={tagInput}
+                onChange={(e) => setTagInput(e.target.value)}
+                className="flex-grow rounded-md border border-blue-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                placeholder="オリジナルのタグを入力"
+                disabled={isSubmitting}
+                onKeyPress={(e) =>
+                  e.key === "Enter" && (e.preventDefault(), addTag())
+                }
+              />
+              <button
+                type="button"
+                onClick={addTag}
+                className="px-4 py-2 rounded-md bg-purple-600 text-white text-sm hover:bg-purple-700 transition-colors disabled:opacity-50"
+                disabled={isSubmitting || !tagInput.trim()}
+              >
+                追加
+              </button>
+            </div>
+          </div>
+
+          {/* 検索バー */}
+          <div className="relative mb-4">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
             <input
-              list="tag-options"
-              value={tagInput}
-              onChange={(e) => setTagInput(e.target.value)}
-              className="flex-grow rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              placeholder="タグを入力"
+              type="text"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+              placeholder="既定のタグを検索..."
               disabled={isSubmitting}
             />
-            <datalist id="tag-options">
-              {predefinedTags.map((t) => (
-                <option key={t} value={t} />
-              ))}
-            </datalist>
-            <button
-              type="button"
-              onClick={addTag}
-              className="px-3 py-1 rounded-md bg-purple-600 text-white text-sm hover:bg-purple-700"
-              disabled={isSubmitting}
-            >
-              追加
-            </button>
-          </div>
-          <div className="flex flex-wrap gap-2">
-            {tags.map((t) => (
-              <span
-                key={t}
-                className="inline-flex items-center gap-1 px-3 py-1 rounded-full border border-purple-200 bg-purple-50 text-xs text-purple-700"
+            {searchTerm && (
+              <button
+                type="button"
+                onClick={() => setSearchTerm("")}
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
               >
-                {t}
-                <button
-                  type="button"
-                  onClick={() => removeTag(t)}
-                  className="ml-1 text-gray-500 hover:text-gray-700"
-                >
-                  ×
-                </button>
-              </span>
-            ))}
+                <X className="w-4 h-4" />
+              </button>
+            )}
           </div>
+
+          {/* タグ一覧（全100個表示） */}
+          <div className="bg-gray-50 rounded-lg p-4 mb-4 max-h-64 overflow-y-auto">
+            <p className="text-sm text-gray-600 mb-3">
+              {searchTerm
+                ? `"${searchTerm}" の検索結果 (${getFilteredTags().length}件)`
+                : `全ての興味タグ (${predefinedTags.length}件) - クリックして選択`}
+            </p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              {getFilteredTags().map((tag, index) => (
+                <button
+                  key={index}
+                  type="button"
+                  onClick={() => toggleTag(tag)}
+                  className={`text-left p-3 rounded-md border text-xs transition-all duration-200 ${
+                    tags.includes(tag)
+                      ? "border-purple-300 bg-purple-50 text-purple-700 shadow-sm"
+                      : "border-gray-200 bg-white text-gray-700 hover:border-purple-200 hover:bg-purple-25"
+                  }`}
+                  disabled={isSubmitting}
+                >
+                  <div className="flex items-center justify-between">
+                    <span className="flex-1 leading-relaxed">{tag}</span>
+                    {tags.includes(tag) && (
+                      <div className="ml-2 w-4 h-4 bg-purple-600 rounded-full flex items-center justify-center">
+                        <span className="text-white text-xs">✓</span>
+                      </div>
+                    )}
+                  </div>
+                </button>
+              ))}
+            </div>
+            {getFilteredTags().length === 0 && (
+              <p className="text-center text-gray-500 py-4">
+                該当するタグが見つかりませんでした
+              </p>
+            )}
+          </div>
+
+          {/* 選択済みタグ表示 */}
+          {tags.length > 0 && (
+            <div className="border-t border-gray-200 pt-4">
+              <h4 className="text-sm font-medium text-gray-700 mb-2">
+                選択済みタグ
+              </h4>
+              <div className="flex flex-wrap gap-2">
+                {tags.map((tag) => (
+                  <span
+                    key={tag}
+                    className="inline-flex items-center gap-1 px-3 py-1 rounded-full border border-purple-200 bg-purple-50 text-xs text-purple-700"
+                  >
+                    {tag}
+                    <button
+                      type="button"
+                      onClick={() => removeTag(tag)}
+                      className="ml-1 text-purple-500 hover:text-purple-700"
+                      disabled={isSubmitting}
+                    >
+                      ×
+                    </button>
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
 
         {/* 目標 */}
