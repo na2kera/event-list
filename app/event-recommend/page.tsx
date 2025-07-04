@@ -37,10 +37,7 @@ export default function EventRecommendPage() {
       <Header />
       <Container className="flex-grow flex flex-col">
         <div className="py-12 flex-grow flex flex-col justify-center">
-          <RecommendHeader
-            onFieldSelect={fetchRecommendedEvents}
-            onReloadRecommend={fetchRecommendedEventsNoCache}
-          />
+          <RecommendHeader />
 
           {error && <ErrorDisplay error={error} />}
 
