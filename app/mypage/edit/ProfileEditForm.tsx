@@ -21,7 +21,6 @@ import {
   FormGroup,
   FormControlLabel,
   Checkbox,
-  Autocomplete,
   Chip,
   Box,
 } from "@mui/material";
@@ -33,7 +32,7 @@ import {
   DIFFICULTY_LABELS,
   GOAL_LABELS,
 } from "types/enums";
-import { predefinedTags } from "../../../lib/data/tags";
+import { tagData } from "../../../constants/tagData";
 
 const profileSchema = z.object({
   name: z
@@ -80,6 +79,7 @@ export function ProfileEditForm({ initialData }: ProfileEditFormProps) {
     message: "",
     severity: "success",
   });
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
   const {
     control,
@@ -112,9 +112,16 @@ export function ProfileEditForm({ initialData }: ProfileEditFormProps) {
     setStacks(stacks.filter((stack) => stack !== stackToRemove));
   };
 
-  // タグの変更（Autocomplete用）
-  const handleTagChange = (event: React.SyntheticEvent, newValue: string[]) => {
-    setTags(newValue);
+  // カテゴリ選択
+  const handleCategorySelect = (category: string) => {
+    setSelectedCategory(category);
+  };
+
+  // タグのトグル
+  const handleTagToggle = (tag: string) => {
+    setTags((prev) =>
+      prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]
+    );
   };
 
   const handleGoalChange = (goal: GoalType) => {
@@ -206,7 +213,10 @@ export function ProfileEditForm({ initialData }: ProfileEditFormProps) {
 
               {/* 技術スタック */}
               <div>
-                <Typography variant="subtitle1" className="mb-2 flex items-center gap-1">
+                <Typography
+                  variant="subtitle1"
+                  className="mb-2 flex items-center gap-1"
+                >
                   <Layers className="w-4 h-4 text-indigo-600" /> 技術スタック
                 </Typography>
                 <div className="flex gap-2 mb-2">
@@ -283,9 +293,12 @@ export function ProfileEditForm({ initialData }: ProfileEditFormProps) {
                 )}
               />
 
-              {/* 興味タグ */}
+              {/* 興味タグ（2段階カテゴリ→タグUI） */}
               <div>
-                <Typography variant="subtitle1" className="mb-2 flex items-center gap-1">
+                <Typography
+                  variant="subtitle1"
+                  className="mb-2 flex items-center gap-1"
+                >
                   <TagLucide className="w-4 h-4 text-purple-600" /> 興味タグ
                 </Typography>
                 <Typography
@@ -293,37 +306,50 @@ export function ProfileEditForm({ initialData }: ProfileEditFormProps) {
                   color="text.secondary"
                   sx={{ mb: 2 }}
                 >
-                  興味のある技術やトピックを選択してください。リストにない場合は、自由に入力することもできます。
+                  興味のあるカテゴリを選択し、タグを複数選択してください。
                 </Typography>
-                <Autocomplete
-                  multiple
-                  freeSolo
-                  value={tags}
-                  onChange={handleTagChange}
-                  options={predefinedTags}
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      label="興味タグ"
-                      placeholder="タグを選択または入力してください"
-                      helperText="Enterキーで新しいタグを追加できます"
-                      fullWidth
+                {/* カテゴリ選択 */}
+                <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1, mb: 2 }}>
+                  {Object.keys(tagData).map((category) => (
+                    <Chip
+                      key={category}
+                      label={category}
+                      color={
+                        selectedCategory === category ? "primary" : "default"
+                      }
+                      onClick={() => handleCategorySelect(category)}
+                      clickable
+                      sx={{
+                        fontWeight:
+                          selectedCategory === category ? "bold" : "normal",
+                      }}
                     />
-                  )}
-                  renderTags={(value: readonly string[], getTagProps) =>
-                    value.map((option: string, index: number) => (
+                  ))}
+                </Box>
+                {/* タグ選択（カテゴリが選ばれている場合のみ） */}
+                {selectedCategory && (
+                  <Box
+                    sx={{ display: "flex", flexWrap: "wrap", gap: 1, mb: 2 }}
+                  >
+                    {tagData[selectedCategory].map((tag) => (
                       <Chip
-                        variant="outlined"
-                        label={option}
-                        {...getTagProps({ index })}
-                        key={option}
-                        color="primary"
-                        size="medium"
+                        key={tag.id}
+                        label={tag.title}
+                        color={
+                          tags.includes(tag.title) ? "secondary" : "default"
+                        }
+                        onClick={() => handleTagToggle(tag.title)}
+                        clickable
+                        sx={{
+                          fontWeight: tags.includes(tag.title)
+                            ? "bold"
+                            : "normal",
+                        }}
                       />
-                    ))
-                  }
-                  disabled={isSubmitting}
-                />
+                    ))}
+                  </Box>
+                )}
+                {/* 選択済みタグ一覧 */}
                 {tags.length > 0 && (
                   <Box sx={{ mt: 2 }}>
                     <Typography variant="caption" color="text.secondary">
@@ -347,7 +373,10 @@ export function ProfileEditForm({ initialData }: ProfileEditFormProps) {
               </div>
 
               <div>
-                <Typography variant="subtitle1" className="mb-2 flex items-center gap-1">
+                <Typography
+                  variant="subtitle1"
+                  className="mb-2 flex items-center gap-1"
+                >
                   <TargetIcon className="w-4 h-4 text-emerald-600" /> 目標
                 </Typography>
                 <FormGroup>
@@ -365,7 +394,6 @@ export function ProfileEditForm({ initialData }: ProfileEditFormProps) {
                   ))}
                 </FormGroup>
               </div>
-
 
               <Controller
                 name="affiliation"

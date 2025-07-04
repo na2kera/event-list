@@ -68,6 +68,7 @@ export type Event = {
     image: string;
   };
   category?: string;
+  keyPhrases?: string[];
 };
 
 export type Speaker = {

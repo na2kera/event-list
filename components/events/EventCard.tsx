@@ -6,13 +6,25 @@ import Image from "next/image";
 interface EventCardProps {
   event: Event;
   isBookmarked?: boolean;
+  recommendReason?: string;
 }
 
-export function EventCard({ event, isBookmarked = false }: EventCardProps) {
+export function EventCard({
+  event,
+  isBookmarked = false,
+  recommendReason,
+}: EventCardProps) {
   // 日付と時間を組み合わせてフォーマットする関数
-  const formatDateTime = (date: Date | string, time?: string) => {
+  const formatDateTime = (date: Date | string | undefined, time?: string) => {
+    // dateが存在しない場合は「日時未定」を返す
+    if (!date) return "日時未定";
+
     // dateが文字列の場合はDateオブジェクトに変換
     const baseDate = typeof date === "string" ? new Date(date) : date;
+
+    // 無効な日付の場合は「日時未定」を返す
+    if (isNaN(baseDate.getTime())) return "日時未定";
+
     if (!time) return baseDate.toLocaleDateString();
 
     const [hours, minutes] = time.split(":");
@@ -33,21 +45,17 @@ export function EventCard({ event, isBookmarked = false }: EventCardProps) {
         isBookmarked ? "border-indigo-300" : ""
       }`}
     >
-      <div className="relative">
-        {event?.image && typeof event.image === "string" ? (
-          <Image
-            src={event.image}
-            alt={event.title}
-            width={600}
-            height={270}
-            className="w-full h-48 object-cover"
-            unoptimized
-          />
-        ) : (
-          <div className="w-full h-48 bg-gray-100 flex items-center justify-center text-gray-400">
-            No Image
-          </div>
-        )}
+      <div className="relative w-full h-48">
+        <Image
+          src={
+            event.image ||
+            "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4"
+          }
+          alt={event.title}
+          fill
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+          className="object-cover"
+        />
         <div className="absolute top-2 right-2">
           {event?.id && (
             <BookmarkButton eventId={event.id} isBookmarked={isBookmarked} />
@@ -104,7 +112,7 @@ export function EventCard({ event, isBookmarked = false }: EventCardProps) {
             </svg>
             <span className="text-sm">
               {formatDateTime(event.eventDate, event.startTime)}
-              {event.endTime && (
+              {event.endTime && event.eventDate && (
                 <> 〜 {formatDateTime(event.eventDate, event.endTime)}</>
               )}
             </span>
@@ -137,10 +145,24 @@ export function EventCard({ event, isBookmarked = false }: EventCardProps) {
           )}
         </div>
 
-        {event.description && (
+        {/* event.description && (
           <p className="text-gray-600 mb-4 line-clamp-3 text-sm">
             {event.description}
           </p>
+        ) */}
+
+        {recommendReason && (
+          <div className="mb-4 p-3 bg-gradient-to-r from-indigo-50 to-purple-50 rounded-lg border border-indigo-100">
+            <div className="flex items-start">
+              <span className="text-indigo-600 mr-2 mt-0.5">💡</span>
+              <div>
+                <p className="text-xs font-medium text-indigo-700 mb-1">
+                  レコメンド理由
+                </p>
+                <p className="text-sm text-indigo-600">{recommendReason}</p>
+              </div>
+            </div>
+          </div>
         )}
       </div>
 

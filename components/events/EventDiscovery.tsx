@@ -52,6 +52,7 @@ export function EventDiscovery({
   const [priceRange, setPriceRange] = useState<number>(10000);
   const [showOnlyFree, setShowOnlyFree] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [keyPhraseQuery, setKeyPhraseQuery] = useState("");
 
   const getEventType = (event: Event): Exclude<EventType, "all"> => {
     // バックエンドから返されるeventTypeフィールドがある場合はそれを優先
@@ -109,6 +110,17 @@ export function EventDiscovery({
       !event.title.toLowerCase().includes(searchQuery.toLowerCase())
     )
       return false;
+    if (
+      keyPhraseQuery &&
+      !(
+        event.keyPhrases &&
+        event.keyPhrases.some((phrase) =>
+          phrase.toLowerCase().includes(keyPhraseQuery.toLowerCase())
+        )
+      )
+    ) {
+      return false;
+    }
     return true;
   });
 
@@ -256,6 +268,20 @@ export function EventDiscovery({
                 無料イベントのみ表示
               </label>
             </div>
+
+            {/* キーフレーズ検索 */}
+            <div className="mb-6">
+              <h3 className="text-sm font-medium text-gray-900 mb-3">
+                キーフレーズ検索
+              </h3>
+              <input
+                type="text"
+                placeholder="キーフレーズで検索"
+                value={keyPhraseQuery}
+                onChange={(e) => setKeyPhraseQuery(e.target.value)}
+                className="w-full rounded-md border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 py-3 px-4 text-base"
+              />
+            </div>
           </div>
         </div>
 
@@ -325,6 +351,20 @@ export function EventDiscovery({
                     <h3 className="text-xl font-bold text-gray-900 mb-2">
                       {event.title}
                     </h3>
+
+                    {/* キーフレーズ表示 */}
+                    {event.keyPhrases && event.keyPhrases.length > 0 && (
+                      <div className="flex flex-wrap gap-2 mb-3">
+                        {event.keyPhrases.map((phrase, idx) => (
+                          <span
+                            key={idx}
+                            className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800"
+                          >
+                            {phrase}
+                          </span>
+                        ))}
+                      </div>
+                    )}
 
                     <div className="space-y-2 mb-4">
                       <div className="flex items-center text-gray-600">

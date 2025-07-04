@@ -2,24 +2,24 @@ import React, { useState } from "react";
 import { TechCategorySection } from "../tech/TechCategorySection";
 import { SelectedTechnologies } from "../tech/SelectedTechnologies";
 import { Filter, ChevronRight } from "lucide-react";
+import { tagData } from "../../constants/tagData";
 
 interface HoverableSidebarProps {
   selectedTechnologies: string[];
   isLoading: boolean;
-  onCategorySelect: (
-    categoryId: string,
-    event: React.MouseEvent<HTMLButtonElement>
-  ) => void;
   onRemoveTechnology: (technology: string) => void;
   onSearchWithSelected: () => void;
+  onTagClick: (tag: string) => void;
+  onTechnologyToggle: (tag: string) => void;
 }
 
 export function HoverableSidebar({
   selectedTechnologies,
   isLoading,
-  onCategorySelect,
   onRemoveTechnology,
   onSearchWithSelected,
+  onTagClick,
+  onTechnologyToggle,
 }: HoverableSidebarProps) {
   const [isExpanded, setIsExpanded] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
@@ -128,7 +128,10 @@ export function HoverableSidebar({
           <div className="pb-4 border-b border-gray-200">
             <TechCategorySection
               isLoading={isLoading}
-              onCategorySelect={onCategorySelect}
+              additionalTagData={tagData}
+              onTagClick={onTagClick}
+              selectedTechnologies={selectedTechnologies}
+              onTechnologyToggle={onTechnologyToggle}
             />
           </div>
 

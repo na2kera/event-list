@@ -3,6 +3,7 @@
 import { useEffect, useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 
 // バックエンドAPIのベースURL
 const API_BASE_URL =
@@ -62,7 +63,7 @@ function LineCallbackContent() {
 
         const authData = await authResponse.json();
         console.log("LINE認証結果:", authData);
-        
+
         // プロフィール情報を設定
         if (authData.profile) {
           setLineProfile({
@@ -83,10 +84,13 @@ function LineCallbackContent() {
         if (authData.user && authData.user.id) {
           localStorage.setItem("userId", authData.user.id);
           localStorage.setItem("lineId", authData.user.lineId || "");
-          
+
           // トークン情報があれば保存
           if (authData.token && authData.token.access_token) {
-            localStorage.setItem("lineAccessToken", authData.token.access_token);
+            localStorage.setItem(
+              "lineAccessToken",
+              authData.token.access_token
+            );
           }
         }
 
@@ -129,9 +133,11 @@ function LineCallbackContent() {
             {lineProfile && (
               <div className="flex flex-col items-center mb-6">
                 {lineProfile.pictureUrl && (
-                  <img
+                  <Image
                     src={lineProfile.pictureUrl}
                     alt={lineProfile.displayName}
+                    width={80}
+                    height={80}
                     className="w-20 h-20 rounded-full mb-2"
                   />
                 )}
