@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { RecommendedEvent } from "types/recommend";
 
@@ -8,20 +8,38 @@ export const useEventRecommend = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const CACHE_TTL = 5 * 60 * 60 * 1000; // 5時間
+
   const fetchRecommendedEvents = async () => {
     if (!session?.user?.id) {
       setError("ログインが必要です");
       return;
     }
 
+    const CACHE_KEY = `recommend_${session.user.id}`;
+    // 1. キャッシュ確認
+    if (typeof window !== "undefined") {
+      const cached = localStorage.getItem(CACHE_KEY);
+      if (cached) {
+        try {
+          const { data, timestamp } = JSON.parse(cached);
+          if (Date.now() - timestamp < CACHE_TTL) {
+            setEvents(data);
+            return;
+          }
+        } catch {
+          // パース失敗時はキャッシュ無視
+        }
+      }
+    }
+
     setIsLoading(true);
     setError(null);
 
     try {
-      // フロント環境変数からベースURLを取得し、バックエンドの /recommend/user エンドポイントを呼び出す
       const API_BASE_URL =
         process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001/api";
-
+      console.log("API_BASE_URL", API_BASE_URL);
       const response = await fetch(`${API_BASE_URL}/recommend/user`, {
         method: "POST",
         headers: {
@@ -35,9 +53,17 @@ export const useEventRecommend = () => {
       }
 
       const result = await response.json();
+      console.log("result", result);
 
       if (result.success) {
         setEvents(result.data || []);
+        // キャッシュ保存
+        if (typeof window !== "undefined") {
+          localStorage.setItem(
+            CACHE_KEY,
+            JSON.stringify({ data: result.data || [], timestamp: Date.now() })
+          );
+        }
       } else {
         throw new Error(result.error || "レコメンドの取得に失敗しました");
       }
@@ -48,6 +74,12 @@ export const useEventRecommend = () => {
       setIsLoading(false);
     }
   };
+
+  // 画面初回マウント時に自動取得
+  useEffect(() => {
+    fetchRecommendedEvents();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [session?.user?.id]);
 
   return {
     events,
