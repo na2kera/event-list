@@ -156,28 +156,32 @@ export function EventDiscovery({
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 items-start">
         {/* Filters */}
-        <div className="bg-white p-6 rounded-xl shadow-sm">
-          <h2 className="text-xl font-bold text-gray-900 mb-6">フィルター</h2>
+        <div className="bg-white p-6 rounded-xl shadow-sm lg:sticky lg:top-28">
+          <h2 className="text-xl font-bold text-gray-900 mb-4">フィルター</h2>
 
-          <div className="space-y-6">
+          <div className="space-y-3">
             {/* Event Type */}
             <div>
-              <h3 className="text-sm font-medium text-gray-900 mb-3">
+              <h3 className="text-sm font-medium text-gray-900 mb-2">
                 イベントタイプ
               </h3>
-              <div className="space-y-2">
+              <div className="flex flex-wrap gap-2">
                 {[
                   { value: "all", label: "すべて" },
                   { value: "hackathon", label: "ハッカソン" },
                   { value: "workshop", label: "ワークショップ" },
                   { value: "contest", label: "コンテスト" },
                 ].map((type) => (
-                  <label key={type.value} className="flex items-center">
+                  <label
+                    key={type.value}
+                    className="cursor-pointer"
+                  >
                     <input
                       type="radio"
                       name="eventType"
+                      value={type.value}
                       checked={selectedType === type.value}
                       onChange={() => {
                         // イベントタイプが変更されたらページ遷移する
@@ -190,9 +194,15 @@ export function EventDiscovery({
                           router.push(`/events?type=${newType}`);
                         }
                       }}
-                      className="h-4 w-4 text-indigo-600 focus:ring-indigo-500"
+                      className="sr-only peer"
                     />
-                    <span className="ml-2 text-gray-700">{type.label}</span>
+                    <span
+                      className={`inline-block px-4 py-1 rounded-full text-sm font-medium border transition-colors
+                        ${selectedType === type.value ? "bg-indigo-600 text-white border-indigo-600" : "bg-gray-100 text-gray-700 border-gray-200 hover:bg-gray-200"}
+                      `}
+                    >
+                      {type.label}
+                    </span>
                   </label>
                 ))}
               </div>
@@ -200,7 +210,7 @@ export function EventDiscovery({
 
             {/* 開催地（都道府県＋オンライン） */}
             <div>
-              <h3 className="text-sm font-medium text-gray-900 mb-3">開催地</h3>
+              <h3 className="text-sm font-medium text-gray-900 mb-2">開催地</h3>
               <select
                 value={selectedLocation}
                 onChange={(e) => setSelectedLocation(e.target.value)}
@@ -216,7 +226,7 @@ export function EventDiscovery({
 
             {/* Difficulty Level */}
             <div>
-              <h3 className="text-sm font-medium text-gray-900 mb-3">難易度</h3>
+              <h3 className="text-sm font-medium text-gray-900 mb-2">難易度</h3>
               <select
                 value={selectedDifficulty}
                 onChange={(e) =>
@@ -236,7 +246,7 @@ export function EventDiscovery({
 
             {/* Price Range */}
             <div>
-              <h3 className="text-sm font-medium text-gray-900 mb-3">
+              <h3 className="text-sm font-medium text-gray-900 mb-2">
                 価格帯 (¥)
               </h3>
               <input
@@ -269,7 +279,7 @@ export function EventDiscovery({
 
             {/* キーフレーズ検索 */}
             <div className="mb-6">
-              <h3 className="text-sm font-medium text-gray-900 mb-3">
+              <h3 className="text-sm font-medium text-gray-900 mb-2">
                 キーフレーズ検索
               </h3>
               <input
@@ -352,7 +362,7 @@ export function EventDiscovery({
 
                     {/* キーフレーズ表示 */}
                     {event.keyPhrases && event.keyPhrases.length > 0 && (
-                      <div className="flex flex-wrap gap-2 mb-3">
+                      <div className="flex flex-wrap gap-2 mb-2">
                         {event.keyPhrases.map((phrase, idx) => (
                           <span
                             key={idx}
