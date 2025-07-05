@@ -159,7 +159,7 @@ export function EventDiscovery({
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 items-start">
         {/* Filters */}
         <div className="bg-white p-6 rounded-xl shadow-sm lg:sticky lg:top-28">
-          <h2 className="text-xl font-bold text-gray-900 mb-4">フィルター</h2>
+          <h2 className="text-lg font-semibold text-gray-900 mb-4">フィルター</h2>
 
           <div className="space-y-3">
             {/* Event Type */}
@@ -326,7 +326,7 @@ export function EventDiscovery({
                   className="bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-lg transition-shadow"
                 >
                   <div className="relative">
-                    <div className="w-full h-48 relative">
+                    <div className="w-full h-36 relative">
                       <Image
                         src={
                           event.image ||
@@ -355,8 +355,8 @@ export function EventDiscovery({
                     </div>
                   </div>
 
-                  <div className="p-6">
-                    <h3 className="text-xl font-bold text-gray-900 mb-2">
+                  <div className="p-4">
+                    <h3 className="text-lg font-semibold text-gray-900 mb-2">
                       {event.title}
                     </h3>
 
