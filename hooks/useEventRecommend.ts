@@ -14,32 +14,10 @@ export const useEventRecommend = () => {
     }[]
   >([]);
 
-  const CACHE_TTL = 5 * 60 * 60 * 1000; // 5時間
-
   const fetchRecommendedEvents = async () => {
     if (!session?.user?.id) {
       setError("ログインが必要です");
       return;
-    }
-
-    const cacheKey = `recommend_cache_${session.user.id}`;
-    const cached = localStorage.getItem(cacheKey);
-    if (cached) {
-      try {
-        const parsed = JSON.parse(cached);
-        if (Date.now() - parsed.timestamp < CACHE_TTL) {
-          setRawRecommendData(parsed.data || []);
-          const flatEvents = (parsed.data || []).flatMap(
-            (tagObj: { recommendations?: { event: RecommendedEvent }[] }) =>
-              tagObj.recommendations?.map((rec) => rec.event) || []
-          );
-          setEvents(flatEvents);
-          setIsLoading(false);
-          return;
-        }
-      } catch {
-        // パース失敗時は無視してAPI取得
-      }
     }
 
     setIsLoading(true);
@@ -71,62 +49,11 @@ export const useEventRecommend = () => {
             tagObj.recommendations?.map((rec) => rec.event) || []
         );
         setEvents(flatEvents);
-        // キャッシュ保存
-        localStorage.setItem(
-          cacheKey,
-          JSON.stringify({ data: result.data, timestamp: Date.now() })
-        );
       } else {
         throw new Error(result.error || "レコメンドの取得に失敗しました");
       }
     } catch (error) {
       console.error("Error fetching recommended events:", error);
-      setError(error instanceof Error ? error.message : "エラーが発生しました");
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  // キャッシュを無視してAPIリクエストを送る関数
-  const fetchRecommendedEventsNoCache = async () => {
-    if (!session?.user?.id) {
-      setError("ログインが必要です");
-      return;
-    }
-    setIsLoading(true);
-    setError(null);
-    try {
-      const API_BASE_URL =
-        process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001/api";
-      const response = await fetch(`${API_BASE_URL}/recommend/user`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ userId: session.user.id }),
-      });
-      if (!response.ok) {
-        throw new Error("レコメンドの取得に失敗しました");
-      }
-      const result = await response.json();
-      if (result.success) {
-        setRawRecommendData(result.data || []);
-        const flatEvents = (result.data || []).flatMap(
-          (tagObj: { recommendations?: { event: RecommendedEvent }[] }) =>
-            tagObj.recommendations?.map((rec) => rec.event) || []
-        );
-        setEvents(flatEvents);
-        // キャッシュも上書き
-        const cacheKey = `recommend_cache_${session.user.id}`;
-        localStorage.setItem(
-          cacheKey,
-          JSON.stringify({ data: result.data, timestamp: Date.now() })
-        );
-      } else {
-        throw new Error(result.error || "レコメンドの取得に失敗しました");
-      }
-    } catch (error) {
-      console.error("Error fetching recommended events (no cache):", error);
       setError(error instanceof Error ? error.message : "エラーが発生しました");
     } finally {
       setIsLoading(false);
@@ -144,7 +71,6 @@ export const useEventRecommend = () => {
     isLoading,
     error,
     fetchRecommendedEvents,
-    fetchRecommendedEventsNoCache,
     rawRecommendData,
   };
 };
